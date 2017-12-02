@@ -9,7 +9,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-export default class ActionItem extends Component<Object> {
+export default class ActionItem extends Component<Object>{
   render() {
     let pic = {
       uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'

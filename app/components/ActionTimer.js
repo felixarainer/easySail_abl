@@ -10,7 +10,7 @@ import {
 export default class ActionTimer extends Component<{}> {
   render() {
     let min = 2;
-    let sec = 32;
+    let sec = 352;
     return (
       <View>
         <Text style = {{fontSize: 56, fontWeight: 'bold',}}>{min}:{sec}</Text>

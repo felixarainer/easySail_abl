@@ -14,13 +14,9 @@
     "start": "react-native start",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "test": "node node_modules/jest/bin/jest.js --watch",
-    "flow": "flow",
-	"flow-stop": "flow stop",
+    "test": "node node_modules/jest/bin/jest.js --watch"
   },
-  "jest": {
-    "preset": "jest-expo"
-  },
+  "jest": {"preset": "jest-expo"},
   "dependencies": {
     "react": "16.0.0-beta.5",
     "react-native": "^0.49.5"
