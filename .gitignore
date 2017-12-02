@@ -1,5 +1,5 @@
 #node_modules/
-#.expo/
+.expo/
 #npm-debug.*
 #app/build
 # Most part of this file is created by https://www.gitignore.io
@@ -77,3 +77,14 @@ xcuserdata
 *.moved-aside
 DerivedData
 *.xcuserstate
+
+# Android/IJ
+.idea
+.gradle
+local.properties
+
+# BUCK
+buck-out/
+\.buckd/
+android/app/libs
+android/keystores/debug.keystore
