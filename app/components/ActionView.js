@@ -11,7 +11,7 @@ import {
 import ActionItem from './ActionItem';
 import ActionTimer from './ActionTimer';
 
-export default class ActionView extends Component {
+export default class ActionView extends Component<{}> {
   constructor() {
     super();
   }

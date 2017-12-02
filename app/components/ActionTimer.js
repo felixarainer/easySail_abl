@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-export default class ActionTimer extends Component {
+export default class ActionTimer extends Component<{}> {
   render() {
     let min = 2;
     let sec = 32;

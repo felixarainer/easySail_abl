@@ -8,13 +8,13 @@ import {
   StyleSheet,
 } from 'react-native';
 
-export default class FlagView extends Component {
+export default class FlagView extends Component<void> {
   render() {
     return (
       <View style={styles.container}>
         <Text style={{color: 'white'}}>FlagView component</Text>
         <View>
-          
+
         </View>
       </View>
     );
