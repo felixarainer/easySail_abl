@@ -6,15 +6,31 @@ import {
   View,
   Text,
   StyleSheet,
+  Image
 } from 'react-native';
 
-export default class FlagView extends Component<{}>{
+export default class FlagView extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      pic: {
+        uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
+      }
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Text style={{color: 'white'}}>FlagView component</Text>
-        <View>
-
+        <View style={{flexDirection: 'row'}}>
+          <View>
+            <Image source = {this.state.pic}/>
+            <Text>Flag 1</Text>
+          </View>
+          <View><Text>Flag 2</Text></View>
+          <View><Text>Flag 3</Text></View>
+          <View><Text>Flag 4</Text></View>
         </View>
       </View>
     );

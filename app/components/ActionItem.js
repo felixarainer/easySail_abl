@@ -9,11 +9,8 @@ import {
   StyleSheet,
 } from 'react-native';
 
-export default class ActionItem extends Component<Object>{
+export default class ActionItem extends Component{
   render() {
-    let pic = {
-      uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
-    };
     return (
       <View style={styles.container}>
         <Image source={this.props.item.pic} style={{width: 193, height: 110}}/>

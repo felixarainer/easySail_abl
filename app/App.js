@@ -1,9 +1,21 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import ActionView from './app/components/ActionView';
-import FlagView from './app/components/FlagView';
+import ActionView from './components/ActionView';
+import FlagView from './components/FlagView';
 
 export default class App extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      schedule: [
+        {
+          flag:"",
+          action:{},
+          countdown:{},
+        }
+      ]
+    }
+  }
   render() {
     return (
       <View style={styles.container}>

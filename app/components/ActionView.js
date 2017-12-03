@@ -11,7 +11,7 @@ import {
 import ActionItem from './ActionItem';
 import ActionTimer from './ActionTimer';
 
-export default class ActionView extends Component<{}> {
+export default class ActionView extends Component{
   constructor() {
     super();
   }
@@ -21,12 +21,13 @@ export default class ActionView extends Component<{}> {
       pic: {uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'},
       name: "TestAction1"
     }
+    let countdownDuration = 3;
     return (
       <View style={styles.container}>
         <Text style={{color: 'white'}}>ActionView component</Text>
         <ActionItem item={nextAction} />
-        <ActionTimer />
         <ActionItem item={nextAction} />
+        <ActionTimer duration={countdownDuration}/>
       </View>
     );
   }
