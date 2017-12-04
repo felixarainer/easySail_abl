@@ -9,25 +9,38 @@ import {
   FlatList,
 } from 'react-native';
 import ActionItem from './ActionItem';
-import ActionTimer from './ActionTimer';
+import Countdown from './Countdown';
+import moment from 'moment';
 
 export default class ActionView extends Component{
   constructor() {
     super();
+    this.state = {
+      action1: {
+        pic: {uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'},
+        name: "TestAction1"
+      },
+      action2: {
+        pic: {uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'},
+        name: "TestAction2"
+      },
+      nextAction: {},
+      endDate: moment().add(15,'seconds'),
+    }
+    this.state.nextAction = this.state.action1;
   }
 
   render() {
-    let nextAction = {
-      pic: {uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'},
-      name: "TestAction1"
-    }
-    let countdownDuration = 3;
     return (
       <View style={styles.container}>
         <Text style={{color: 'white'}}>ActionView component</Text>
-        <ActionItem item={nextAction} />
-        <ActionItem item={nextAction} />
-        <ActionTimer duration={countdownDuration}/>
+        <ActionItem item={this.state.nextAction} />
+        <Text>countdown end date: {this.state.endDate.format('LLL')}</Text>
+        <Countdown targetDate={this.state.endDate.toDate()} onFinished={() => {
+          console.log("countdown has ended");
+          this.state.nextAction = this.state.action2;
+          this.forceUpdate();
+        }}/>
       </View>
     );
   }
