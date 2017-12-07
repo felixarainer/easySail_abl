@@ -25,7 +25,7 @@ export default class ActionView extends Component{
         name: "TestAction2"
       },
       nextAction: {},
-      endDate: moment().add(15,'seconds'),
+      endDate: moment().add(10,'seconds'),
     }
     this.state.nextAction = this.state.action1;
   }
@@ -38,6 +38,7 @@ export default class ActionView extends Component{
         <Text>countdown end date: {this.state.endDate.format('LLL')}</Text>
         <Countdown targetDate={this.state.endDate.toDate()} onFinished={() => {
           console.log("countdown has ended");
+          this.props.onFinished();
           this.state.nextAction = this.state.action2;
           this.forceUpdate();
         }}/>

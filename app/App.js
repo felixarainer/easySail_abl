@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ActionView from './components/ActionView';
 import FlagView from './components/FlagView';
+import Orientation from 'react-native-orientation-locker';
 
 export default class App extends React.Component {
   constructor(){
@@ -16,11 +17,17 @@ export default class App extends React.Component {
       ]
     }
   }
+  componentDidMount = () => {
+    //ggf zu lockTolandscapeLeft() aendern
+    Orientation.lockToLandscape();
+  }
   render() {
     return (
       <View style={styles.container}>
         <FlagView />
-        <ActionView />
+        <ActionView onFinished= {() => {
+
+        }}/>
       </View>
     );
   }

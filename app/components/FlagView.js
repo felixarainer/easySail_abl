@@ -13,9 +13,13 @@ export default class FlagView extends Component{
   constructor(props){
     super(props);
     this.state = {
-      pic: {
-        uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
+      flag1: {
+        name: "returnflag",
+        pic: {
+          uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
+        }
       }
+
     }
   }
 
@@ -25,8 +29,8 @@ export default class FlagView extends Component{
         <Text style={{color: 'white'}}>FlagView component</Text>
         <View style={{flexDirection: 'row'}}>
           <View>
-            <Image source = {this.state.pic}/>
-            <Text>Flag 1</Text>
+            <Image source = {flag1.pic}/>
+            <Text>{flag1.name}</Text>
           </View>
           <View><Text>Flag 2</Text></View>
           <View><Text>Flag 3</Text></View>

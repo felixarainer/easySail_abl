@@ -74,8 +74,8 @@ export default class Countdown extends Component{
     let returnValue = []
     let { remainingTime } = this.state
 
-    let minutes = moment.duration(remainingTime).get('minutes');
-    let seconds = moment.duration(remainingTime).get('seconds');
+    let minutes = this.addLeadingZero(moment.duration(remainingTime).get('minutes'));
+    let seconds = this.addLeadingZero(moment.duration(remainingTime).get('seconds'));
 
     return (<Text style={this.props.style}>{minutes}:{seconds}</Text>)
 }
