@@ -1,54 +1,77 @@
 /* @flow */
 
 import React, { Component } from 'react';
-import {
-  AppRegistry,
-  View,
-  Text,
-  StyleSheet,
-  Image
-} from 'react-native';
+import { View, Text, Image, AppRegistry, StyleSheet } from 'react-native';
+import FlagItem from './FlagItem';
 
-export default class FlagView extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      flag1: {
-        name: "returnflag",
-        pic: {
-          uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
-        }
-      }
+export default class FlagView extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			flag1: {
+				name: 'returnflag',
+				pic: require('../res/pics/flags/1hs.png'),
+			},
+			flag2: {
+				name: 'startflag',
+				pic: require('../res/pics/flags/black.png'),
+			},
+			flag3: {
+				name: '',
+				pic: {},
+			},
+			flag4: {
+				name: 'returnflag',
+				pic: require('../res/pics/flags/p.png'),
+			},
+		};
+	}
 
-    }
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={{color: 'white'}}>FlagView component</Text>
-        <View style={{flexDirection: 'row'}}>
-          <View>
-            <Image source = {flag1.pic}/>
-            <Text>{flag1.name}</Text>
-          </View>
-          <View><Text>Flag 2</Text></View>
-          <View><Text>Flag 3</Text></View>
-          <View><Text>Flag 4</Text></View>
-        </View>
-      </View>
-    );
-  }
+	render() {
+		return (
+			<View style={{ flex: 3 }}>
+				<Image
+					source={require('../res/pics/ship.png')}
+					style={styles.backgroundImage}
+				>
+					<View style={styles.flagRow1}>
+						<FlagItem flag={this.state.flag1} />
+						<FlagItem flag={this.state.flag2} />
+						{/*
+							<FlagItem
+								style={styles.flagContainerStyle}
+								flag={this.state.flag2}
+							/>
+							<FlagItem
+								style={styles.flagContainerStyle}
+								flag={this.state.flag3}
+							/>
+							<FlagItem
+								style={styles.flagContainerStyle}
+								flag={this.state.flag4}
+							/>*/}
+					</View>
+				</Image>
+			</View>
+		);
+	}
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 2,
-    backgroundColor: '#555',
-    alignSelf: 'stretch',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
+	flagRow1: {
+		flex: 0.25,
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		alignItems: 'flex-start',
+		//marginTop: '13%',
+		//marginLeft: '12%',
+	},
+	backgroundImage: {
+		flex: 1,
+		height: undefined,
+		width: undefined,
+		resizeMode: 'cover',
+	},
 });
 
 AppRegistry.registerComponent('FlagView', () => FlagView);
