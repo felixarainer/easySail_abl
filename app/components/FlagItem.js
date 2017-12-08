@@ -2,16 +2,36 @@
 
 import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
+import resolveAssetSource from 'resolveAssetSource';
 //import LeftAlignedImage from 'react-native-left-aligned-image';
 
 export default class FlagItem extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			newWidth: 0,
+		};
+	}
+
 	render() {
 		return (
-			<View style={styles.flagContainer}>
+			<View style={[styles.flagContainer, this.props.style]}>
 				<Image
-					style={this.state.imageSize || styles.initialImageStyle}
+					style={
+						typeof this.state.imageSize !== 'undefined'
+							? [styles.image, this.state.imageSize]
+							: styles.image
+					}
 					source={this.props.flag.pic}
-					onLayout={this.onLayout.bind(this)}
+					onLayout={event => {
+						const { x, y, width, height } = event.nativeEvent.layout;
+						this.setState({
+							imageSize: {
+								width: height * this.props.flag.ratio,
+								height: height,
+							},
+						});
+					}}
 				/>
 				{/*<Text>{this.props.flag.name}</Text>*/}
 			</View>
@@ -19,38 +39,14 @@ export default class FlagItem extends Component {
 	}
 }
 
-onLayout = e => {
-	if (this.state.imageSize) {
-		return;
-	}
-
-	const { x, y, height, width } = e.nativeEvent.layout,
-		sizeX = width - x,
-		sizeY = height - y,
-		imageWidth = sizeX / sizeY * IMAGE_HEIGHT;
-
-	this.setState({
-		imageSize: {
-			height: IMAGE_HEIGHT,
-			width: imageWidth,
-			resizeMode: 'contain',
-		},
-	});
-};
-
 const styles = StyleSheet.create({
-	initialImageStyle: { flex: 1, resizeMode: 'cover' },
 	image: {
-		//flex: 1,
 		height: '100%',
-		alignSelf: 'flex-start',
-		justifyContent: 'flex-start',
-		//marginLeft: '12%',
 		resizeMode: 'contain',
-		//backgroundColor: 'white',
 	},
 	flagContainer: {
-		backgroundColor: 'grey',
-		flex: 1,
+		//flex: 1,
+		//backgroundColor: 'grey',
+		//flex: 1,
 	},
 });

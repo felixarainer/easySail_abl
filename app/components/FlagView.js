@@ -8,21 +8,25 @@ export default class FlagView extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			flag1: {
-				name: 'returnflag',
-				pic: require('../res/pics/flags/1hs.png'),
-			},
 			flag2: {
-				name: 'startflag',
+				name: '1hs',
+				pic: require('../res/pics/flags/1hs.png'),
+				ratio: 1.57,
+			},
+			flag1: {
+				name: 'black',
 				pic: require('../res/pics/flags/black.png'),
+				ratio: 1,
 			},
 			flag3: {
-				name: '',
-				pic: {},
+				name: 'p',
+				pic: require('../res/pics/flags/p.png'),
+				ratio: 1,
 			},
 			flag4: {
-				name: 'returnflag',
-				pic: require('../res/pics/flags/p.png'),
+				name: 'x',
+				pic: require('../res/pics/flags/x.png'),
+				ratio: 1,
 			},
 		};
 	}
@@ -34,22 +38,25 @@ export default class FlagView extends Component {
 					source={require('../res/pics/ship.png')}
 					style={styles.backgroundImage}
 				>
-					<View style={styles.flagRow1}>
-						<FlagItem flag={this.state.flag1} />
-						<FlagItem flag={this.state.flag2} />
-						{/*
-							<FlagItem
-								style={styles.flagContainerStyle}
-								flag={this.state.flag2}
-							/>
-							<FlagItem
-								style={styles.flagContainerStyle}
-								flag={this.state.flag3}
-							/>
-							<FlagItem
-								style={styles.flagContainerStyle}
-								flag={this.state.flag4}
-							/>*/}
+					<View style={[styles.flagRow, { marginTop: '13.1%' }]}>
+						<FlagItem
+							style={{ marginLeft: '12%' }}
+							flag={this.props.flags.flag1}
+						/>
+						<FlagItem
+							style={{ marginLeft: '19%' }}
+							flag={this.props.flags.flag2}
+						/>
+					</View>
+					<View style={[styles.flagRow, { marginTop: '7.7%' }]}>
+						<FlagItem
+							style={{ marginLeft: '19.4%' }}
+							flag={this.props.flags.flag3}
+						/>
+						<FlagItem
+							style={{ marginLeft: '26.8%' }}
+							flag={this.props.flags.flag4}
+						/>
 					</View>
 				</Image>
 			</View>
@@ -58,13 +65,9 @@ export default class FlagView extends Component {
 }
 
 const styles = StyleSheet.create({
-	flagRow1: {
+	flagRow: {
 		flex: 0.25,
 		flexDirection: 'row',
-		justifyContent: 'flex-start',
-		alignItems: 'flex-start',
-		//marginTop: '13%',
-		//marginLeft: '12%',
 	},
 	backgroundImage: {
 		flex: 1,
