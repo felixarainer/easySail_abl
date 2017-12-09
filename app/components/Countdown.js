@@ -1,9 +1,9 @@
 /* @flow */
 
-import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import PropTypes from "prop-types";
-import moment from "moment";
+import React, { Component } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
+import moment from 'moment';
 
 const COUNTDOWN_NOT_STARTED = 1;
 const COUNTDOWN_STARTED = 2;
@@ -15,7 +15,7 @@ export default class Countdown extends Component {
 		this.state = {
 			remainingTime: 0,
 			status: COUNTDOWN_NOT_STARTED,
-			intervalId: null
+			intervalId: null,
 		};
 	}
 
@@ -27,7 +27,7 @@ export default class Countdown extends Component {
 
 			this.setState({
 				status: COUNTDOWN_STARTED,
-				intervalId: timer
+				intervalId: timer,
 			});
 
 			this.tick();
@@ -44,19 +44,19 @@ export default class Countdown extends Component {
 
 	addLeadingZero = value => {
 		if (value < 10) {
-			return "0" + value.toString();
+			return '0' + value.toString();
 		}
 		return value;
 	};
 
 	tick = () => {
 		this.setState({
-			remainingTime: this.calculateRemainingTime()
+			remainingTime: this.calculateRemainingTime(),
 		});
 
 		if (this.state.remainingTime <= 0) {
 			this.setState({
-				status: COUNTDOWN_FINISHED
+				status: COUNTDOWN_FINISHED,
 			});
 
 			if (this.props.onFinished) {
@@ -71,10 +71,10 @@ export default class Countdown extends Component {
 		let { remainingTime } = this.state;
 
 		let minutes = this.addLeadingZero(
-			moment.duration(remainingTime).get("minutes")
+			moment.duration(remainingTime).get('minutes')
 		);
 		let seconds = this.addLeadingZero(
-			moment.duration(remainingTime).get("seconds")
+			moment.duration(remainingTime).get('seconds')
 		);
 
 		return (
@@ -85,11 +85,11 @@ export default class Countdown extends Component {
 	};
 
 	render() {
-		console.log("render");
+		console.log('Countdown.render()');
 		if (this.state.remTime == 0) {
-			console.log("setting new state to " + this.props.duration);
+			console.log('setting new state to ' + this.props.duration);
 			this.state.remTime = this.props.duration;
-			console.log("new state: remtime=" + this.state.remTime);
+			console.log('new state: remtime=' + this.state.remTime);
 		}
 		return <View>{this.renderRemainingTime()}</View>;
 	}
@@ -100,11 +100,11 @@ Countdown.propTypes = {
 	interval: PropTypes.number,
 	startDelay: PropTypes.number,
 	onFinished: PropTypes.func,
-	style: Text.propTypes.style
+	style: Text.propTypes.style,
 };
 
 Countdown.defaultProps = {
 	interval: 1000,
 	startDelay: 0,
-	style: { fontSize: 56, fontWeight: "bold" }
+	style: { fontSize: 56, fontWeight: 'bold' },
 };

@@ -3,82 +3,70 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import ActionView from './components/ActionView';
 import FlagView from './components/FlagView';
 import Orientation from 'react-native-orientation-locker';
+import * as res from './res/res.js';
+import moment from 'moment';
 
 export default class App extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			flags: {
-				flag1: {
-					name: '1hs',
-					pic: require('./res/pics/flags/1hs.png'),
-					ratio: 1.57,
-				},
-				flag2: {
-					name: 'black',
-					pic: require('./res/pics/flags/black.png'),
-					ratio: 1,
-				},
-				flag3: {
-					name: 'p',
-					pic: require('./res/pics/flags/p.png'),
-					ratio: 1,
-				},
-				flag4: {
-					name: 'x',
-					pic: require('./res/pics/flags/x.png'),
-					ratio: 1,
-				},
-			},
+			curFlags: {},
 		};
+		console.log(res.flags.black);
 	}
+	setInitialFlags = () => {
+		this.setState({
+			curFlags: {
+				flag1: res.flags._1hs,
+				flag2: res.flags.black,
+				flag3: res.flags.p,
+				flag4: res.flags.x,
+			},
+			countdownEndDate: moment().add(5, 'seconds'),
+			//nextFlags:
+		});
+	};
+
+	componentWillMount = () => {
+		this.setInitialFlags();
+	};
 
 	componentDidMount = () => {
 		//ggf zu lockTolandscapeLeft() aendern
 		Orientation.lockToLandscape();
 	};
 
-	onCountdownFinished = () => {
-		this.setState(previousState => {
-			console.log(previousState.flags.flag1.name);
-			return {
-				flags: {
-					flag1: {
-						name: 'black',
-						pic: require('./res/pics/flags/black.png'),
-						ratio: 1,
-					},
-					flag2: {
-						name: '1hs',
-						pic: require('./res/pics/flags/1hs.png'),
-						ratio: 1.57,
-					},
-				},
-			};
+	updateFlags = () => {
+		//code to determine next state (flags, actions, ...) goes here
+		this.setState({
+			curFlags: {
+				flag1: res.flags.x,
+				flag2: res.flags.p,
+				flag3: {},
+				flag4: res.flags.black,
+			},
+			countdownEndDate: moment().add(10, 'seconds'),
 		});
 	};
 
-	render() {
+	render = () => {
 		return (
-			<View style={styles.container}>
-				<FlagView flags={this.state.flags} />
+			<View
+				style={{
+					flex: 1,
+					flexDirection: 'row',
+					backgroundColor: '#fff',
+				}}
+			>
+				<FlagView flags={this.state.curFlags} />
 				<ActionView
+					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
-						console.log('countdown finished');
-						//this.onCountdownFinished();
+						console.log('App.render.onFinished()');
+						this.updateFlags();
 					}}
 				/>
 			</View>
 		);
-	}
+	};
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		flexDirection: 'row',
-		backgroundColor: '#fff',
-		//alignItems: "center",
-		//justifyContent: "center",
-	},
-});

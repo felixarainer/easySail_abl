@@ -8,7 +8,6 @@ export default class FlagItem extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			newWidth: 0,
 			imageSize: undefined,
 		};
 	}
@@ -25,9 +24,9 @@ export default class FlagItem extends Component {
 		return (
 			<View
 				style={
-					typeof this.state.imageSize !== 'undefined'
-						? [this.props.style, { width: this.state.imageSize.height * 1.57 }]
-						: [this.props.style, { opacity: 0 }]
+					typeof this.state.imageSize === 'undefined'
+						? [this.props.style, { opacity: 0 }]
+						: [this.props.style, { width: this.state.imageSize.height * 1.57 }]
 				}
 			>
 				<Image

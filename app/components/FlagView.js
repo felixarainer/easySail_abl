@@ -7,28 +7,7 @@ import FlagItem from './FlagItem';
 export default class FlagView extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			flag2: {
-				name: '1hs',
-				pic: require('../res/pics/flags/1hs.png'),
-				ratio: 1.57,
-			},
-			flag1: {
-				name: 'black',
-				pic: require('../res/pics/flags/black.png'),
-				ratio: 1,
-			},
-			flag3: {
-				name: 'p',
-				pic: require('../res/pics/flags/p.png'),
-				ratio: 1,
-			},
-			flag4: {
-				name: 'x',
-				pic: require('../res/pics/flags/x.png'),
-				ratio: 1,
-			},
-		};
+		this.state = {};
 	}
 
 	render() {
@@ -54,7 +33,7 @@ export default class FlagView extends Component {
 							flag={this.props.flags.flag3}
 						/>
 						<FlagItem
-							style={{ marginLeft: '26.8%' }}
+							style={{ marginLeft: '19%' }}
 							flag={this.props.flags.flag4}
 						/>
 					</View>
