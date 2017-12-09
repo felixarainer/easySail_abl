@@ -1,4 +1,8 @@
-/* @flow */
+// ActionView - Displays upcoming actions and remaining time
+//
+// ?TODO: display last action(s)
+// TODO: add (static) action images; pass nextActions down from App.js as props
+//
 
 import React, { Component } from 'react';
 import { AppRegistry, View, Text, StyleSheet, FlatList } from 'react-native';
@@ -54,7 +58,7 @@ export default class ActionView extends Component {
 					})}
 				</View>
 				<View style={styles.actionContainer}>
-					<Text style={styles.title}>remaining time</Text>
+					<Text style={styles.title}>remaining time:</Text>
 					<Countdown
 						targetDate={this.props.countdownEndDate.toDate()}
 						onFinished={() => {
@@ -83,7 +87,9 @@ const styles = StyleSheet.create({
 	},
 	actionContainer: {
 		margin: '5%',
+		marginBottom: 0,
 		padding: '5%',
+		borderWidth: 1,
 		backgroundColor: 'lightgreen',
 		alignSelf: 'stretch',
 		alignItems: 'center',

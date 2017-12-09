@@ -1,3 +1,12 @@
+// App - main component
+//
+// Hosts FlagView and ActionView. Passes current Flags / Actions (TODO) / Count-
+// 	down to children as props i.e. sets next state for the whole app ('Regelsys-
+//	tem')
+//
+// TODO: migrate Countdown logic here
+// ?TODO?: Redux
+
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import ActionView from './components/ActionView';
@@ -12,23 +21,24 @@ export default class App extends React.Component {
 		this.state = {
 			curFlags: {},
 		};
-		console.log(res.flags.black);
+		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
 	}
+
+	componentWillMount = () => {
+		this.setInitialFlags();
+	};
+
 	setInitialFlags = () => {
 		this.setState({
 			curFlags: {
-				flag1: res.flags._1hs,
-				flag2: res.flags.black,
-				flag3: res.flags.p,
+				flag1: res.flags.x,
+				flag2: res.flags.x,
+				flag3: res.flags.x,
 				flag4: res.flags.x,
 			},
 			countdownEndDate: moment().add(5, 'seconds'),
 			//nextFlags:
 		});
-	};
-
-	componentWillMount = () => {
-		this.setInitialFlags();
 	};
 
 	componentDidMount = () => {
@@ -38,15 +48,45 @@ export default class App extends React.Component {
 
 	updateFlags = () => {
 		//code to determine next state (flags, actions, ...) goes here
-		this.setState({
-			curFlags: {
-				flag1: res.flags.x,
-				flag2: res.flags.p,
-				flag3: {},
-				flag4: res.flags.black,
-			},
-			countdownEndDate: moment().add(10, 'seconds'),
-		});
+		switch (this.step) {
+			case 0:
+				this.setState({
+					curFlags: {
+						flag1: {},
+						flag2: res.flags.x,
+						flag3: {},
+						flag4: {},
+					},
+					countdownEndDate: moment().add(1, 'minute'),
+				});
+				this.step = 1;
+				break;
+			case 1:
+				this.setState({
+					curFlags: {
+						flag1: {},
+						flag2: res.flags.p,
+						flag3: res.flags.z,
+						flag4: {},
+					},
+					countdownEndDate: moment().add(1, 'minute'),
+				});
+				this.step = 2;
+				break;
+			case 2:
+				this.setState({
+					curFlags: {
+						flag1: {},
+						flag2: res.flags.z,
+						flag3: {},
+						flag4: {},
+					},
+					countdownEndDate: moment().add(5, 'seconds'),
+					//nextFlags:
+				});
+				this.step = 3;
+			default:
+		}
 	};
 
 	render = () => {

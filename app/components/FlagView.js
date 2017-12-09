@@ -1,4 +1,12 @@
-/* @flow */
+// FlagView - Displays current Flags
+//
+//		Left part of the screen. Displays a stylized dinghy with masts as
+//		background with the currently set flags on top.
+//
+//		Flag Positions are currently hardcoded
+//
+//		TODO: add fullscreen mode e.g. make ActionView toggleable
+//
 
 import React, { Component } from 'react';
 import { View, Text, Image, AppRegistry, StyleSheet } from 'react-native';
@@ -17,25 +25,31 @@ export default class FlagView extends Component {
 					source={require('../res/pics/ship.png')}
 					style={styles.backgroundImage}
 				>
-					<View style={[styles.flagRow, { marginTop: '13.1%' }]}>
-						<FlagItem
-							style={{ marginLeft: '12%' }}
-							flag={this.props.flags.flag1}
-						/>
-						<FlagItem
-							style={{ marginLeft: '19%' }}
-							flag={this.props.flags.flag2}
-						/>
+					<View
+						style={[
+							styles.flagRow,
+							{
+								marginTop: '13.1%',
+								marginLeft: '12.3%',
+								marginRight: '25.6%',
+							},
+						]}
+					>
+						<FlagItem flag={this.props.flags.flag1} />
+						<FlagItem flag={this.props.flags.flag2} />
 					</View>
-					<View style={[styles.flagRow, { marginTop: '7.7%' }]}>
-						<FlagItem
-							style={{ marginLeft: '19.4%' }}
-							flag={this.props.flags.flag3}
-						/>
-						<FlagItem
-							style={{ marginLeft: '19%' }}
-							flag={this.props.flags.flag4}
-						/>
+					<View
+						style={[
+							styles.flagRow,
+							{
+								marginTop: '7.7%',
+								marginLeft: '19.4%',
+								marginRight: '18.45%',
+							},
+						]}
+					>
+						<FlagItem flag={this.props.flags.flag3} />
+						<FlagItem flag={this.props.flags.flag4} />
 					</View>
 				</Image>
 			</View>
@@ -47,6 +61,7 @@ const styles = StyleSheet.create({
 	flagRow: {
 		flex: 0.25,
 		flexDirection: 'row',
+		justifyContent: 'space-between',
 	},
 	backgroundImage: {
 		flex: 1,

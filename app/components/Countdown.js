@@ -1,4 +1,8 @@
-/* @flow */
+// Countdown - displays xx:xx countdown, calls callback prop onFinished() upon
+// 		reaching 00:00
+//
+// TODO migrate logic to App.js / Redux to allow fullscreen FlagView / differ-
+//		ent screens in general without breaking the countdown
 
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
@@ -20,6 +24,21 @@ export default class Countdown extends Component {
 	}
 
 	componentDidMount = () => {
+		setTimeout(() => {
+			let timer = setInterval(() => {
+				this.tick();
+			}, this.props.interval);
+
+			this.setState({
+				status: COUNTDOWN_STARTED,
+				intervalId: timer,
+			});
+
+			this.tick();
+		}, this.props.startDelay);
+	};
+
+	componentWillReceiveProps = () => {
 		setTimeout(() => {
 			let timer = setInterval(() => {
 				this.tick();

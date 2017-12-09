@@ -1,3 +1,5 @@
+//res - saves flags / actions (TODO) as constants, is imported by App.js
+
 export const flags = {
 	_1hs: {
 		name: '1hs',

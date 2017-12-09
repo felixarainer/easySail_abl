@@ -1,4 +1,6 @@
-/* @flow */
+// ActionItem - Used by ActionView to display an action Object as an Image
+//
+// TODO: remove width / height; set up to use static image
 
 import React, { Component } from 'react';
 import { AppRegistry, View, Text, Image, StyleSheet } from 'react-native';
@@ -19,7 +21,7 @@ export default class ActionItem extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: 'grey',
+		backgroundColor: 'grey', // TODO remove
 	},
 });
 
