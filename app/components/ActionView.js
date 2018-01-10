@@ -9,39 +9,22 @@ import { AppRegistry, View, Text, StyleSheet, FlatList } from 'react-native';
 import ActionItem from './ActionItem';
 import Countdown from './Countdown';
 import moment from 'moment';
+import * as res from '../res/res.js';
 
 export default class ActionView extends Component {
 	constructor() {
 		super();
 		this.state = {
-			action1: {
-				pic: {
-					uri:
-						'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-				},
-				name: 'TestAction1',
-			},
-			action2: {
-				pic: {
-					uri:
-						'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-				},
-				name: 'TestAction2',
-			},
 			nextActions: [
 				{
-					pic: {
-						uri:
-							'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-					},
-					name: 'TestAction1',
+					name: 'Startschuss',
+					actionPic: res.actions.signal_1,
+					flagPic: undefined,
 				},
 				{
-					pic: {
-						uri:
-							'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-					},
-					name: 'TestAction2',
+					name: 'Flagge bergen',
+					actionPic: res.actions.flag_down,
+					flagPic: res.flags.z,
 				},
 			],
 			//endDate: moment().add(5, 'seconds'),
@@ -83,7 +66,7 @@ const styles = StyleSheet.create({
 		alignSelf: 'stretch',
 		flexDirection: 'column',
 		//justifyContent: 'center',
-		alignItems: 'center',
+		alignItems: 'flex-start',
 	},
 	actionContainer: {
 		margin: '5%',
@@ -93,7 +76,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'lightgreen',
 		alignSelf: 'stretch',
 		alignItems: 'center',
-		justifyContent: 'center',
+		justifyContent: 'space-between',
 	},
 	title: { fontSize: 30, fontWeight: 'bold' },
 	countdownText: { fontSize: 56, fontWeight: 'bold' },

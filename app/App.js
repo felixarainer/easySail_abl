@@ -36,7 +36,19 @@ export default class App extends React.Component {
 				flag3: res.flags.x,
 				flag4: res.flags.x,
 			},
-			countdownEndDate: moment().add(5, 'seconds'),
+			curActions: [
+				{
+					name: 'TestAction1',
+					actionPic: res.actions.signal_2,
+					flagPic: undefined,
+				},
+				{
+					name: 'TestAction2',
+					actionPic: res.actions.flag_down,
+					flagPic: res.flags.z,
+				},
+			],
+			countdownEndDate: moment().add(30, 'seconds'),
 			//nextFlags:
 		});
 	};
@@ -100,6 +112,7 @@ export default class App extends React.Component {
 			>
 				<FlagView flags={this.state.curFlags} />
 				<ActionView
+					actions={this.state.curActions}
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
 						console.log('App.render.onFinished()');

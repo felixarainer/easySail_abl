@@ -11,6 +11,16 @@ export const flags = {
 		pic: require('./pics/flags/black.png'),
 		ratio: 1,
 	},
+	i: {
+		name: 'i',
+		pic: require('./pics/flags/i.png'),
+		ratio: 1,
+	},
+	l: {
+		name: 'l',
+		pic: require('./pics/flags/l.png'),
+		ratio: 1,
+	},
 	p: {
 		name: 'p',
 		pic: require('./pics/flags/p.png'),
@@ -28,4 +38,9 @@ export const flags = {
 	},
 };
 
-export const actions = {};
+export const actions = {
+	flag_up: require('./pics/actions/flag_up.png'),
+	flag_down: require('./pics/actions/flag_down.png'),
+	signal_1: require('./pics/actions/signal_1.png'),
+	signal_2: require('./pics/actions/signal_2.png'),
+};

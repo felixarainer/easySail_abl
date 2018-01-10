@@ -52,7 +52,6 @@ export default class FlagItem extends Component {
 						});
 					}}
 				/>
-				{/*<Text>{this.props.flag.name}</Text>*/}
 			</View>
 		);
 	}
