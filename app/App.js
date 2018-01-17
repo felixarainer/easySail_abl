@@ -15,6 +15,27 @@ import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
 import moment from 'moment';
 
+class actState{
+	constructor(flags,actions,time){
+		this.flags = flags;
+		this.actions = actions;
+		this.time = time;
+	}
+
+	getState = ()=>{
+		return {
+			curFlags: {
+				flag1: this.flags[0],
+				flag2: this.flags[1],
+				flag3: this.flags[2],
+				flag4: this.flags[3],
+			},
+			curActions: this.actions,
+			countdownEndDate: moment().add(this.time, 'seconds'),
+		}
+	}
+}
+
 export default class App extends React.Component {
 	constructor() {
 		super();
@@ -22,22 +43,26 @@ export default class App extends React.Component {
 			curFlags: {},
 		};
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
-	}
-
-	componentWillMount = () => {
-		this.setInitialFlags();
-	};
-
-	setInitialFlags = () => {
-		this.setState({
-			curFlags: {
-				flag1: res.flags.x,
-				flag2: res.flags.x,
-				flag3: res.flags.x,
-				flag4: res.flags.x,
-			},
-			curActions: [
-				{
+		this.actlist =[
+			//1ste aktion
+			new actState(
+					[res.flags.x,res.flags.x,res.flags.x,res.flags.x],
+					[{
+						name: 'TestAction1',
+						actionPic: res.actions.signal_2,
+						flagPic: undefined,
+					},
+					{
+						name: 'TestAction2',
+						actionPic: res.actions.flag_down,
+						flagPic: res.flags.z,
+					}],
+					5
+					),
+		//2te aktion------------------------------------------
+		new actState(
+				[res.flags.z,res.flags.x,res.flags.z,res.flags.x],
+				[{
 					name: 'TestAction1',
 					actionPic: res.actions.signal_2,
 					flagPic: undefined,
@@ -46,12 +71,21 @@ export default class App extends React.Component {
 					name: 'TestAction2',
 					actionPic: res.actions.flag_down,
 					flagPic: res.flags.z,
-				},
-			],
-			countdownEndDate: moment().add(30, 'seconds'),
-			//nextFlags:
-		});
+				}],
+				33
+				),
+		];
+	}
+
+	//onstart()
+	componentWillMount = () => {
+		this.setInitialFlags();
 	};
+
+	setInitialFlags = () => {
+		this.setState(this.actlist[0].getState());
+	};
+
 
 	componentDidMount = () => {
 		//ggf zu lockTolandscapeLeft() aendern
@@ -59,46 +93,8 @@ export default class App extends React.Component {
 	};
 
 	updateFlags = () => {
-		//code to determine next state (flags, actions, ...) goes here
-		switch (this.step) {
-			case 0:
-				this.setState({
-					curFlags: {
-						flag1: {},
-						flag2: res.flags.x,
-						flag3: {},
-						flag4: {},
-					},
-					countdownEndDate: moment().add(1, 'minute'),
-				});
-				this.step = 1;
-				break;
-			case 1:
-				this.setState({
-					curFlags: {
-						flag1: {},
-						flag2: res.flags.p,
-						flag3: res.flags.z,
-						flag4: {},
-					},
-					countdownEndDate: moment().add(1, 'minute'),
-				});
-				this.step = 2;
-				break;
-			case 2:
-				this.setState({
-					curFlags: {
-						flag1: {},
-						flag2: res.flags.z,
-						flag3: {},
-						flag4: {},
-					},
-					countdownEndDate: moment().add(5, 'seconds'),
-					//nextFlags:
-				});
-				this.step = 3;
-			default:
-		}
+		this.step++;
+		this.setState(this.actlist[this.step].getState());
 	};
 
 	render = () => {
