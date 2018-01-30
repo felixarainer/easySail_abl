@@ -36,6 +36,11 @@ export const flags = {
 		pic: require('./pics/flags/z.png'),
 		ratio: 1,
 	},
+	klass: {
+		name: 'klass',
+		pic: require('./pics/flags/klass.png'),
+		ratio: 1,
+	},
 };
 
 export const actions = {

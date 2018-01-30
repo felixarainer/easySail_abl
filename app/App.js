@@ -3,7 +3,7 @@
 // Hosts FlagView and ActionView. Passes current Flags / Actions (TODO) / Count-
 // 	down to children as props i.e. sets next state for the whole app ('Regelsys-
 //	tem')
-//
+//:
 // TODO: migrate Countdown logic here
 // ?TODO?: Redux
 
@@ -15,6 +15,27 @@ import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
 import moment from 'moment';
 
+class actState{
+	constructor(flags,actions,time){
+		this.flags = flags;
+		this.actions = actions;
+		this.time = time;
+	}
+
+	getState = ()=>{
+		return {
+			curFlags: {
+				flag1: this.flags[0],
+				flag2: this.flags[1],
+				flag3: this.flags[2],
+				flag4: this.flags[3],
+			},
+			curActions: this.actions,
+			countdownEndDate: typeof(this.time) === 'number' ? moment().add(this.time, 'seconds') : this.time,
+		}
+	}
+}
+
 export default class App extends React.Component {
 	constructor() {
 		super();
@@ -24,34 +45,126 @@ export default class App extends React.Component {
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
 	}
 
-	componentWillMount = () => {
-		this.setInitialFlags();
-	};
+	componentWillMount() {
+		this.actlist = this.createStartStates(
+			[
+				{time: moment('8:42','HH:mm'),
+				 condition: 'z' },
 
-	setInitialFlags = () => {
-		this.setState({
-			curFlags: {
-				flag1: res.flags.x,
-				flag2: res.flags.x,
-				flag3: res.flags.x,
-				flag4: res.flags.x,
-			},
-			curActions: [
-				{
-					name: 'TestAction1',
-					actionPic: res.actions.signal_2,
-					flagPic: undefined,
-				},
-				{
+		]);
+		this.setInitialFlags();
+		console.log('length of actlist after creating:' + this.actlist.length);
+	}
+
+	//TODO: felix fragen, array wird nicht erzeugt => undefined
+	createStartStates = (args) => {
+		starttime = moment(args[0].time).subtract(6,'minutes');
+		let action1 = [
+			//flagge l setzen und 6 min vor Start bergen
+			new actState(
+				[res.flags.l,{},{},{}],
+				[{
 					name: 'TestAction2',
 					actionPic: res.actions.flag_down,
-					flagPic: res.flags.z,
-				},
-			],
-			countdownEndDate: moment().add(30, 'seconds'),
-			//nextFlags:
-		});
+					flagPic: res.flags.l,
+				}],
+				starttime
+		)];
+
+		let ac = []
+
+		args.forEach(start => {
+
+			//2te aktion
+			//l ist geborgen und in einer minute ankündigungssignal + Klassenflagge
+			ac.push(new actState(
+					[{},{},{},{}],
+					[{
+						name: 'TestAction1',
+						actionPic: res.actions.signal_1,
+						flagPic: undefined,
+					},
+					{
+						name: 'TestAction2',
+						actionPic: res.actions.flag_up,
+						flagPic: res.flags.klass,
+					}],
+					moment(starttime).add(1,'m')
+			))
+
+			ac.push(
+				//3te aktion
+				//Klassenflagge gesetzt
+				//in einer minute Vorbereitungssignal und Startmethode
+					new actState(
+							[res.flags.klass,{},{},{}],
+							[{
+								name: 'TestAction1',
+								actionPic: res.actions.signal_1,
+								flagPic: undefined,
+							},
+							{
+								name: 'TestAction2',
+								actionPic: res.actions.flag_up,
+								//TODO damir fragen wegen res.flags.{start.condition}
+								flagPic: res.flags[start.condition],
+							}],
+							moment(starttime).add(2,'m')
+				))
+
+				ac.push(//4te aktion
+				//Condition Flagge gesetzt
+				//3 minuten bis zum 1 min signal
+				new actState(
+						[res.flags.klass,res.flags[start.condition],{},{}],
+						[{
+							name: 'TestAction1',
+							actionPic: res.actions.signal_1,
+							flagPic: undefined,
+						},
+						{
+							name: 'TestAction2',
+							actionPic: res.actions.flag_down,
+							//TODO damir fragen wegen res.flags.{start.condition}
+							flagPic: res.flags[start.condition],
+						}],
+						moment(starttime).add(5,'m')
+				))
+
+				ac.push(//5te aktion
+				//1 minuten signal geschossen, condition flagge geborgen
+				//1 minute bis start
+				new actState(
+						[res.flags.klass,{},{},{}],
+						[{
+							name: 'TestAction1',
+							actionPic: res.actions.signal_1,
+							flagPic: undefined,
+						},
+						{
+							name: 'TestAction2',
+							actionPic: res.actions.flag_down,
+							//TODO damir fragen wegen res.flags.{start.condition}
+							flagPic: res.flags.klass,
+						}],
+						moment(starttime).add(6,'m')
+				))
+		})
+
+		console.log(ac)
+		return action1.concat(ac)
+	}
+
+	////onstart()
+	// componentWillMount = () => {
+	// 	this.setInitialFlags();
+	// };
+
+	setInitialFlags = () => {
+		this.setState(this.actlist[0].getState());
+		console.log(this.actlist.length);
 	};
+
 
 	componentDidMount = () => {
 		//ggf zu lockTolandscapeLeft() aendern
@@ -59,45 +172,10 @@ export default class App extends React.Component {
 	};
 
 	updateFlags = () => {
-		//code to determine next state (flags, actions, ...) goes here
-		switch (this.step) {
-			case 0:
-				this.setState({
-					curFlags: {
-						flag1: {},
-						flag2: res.flags.x,
-						flag3: {},
-						flag4: {},
-					},
-					countdownEndDate: moment().add(1, 'minute'),
-				});
-				this.step = 1;
-				break;
-			case 1:
-				this.setState({
-					curFlags: {
-						flag1: {},
-						flag2: res.flags.p,
-						flag3: res.flags.z,
-						flag4: {},
-					},
-					countdownEndDate: moment().add(1, 'minute'),
-				});
-				this.step = 2;
-				break;
-			case 2:
-				this.setState({
-					curFlags: {
-						flag1: {},
-						flag2: res.flags.z,
-						flag3: {},
-						flag4: {},
-					},
-					countdownEndDate: moment().add(5, 'seconds'),
-					//nextFlags:
-				});
-				this.step = 3;
-			default:
+		console.log('updateFlags')
+		if(this.step<=this.actlist.length){
+			this.step++;
+			this.setState(this.actlist[this.step].getState());
 		}
 	};
 
