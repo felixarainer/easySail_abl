@@ -8,7 +8,7 @@
 // ?TODO?: Redux
 
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Button } from 'react-native';
 import ActionView from './components/ActionView';
 import FlagView from './components/FlagView';
 import Orientation from 'react-native-orientation-locker';
@@ -43,6 +43,8 @@ export default class App extends React.Component {
 		super();
 		this.state = {
 			curFlags: {},
+			buttons: false,
+			startFinished: false,
 		};
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
 	}
@@ -50,7 +52,7 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('8:52','HH:mm'),
+				{time: moment('10:14','HH:mm'),
 				 condition: 'z' },
 
 		]);
@@ -157,15 +159,12 @@ export default class App extends React.Component {
 		return action1.concat(ac)
 	}
 
-	////onstart()
-	// componentWillMount = () => {
-	// 	this.setInitialFlags();
-	// };
-
 	setInitialFlags = () => {
 		this.setState(this.actlist[0].getState());
 		console.log(this.actlist.length);
 	};
+
+
 
 
 	componentDidMount = () => {
@@ -174,10 +173,15 @@ export default class App extends React.Component {
 	};
 
 	updateFlags = () => {
-		console.log('updateFlags')
-		if(this.step<=this.actlist.length){
+		console.log(this.actlist.length);
+		console.log((this.step+1));
+		if(this.step<(this.actlist.length-1)){
 			this.step++;
 			this.setState(this.actlist[this.step].getState());
+		}else{
+			this.setState({buttons: true});
+			this.setState({startFinished: true});
+			this.setState({curFlags: {flag1: {}, flag2: {}, flag3:{}, flag4: {}}});
 		}
 	};
 
@@ -196,9 +200,26 @@ export default class App extends React.Component {
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
 						console.log('App.render.onFinished()');
-						this.updateFlags();
+						if(!this.state.startFinished){
+							this.updateFlags();
+						}
 					}}
 				/>
+
+				{
+						this.state.buttons &&
+						<Button
+							title="Learn More"
+							color="#841584"
+							style={{
+								position: 'absolute',
+								marginTop: '13.1%',
+								marginLeft: '12.3%',
+								marginRight: '25.6%',
+							}}
+							accessibilityLabel="Learn more about this purple button"
+						/>
+					}
 			</View>
 		);
 	};
