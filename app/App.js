@@ -31,7 +31,9 @@ class actState{
 				flag4: this.flags[3],
 			},
 			curActions: this.actions,
+
 			countdownEndDate: typeof(this.time) === 'number' ? moment().add(this.time, 'seconds') : this.time,
+
 		}
 	}
 }
@@ -48,7 +50,7 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('8:42','HH:mm'),
+				{time: moment('8:52','HH:mm'),
 				 condition: 'z' },
 
 		]);
