@@ -2,7 +2,7 @@
 
 export const flags = {
 	_1hs: {
-		name: '1hs',
+		name: 'fhs',
 		pic: require('./pics/flags/1hs.png'),
 		ratio: 1.57,
 	},
