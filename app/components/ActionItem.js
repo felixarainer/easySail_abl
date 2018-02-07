@@ -48,8 +48,8 @@ export default class ActionItem extends Component {
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: 'lightgrey', // TODO remove
-		height: '35%',
-		width: '95%',
+		height: 150,
+		marginVertical: 8,
 	},
 });
 
