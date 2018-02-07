@@ -64,7 +64,7 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('21:10','HH:mm'),
+				{time: moment('21:28','HH:mm'),
 				 condition: 'z' },
 		],false);
 		this.setInitialFlags();
@@ -213,7 +213,7 @@ export default class App extends React.Component {
 					[{},{},{},{}],
 					[],
 					moment(starttime).add(6,'m').add(11,'s'),
-					false
+					true
 				))
 		})
 
