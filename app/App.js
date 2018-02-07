@@ -44,6 +44,10 @@ class actState{
 	getTime = () => {
 		return this.time;
 	}
+
+	addTime = (time) => {
+		this.time += time;
+	}
 }
 
 export default class App extends React.Component {
@@ -60,11 +64,12 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('16:34','HH:mm'),
+				{time: moment('21:10','HH:mm'),
 				 condition: 'z' },
-
 		],false);
 		this.setInitialFlags();
+
+		console.log(this.actlist.length)
 	}
 
 	createStartStates = (args,badstart) => {
@@ -72,14 +77,16 @@ export default class App extends React.Component {
 
 		let action1 = [];
 
+		//this.setp = 0
 		if(badstart){
 			action1.push(
 				new actState(
-					[res.flags.fhs,{},{},{}],
+					//TODO x durch fhs ersetzen
+					[res.flags.x,{},{},{}],
 					[{
 						name: 'TestAction2',
 						actionPic: res.actions.flag_down,
-						flagPic: res.flags.fhs,
+						flagPic: res.flags.x,
 					}],
 					starttime,
 					false
@@ -104,7 +111,7 @@ export default class App extends React.Component {
 		let ac = []
 
 		args.forEach(start => {
-
+			//this.setp = 1
 			//2te aktion
 			//l ist geborgen und in einer minute ankündigungssignal + Klassenflagge
 			ac.push(new actState(
@@ -124,6 +131,7 @@ export default class App extends React.Component {
 			))
 
 			ac.push(
+				//this.setp = 2
 				//3te aktion
 				//Klassenflagge gesetzt
 				//in einer minute Vorbereitungssignal und Startmethode
@@ -144,7 +152,9 @@ export default class App extends React.Component {
 							false
 				))
 
-				ac.push(//4te aktion
+				ac.push(
+				//this.setp = 3
+				//4te aktion
 				//Condition Flagge gesetzt
 				//3 minuten bis zum 1 min signal
 				new actState(
@@ -164,7 +174,9 @@ export default class App extends React.Component {
 						false,
 				))
 
-				ac.push(//5te aktion
+				ac.push(
+				//this.setp = 4
+				//5te aktion
 				//1 minuten signal geschossen, condition flagge geborgen
 				//1 minute bis start
 				new actState(
@@ -184,8 +196,10 @@ export default class App extends React.Component {
 						false
 				))
 
+				//this.setp = 5
 				//nach dem start alle flaggen bergen und solange
 				//kein button press keine nächsten aktionen
+				//true aktiviert die buttons und der Countdown bleibt 10s sichtbar
 				ac.push(new actState(
 					[{},{},{},{}],
 					[],
@@ -193,15 +207,16 @@ export default class App extends React.Component {
 					true
 				))
 
+				//this.step = 6
+				//false deaktiviert die buttons wieder, da countdown gleich mit vorherigem countdown, ist es gleichzeitig....
 				ac.push(new actState(
 					[{},{},{},{}],
 					[],
-					moment(starttime).add(6,'m').add(10,'s'),
+					moment(starttime).add(6,'m').add(11,'s'),
 					false
 				))
 		})
 
-		console.log(ac)
 		return action1.concat(ac)
 	}
 
@@ -210,6 +225,10 @@ export default class App extends React.Component {
 	};
 
 	setBadStart = (single) => {
+
+		console.log('badstart()' + this.step);
+		console.log('badstart()' + this.actlist.length);
+		console.log('badstart()' + single);
 
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({startFinished: false})
@@ -221,7 +240,12 @@ export default class App extends React.Component {
 		//neue actions
 		let bsacts = []
 
+
+		console.log(this.actlist);
+
 		if(single){
+			console.log('single bad start');
+
 			//Einzelrückruf
 			//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
 			//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
@@ -229,7 +253,6 @@ export default class App extends React.Component {
 			bsacts.push(new actState(
 				[res.flags.x,{},{},{}],
 				[],
-				//TODO: leeres objekt, da keine zeit erforderlich, da direkter neustart
 				moment(lastStartTime).add(4,'m'),
 				false
 			))
@@ -241,33 +264,61 @@ export default class App extends React.Component {
 			this.setState({curflags: [res.flags.x,{},{},{}]});
 
 			//TODO: blinkendes ding mit schuss bild drinnen, damit klar ist dass der Schuss JETZT abgegeben werden muss.
+
+			this.actlist = this.actlist.concat(bsacts);
 		}
 
-		/*else{
-			//Komplette startwiederholung
-			//Bei einer kompletten startwiderholung wird zuerst die Regatta regelmäßig abgehalten und die erneut zu startende Klasse wird 10 minuten nach dem letzten regulären start gestartet
+		else{
+			console.log('massive bad start');
 
-			//TODO: Condition abfragen
-			let badstartList = this.createStartStates(
+			//Komplette startwiederholung
+			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
+
+			//TODO: Condition abfragen ob sie geändert werden soll
+			bsacts = this.createStartStates(
 				[
 					{time: moment(lastStartTime).add(10,'m'),
 					condition: 'z'},
 				],true
 			);
 
+			//durch das Updateflags direkt unter dem Funktionskopf wird der step auf 6/13/20... gesetzt
+			//das entspricht der letzten aktion des vorherigen starts, also des deaktivieren der rückrufbuttons
+			//der neue start wird in die liste eingeschoben
 
-		}*/
+			this.actlist.splice(this.step+2,0,...bsacts);
+		}
 
-
-
-
-		console.log(bsacts);
-		console.log(this.actlist);
-		this.actlist = this.actlist.concat(bsacts);
-		console.log(this.actlist);
-
+		//Countdown überspringen
+		this.updateFlags();
 		this.updateFlags();
 
+		console.log(this.actlist);
+
+		//[*]Alle folgenden rennen um ARG verzögern
+		//Es werden die startzeiten der nachfolgenden starts nicht automatisch nach hinten verschoben!!
+		//Daher braucht es eine Funktion die das erledigt
+		this.upddateRow(10);
+
+		console.log(this.actlist)
+
+	}
+
+	//Siehe 10 Zeilen oben [*]
+	upddateRow = (time) => {
+
+		//Slice liefert nur den gewünschten Teil des arrays zurück.
+		let altered = this.actlist.slice(this.step, this.actlist.length)
+
+		//Es muss beim constructor der actstates eine Funktion sein, die Moment-Elemente um X minuten nach hinten schiebt.
+		altered.forEach(elem=> {
+			elem.addTime(time);
+		})
+		console.log(altered);
+
+		//Einfügen der veränderten Werte
+		//splice(startINDEX, deletions in front, new elements)
+		this.actlist.splice(this.step, 7, ...altered);
 	}
 
 	componentDidMount = () => {
@@ -276,18 +327,20 @@ export default class App extends React.Component {
 	};
 
 	updateFlags = () => {
-		console.log(this.actlist.length);
 		//Auffhören mit updaten wenn liste abgearbeitet
 		if(this.step<(this.actlist.length-1)){
 			this.step++;
-			console.log(this.step);
+			console.log(this.step-1);
+			console.log(this.actlist.length);
+			console.log(this.actlist);
 			this.setState(this.actlist[this.step].getState());
 
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
 			this.setState({buttons: this.actlist[this.step].wasStart()});
 		}else{
-				console.log('switch to other screen');
+
+
 				this.setState({startFinished: true})
 		}
 	};
@@ -306,10 +359,10 @@ export default class App extends React.Component {
 					actions={this.state.curActions}
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
-						console.log('App.render.onFinished()');
+						//console.log('App.render.onFinished()');
 						if(!this.state.startFinished){
 							this.updateFlags();
-							console.log('updateflags')
+							//console.log('updateflags')
 						}
 					}}
 				/>
