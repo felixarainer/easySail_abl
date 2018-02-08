@@ -8,7 +8,7 @@
 // ?TODO?: Redux
 
 import React from 'react';
-import { StyleSheet, Text, View, Image, Button } from 'react-native';
+import { StyleSheet, Text, View, Image, Button, TouchableHighlight } from 'react-native';
 import ActionView from './components/ActionView';
 import FlagView from './components/FlagView';
 import Orientation from 'react-native-orientation-locker';
@@ -62,6 +62,7 @@ export default class App extends React.Component {
 			curFlags: {},
 			buttons: false,
 			startFinished: false,
+			picker: false,
 		};
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
 	}
@@ -69,12 +70,14 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('21:51','HH:mm'),
+				{time: moment('21:23','HH:mm'),
 				 condition: 'z' },
 		],false);
 		this.setInitialFlags();
 
 		console.log(this.actlist.length)
+
+		//
 	}
 
 	createStartStates = (args,badstart) => {
@@ -87,7 +90,7 @@ export default class App extends React.Component {
 			action1.push(
 				new actState(
 					//TODO x durch fhs ersetzen
-					[{},{},{},res.flag.x],
+					[res.flags.x,{},{},{}],
 					[{
 						name: 'TestAction2',
 						actionPic: res.actions.flag_down,
@@ -262,7 +265,6 @@ export default class App extends React.Component {
 			//Einzelrückruf
 			//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
 			//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
-
 			bsacts.push(new actState(
 				[res.flags.x,{},{},{}],
 				[],
@@ -419,63 +421,54 @@ export default class App extends React.Component {
 						/>
 					}
 					{
-						this.state.buttons &&
+						this.state.picker &&
 						<TouchableHighlight
 							onPress={() => {
 								this.setState({picker: false});
-								let acts2 = this.curFlags;
+								let acts2 = [...this.state.curFlags];
 
-								acts2[3] = res.flags.i;
-								this.setState({curFlags: acts2})
 						}}>
 				      <Image
-				        style={styles.button}
-				        source={require('./res/i.png')}
+				        source={res.flags.i.pic}
 				      />
 				    </TouchableHighlight>
 					}
 					{
-						this.state.buttons &&
+						this.state.picker &&
 						<TouchableHighlight
 							onPress={() => {
 								this.setState({picker: false});
-								let acts2 = this.curFlags;
-								acts2[3] = res.flags.z;
+
 								this.setState({curFlags: acts2})
 						}}>
 				      <Image
-				        style={styles.button}
-				        source={require('./res/z.png')}
+				        source={res.flags.i.pic}
 				      />
 				    </TouchableHighlight>
 					}
 					{
-						this.state.buttons &&
+						this.state.picker &&
 						<TouchableHighlight
 							onPress={() => {
 								this.setState({picker: false});
-								let acts2 = this.curFlags;
-								acts2[3] = res.flags.black;
+
 								this.setState({curFlags: acts2})
 						}}>
 				      <Image
-				        style={styles.button}
-				        source={require('./res/black.png')}
+				        source={res.flags.black.pic}
 				      />
 				    </TouchableHighlight>
 					}
 					{
-						this.state.buttons &&
+						this.state.picker &&
 						<TouchableHighlight
 							onPress={() => {
 								this.setState({picker: false});
-								let acts2 = this.curFlags;
-								acts2[3] = res.flags.p;
+
 								this.setState({curFlags: acts2})
 						}}>
 				      <Image
-				        style={styles.button}
-				        source={require('./res/p.png')}
+				        source={res.flags.p.pic}
 				      />
 				    </TouchableHighlight>
 					}
