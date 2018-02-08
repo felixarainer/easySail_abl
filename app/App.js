@@ -70,7 +70,7 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('21:23','HH:mm'),
+				{time: moment('22:23','HH:mm'),
 				 condition: 'z' },
 		],false);
 		this.setInitialFlags();
@@ -240,11 +240,11 @@ export default class App extends React.Component {
 		this.setState(this.actlist[0].getState());
 	};
 
-	setBadStart = (single) => {
+	setBadStart = (single,ARGcondition) => {
 
-		console.log('badstart()' + this.step);
-		console.log('badstart()' + this.actlist.length);
-		console.log('badstart()' + single);
+		console.log('setbadstart()' + this.step);
+		console.log('setbadstart()' + this.actlist.length);
+		console.log('setbadstart()' + single);
 
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({startFinished: false})
@@ -282,10 +282,11 @@ export default class App extends React.Component {
 
 			this.actlist = this.actlist.concat(bsacts);
 		}
-
-		else{
+		else
+		{
 			console.log('massive bad start');
 
+			this.setState({picker: false})
 			//Komplette startwiederholung
 			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
 
@@ -293,7 +294,7 @@ export default class App extends React.Component {
 			bsacts = this.createStartStates(
 				[
 					{time: moment(lastStartTime).add(10,'m'),
-					condition: 'z'},
+					condition: ARGcondition},
 				],true
 			);
 
@@ -342,8 +343,10 @@ export default class App extends React.Component {
 	};
 
 	updateFlags = () => {
+		console.log('updateflags()')
 		//Auffhören mit updaten wenn liste abgearbeitet
 		if(this.step<(this.actlist.length-1)){
+			this.setState({startFinished: false})
 			this.step++;
 			console.log(this.step-1);
 			console.log(this.actlist.length);
@@ -358,8 +361,7 @@ export default class App extends React.Component {
 			//Wenn ja flagpicker aktivieren
 			this.setState({picker: this.actlist[this.step].wasBadStart()});
 		}else{
-
-
+				console.log('reached end of array')
 				this.setState({startFinished: true})
 		}
 	};
@@ -392,7 +394,8 @@ export default class App extends React.Component {
 							title="Single bad Start"
 							color="#841584"
 							onPress={() => {
-								this.setBadStart(true)
+								this.setState({buttons: false});
+								this.setBadStart(true);
 							}}
 							style={{
 								position: 'absolute',
@@ -409,7 +412,8 @@ export default class App extends React.Component {
 							title="Massive Bad Start"
 							color="#841584"
 							onPress={() => {
-								this.setBadStart(false)
+								this.setState({buttons: false});
+								this.setState({picker: true});
 							}}
 							style={{
 								position: 'absolute',
@@ -424,8 +428,20 @@ export default class App extends React.Component {
 						this.state.picker &&
 						<TouchableHighlight
 							onPress={() => {
-								this.setState({picker: false});
-								let acts2 = [...this.state.curFlags];
+								this.setState({picker: false})
+								this.setBadStart(false,'i');
+						}}>
+				      <Image
+				        source={res.flags.i.pic}
+				      />
+				    </TouchableHighlight>
+					}
+					{
+						this.state.picker &&
+						<TouchableHighlight
+							onPress={() => {
+								this.setState({picker: false})
+
 
 						}}>
 				      <Image
@@ -437,22 +453,8 @@ export default class App extends React.Component {
 						this.state.picker &&
 						<TouchableHighlight
 							onPress={() => {
-								this.setState({picker: false});
+								this.setState({picker: false})
 
-								this.setState({curFlags: acts2})
-						}}>
-				      <Image
-				        source={res.flags.i.pic}
-				      />
-				    </TouchableHighlight>
-					}
-					{
-						this.state.picker &&
-						<TouchableHighlight
-							onPress={() => {
-								this.setState({picker: false});
-
-								this.setState({curFlags: acts2})
 						}}>
 				      <Image
 				        source={res.flags.black.pic}
@@ -463,9 +465,8 @@ export default class App extends React.Component {
 						this.state.picker &&
 						<TouchableHighlight
 							onPress={() => {
-								this.setState({picker: false});
+								this.setState({picker: false})
 
-								this.setState({curFlags: acts2})
 						}}>
 				      <Image
 				        source={res.flags.p.pic}
@@ -476,3 +477,5 @@ export default class App extends React.Component {
 		);
 	};
 }
+
+//this.setBadStart(false,'black');
