@@ -20,6 +20,7 @@ export default class Countdown extends Component {
 			remainingTime: 0,
 			status: COUNTDOWN_NOT_STARTED,
 			intervalId: null,
+			skipEnabled: false,
 		};
 	}
 
@@ -58,7 +59,11 @@ export default class Countdown extends Component {
 	};
 
 	calculateRemainingTime = () => {
-		return -1 * moment().diff(this.props.targetDate);
+		if (moment().diff(this.props.targetDate) < 0) {
+			return -1 * moment().diff(this.props.targetDate);
+		} else {
+			return 0;
+		}
 	};
 
 	addLeadingZero = value => {
@@ -73,11 +78,13 @@ export default class Countdown extends Component {
 			remainingTime: this.calculateRemainingTime(),
 		});
 
-		if (this.state.remainingTime <= 0) {
+		if (
+			this.state.remainingTime <= 0 &&
+			this.state.status == COUNTDOWN_STARTED
+		) {
 			this.setState({
 				status: COUNTDOWN_FINISHED,
 			});
-
 			if (this.props.onFinished) {
 				this.props.onFinished();
 			}
