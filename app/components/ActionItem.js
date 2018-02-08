@@ -9,8 +9,6 @@ import * as res from '../res/res.js';
 
 export default class ActionItem extends Component {
 	render() {
-		console.log(this.props.item.actionPic);
-		console.log(this.props.item.flagPic);
 		return (
 			<View style={styles.container}>
 				{this.props.item.flagPic === undefined ? (

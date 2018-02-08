@@ -39,6 +39,7 @@ export default class ActionView extends Component {
 	}
 
 	render() {
+		console.log('AV.render()');
 		return (
 			<View style={styles.containerAV}>
 				<View style={styles.actionContainer}>
@@ -51,6 +52,7 @@ export default class ActionView extends Component {
 					<Text style={styles.title}>remaining time:</Text>
 					<Countdown
 						targetDate={this.props.countdownEndDate.toDate()}
+						isSkippable={true}
 						onFinished={() => {
 							console.log('AV.render.onFinished()');
 							this.props.onFinished();
