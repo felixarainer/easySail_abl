@@ -5,7 +5,14 @@
 //
 
 import React, { Component } from 'react';
-import { AppRegistry, View, Text, StyleSheet, FlatList } from 'react-native';
+import {
+	AppRegistry,
+	View,
+	Text,
+	StyleSheet,
+	FlatList,
+	Image,
+} from 'react-native';
 import ActionItem from './ActionItem';
 import Countdown from './Countdown';
 import moment from 'moment';
@@ -32,6 +39,7 @@ export default class ActionView extends Component {
 	}
 
 	render() {
+		console.log('AV.render()');
 		return (
 			<View style={styles.containerAV}>
 				<View style={styles.actionContainer}>
@@ -44,6 +52,7 @@ export default class ActionView extends Component {
 					<Text style={styles.title}>remaining time:</Text>
 					<Countdown
 						targetDate={this.props.countdownEndDate.toDate()}
+						isSkippable={true}
 						onFinished={() => {
 							console.log('AV.render.onFinished()');
 							this.props.onFinished();
@@ -75,8 +84,8 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		backgroundColor: 'lightgreen',
 		alignSelf: 'stretch',
-		alignItems: 'center',
-		justifyContent: 'space-between',
+		//alignItems: 'center',
+		//justifyContent: 'space-between',
 	},
 	title: { fontSize: 30, fontWeight: 'bold' },
 	countdownText: { fontSize: 56, fontWeight: 'bold' },

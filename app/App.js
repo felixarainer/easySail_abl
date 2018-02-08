@@ -15,16 +15,16 @@ import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
 import moment from 'moment';
 
-class actState{
+class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags,actions,time,isStart){
+	constructor(flags, actions, time, isStart) {
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
 	}
 
-	getState = ()=>{
+	getState = () => {
 		return {
 			curFlags: {
 				flag1: this.flags[0],
@@ -33,21 +33,24 @@ class actState{
 				flag4: this.flags[3],
 			},
 			curActions: this.actions,
-			countdownEndDate: typeof(this.time) === 'number' ? moment().add(this.time, 'seconds') : this.time,
-		}
-	}
+			countdownEndDate:
+				typeof this.time === 'number'
+					? moment().add(this.time, 'seconds')
+					: this.time,
+		};
+	};
 
-	wasStart = () =>{
+	wasStart = () => {
 		return this.isStart;
-	}
+	};
 
 	getTime = () => {
 		return this.time;
-	}
+	};
 
-	addTime = (time) => {
+	addTime = time => {
 		this.time += time;
-	}
+	};
 }
 
 export default class App extends React.Component {
@@ -64,102 +67,114 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('21:10','HH:mm'),
-				 condition: 'z' },
-		],false);
+				{
+					time: moment().add(20, 'seconds'), //moment('16:34', 'HH:mm'), for testing purposes
+					condition: 'z',
+				},
+			],
+			false
+		);
 		this.setInitialFlags();
 
-		console.log(this.actlist.length)
+		console.log(this.actlist.length);
 	}
 
-	createStartStates = (args,badstart) => {
-		starttime = moment(args[0].time).subtract(6,'minutes');
+	createStartStates = (args, badstart) => {
+		starttime = moment(args[0].time).subtract(6, 'minutes');
 
 		let action1 = [];
 
-		//this.setp = 0
-		if(badstart){
+		if (badstart) {
 			action1.push(
 				new actState(
-					//TODO x durch fhs ersetzen
-					[res.flags.x,{},{},{}],
-					[{
-						name: 'TestAction2',
-						actionPic: res.actions.flag_down,
-						flagPic: res.flags.x,
-					}],
+					[res.flags.fhs, {}, {}, {}],
+					[
+						{
+							name: 'TestAction2',
+							actionPic: res.actions.flag_down,
+							flagPic: res.flags.fhs,
+						},
+					],
 					starttime,
 					false
 				)
-
-			)
-		}else{
+			);
+		} else {
 			action1.push(
 				//flagge l setzen und 6 min vor Start bergen
 				new actState(
-					[res.flags.l,{},{},{}],
-					[{
-						name: 'TestAction2',
-						actionPic: res.actions.flag_down,
-						flagPic: res.flags.l,
-					}],
+					[res.flags.l, {}, {}, {}],
+					[
+						{
+							name: 'TestAction2',
+							actionPic: res.actions.flag_down,
+							flagPic: res.flags.l,
+						},
+					],
 					starttime,
 					false
-			));
+				)
+			);
 		}
 
-		let ac = []
+		let ac = [];
 
 		args.forEach(start => {
-			//this.setp = 1
 			//2te aktion
 			//l ist geborgen und in einer minute ankündigungssignal + Klassenflagge
-			ac.push(new actState(
-					[{},{},{},{}],
-					[{
-						name: 'TestAction1',
-						actionPic: res.actions.signal_1,
-						flagPic: undefined,
-					},
-					{
-						name: 'TestAction2',
-						actionPic: res.actions.flag_up,
-						flagPic: res.flags.klass,
-					}],
-					moment(starttime).add(1,'m'),
+			ac.push(
+				new actState(
+					[{}, {}, {}, {}],
+					[
+						{
+							name: 'TestAction1',
+							actionPic: res.actions.signal_1,
+							flagPic: undefined,
+						},
+						{
+							name: 'TestAction2',
+							actionPic: res.actions.flag_up,
+							flagPic: res.flags.klass,
+						},
+					],
+					moment(starttime).add(1, 'm'),
 					false
-			))
+				)
+			);
 
 			ac.push(
 				//this.setp = 2
 				//3te aktion
 				//Klassenflagge gesetzt
 				//in einer minute Vorbereitungssignal und Startmethode
-					new actState(
-							[res.flags.klass,{},{},{}],
-							[{
-								name: 'TestAction1',
-								actionPic: res.actions.signal_1,
-								flagPic: undefined,
-							},
-							{
-								name: 'TestAction2',
-								actionPic: res.actions.flag_up,
-								//TODO damir fragen wegen res.flags.{start.condition}
-								flagPic: res.flags[start.condition],
-							}],
-							moment(starttime).add(2,'m'),
-							false
-				))
+				new actState(
+					[res.flags.klass, {}, {}, {}],
+					[
+						{
+							name: 'TestAction1',
+							actionPic: res.actions.signal_1,
+							flagPic: undefined,
+						},
+						{
+							name: 'TestAction2',
+							actionPic: res.actions.flag_up,
+							//TODO damir fragen wegen res.flags.{start.condition}
+							flagPic: res.flags[start.condition],
+						},
+					],
+					moment(starttime).add(2, 'm'),
+					false
+				)
+			);
 
-				ac.push(
-				//this.setp = 3
+			ac.push(
 				//4te aktion
 				//Condition Flagge gesetzt
 				//3 minuten bis zum 1 min signal
 				new actState(
-						[res.flags.klass,res.flags[start.condition],{},{}],
-						[{
+					[res.flags.klass, res.flags[start.condition], {}, {}],
+					[
+						{
 							name: 'TestAction1',
 							actionPic: res.actions.signal_1,
 							flagPic: undefined,
@@ -169,19 +184,21 @@ export default class App extends React.Component {
 							actionPic: res.actions.flag_down,
 							//TODO damir fragen wegen res.flags.{start.condition}
 							flagPic: res.flags[start.condition],
-						}],
-						moment(starttime).add(5,'m'),
-						false,
-				))
+						},
+					],
+					moment(starttime).add(5, 'm'),
+					false
+				)
+			);
 
-				ac.push(
-				//this.setp = 4
+			ac.push(
 				//5te aktion
 				//1 minuten signal geschossen, condition flagge geborgen
 				//1 minute bis start
 				new actState(
-						[res.flags.klass,{},{},{}],
-						[{
+					[res.flags.klass, {}, {}, {}],
+					[
+						{
 							name: 'TestAction1',
 							actionPic: res.actions.signal_1,
 							flagPic: undefined,
@@ -191,102 +208,103 @@ export default class App extends React.Component {
 							actionPic: res.actions.flag_down,
 							//TODO damir fragen wegen res.flags.{start.condition}
 							flagPic: res.flags.klass,
-						}],
-						moment(starttime).add(6,'m'),
-						false
-				))
-
-				//this.setp = 5
-				//nach dem start alle flaggen bergen und solange
-				//kein button press keine nächsten aktionen
-				//true aktiviert die buttons und der Countdown bleibt 10s sichtbar
-				ac.push(new actState(
-					[{},{},{},{}],
-					[],
-					moment(starttime).add(6,'m').add(10,'s'),
-					true
-				))
-
-				//this.step = 6
-				//false deaktiviert die buttons wieder, da countdown gleich mit vorherigem countdown, ist es gleichzeitig....
-				ac.push(new actState(
-					[{},{},{},{}],
-					[],
-					moment(starttime).add(6,'m').add(11,'s'),
+						},
+					],
+					moment(starttime).add(6, 'm'),
 					false
-				))
-		})
+				)
+			);
 
-		return action1.concat(ac)
-	}
+			//nach dem start alle flaggen bergen und solange
+			//kein button press keine nächsten aktionen
+			ac.push(
+				new actState(
+					[{}, {}, {}, {}],
+					[],
+					moment(starttime)
+						.add(6, 'm')
+						.add(10, 's'),
+					true
+				)
+			);
+
+			ac.push(
+				new actState(
+					[{}, {}, {}, {}],
+					[],
+					moment(starttime)
+						.add(6, 'm')
+						.add(10, 's'),
+					false
+				)
+			);
+		});
+
+		return action1.concat(ac);
+	};
 
 	setInitialFlags = () => {
 		this.setState(this.actlist[0].getState());
 	};
 
-	setBadStart = (single) => {
-
-		console.log('badstart()' + this.step);
-		console.log('badstart()' + this.actlist.length);
-		console.log('badstart()' + single);
-
+	setBadStart = single => {
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
-		this.setState({startFinished: false})
+		this.setState({ startFinished: false });
 
 		//rückrufbuttons deaktivieren
-		this.setState({buttons: false});
+		this.setState({ buttons: false });
 		//letzte startzeit
-		let lastStartTime = moment(this.actlist[this.actlist.length-1].getTime()).subtract(10,'s');
+		let lastStartTime = moment(
+			this.actlist[this.actlist.length - 1].getTime()
+		).subtract(10, 's');
 		//neue actions
-		let bsacts = []
+		let bsacts = [];
 
-
-		console.log(this.actlist);
-
-		if(single){
-			console.log('single bad start');
-
+		if (single) {
 			//Einzelrückruf
 			//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
 			//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
 
-			bsacts.push(new actState(
-				[res.flags.x,{},{},{}],
-				[],
-				moment(lastStartTime).add(4,'m'),
-				false
-			))
+			bsacts.push(
+				new actState(
+					[res.flags.x, {}, {}, {}],
+					[],
+					//TODO: leeres objekt, da keine zeit erforderlich, da direkter neustart
+					moment(lastStartTime).add(4, 'm'),
+					false
+				)
+			);
 
 			//button zur bestätigung aktivieren
-			this.setState({singleBadStart: true})
+			this.setState({ singleBadStart: true });
 
 			//TODO: möglichkeit finden flaggen sofort zu ändern
-			this.setState({curflags: [res.flags.x,{},{},{}]});
+			this.setState({ curflags: [res.flags.x, {}, {}, {}] });
 
 			//TODO: blinkendes ding mit schuss bild drinnen, damit klar ist dass der Schuss JETZT abgegeben werden muss.
 
 			this.actlist = this.actlist.concat(bsacts);
-		}
-
-		else{
+		} else {
 			console.log('massive bad start');
 
 			//Komplette startwiederholung
-			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
-
-			//TODO: Condition abfragen ob sie geändert werden soll
-			bsacts = this.createStartStates(
+			//Bei einer kompletten startwiderholung wird zuerst die Regatta regelmäßig abgehalten und die erneut zu startende Klasse wird 10 minuten nach dem letzten regulären start gestartet
+			//TODO: Condition abfragen
+			let badstartList = this.createStartStates(
 				[
-					{time: moment(lastStartTime).add(10,'m'),
-					condition: 'z'},
-				],true
+					{
+						time: moment(lastStartTime).add(10, 'm'),
+						condition: 'z',
+					},
+				],
+				true
 			);
 
 			//durch das Updateflags direkt unter dem Funktionskopf wird der step auf 6/13/20... gesetzt
 			//das entspricht der letzten aktion des vorherigen starts, also des deaktivieren der rückrufbuttons
 			//der neue start wird in die liste eingeschoben
 
-			this.actlist.splice(this.step+2,0,...bsacts);
+			this.actlist.splice(this.step + 2, 0, ...bsacts);
 		}
 
 		//Countdown überspringen
@@ -300,26 +318,24 @@ export default class App extends React.Component {
 		//Daher braucht es eine Funktion die das erledigt
 		this.upddateRow(10);
 
-		console.log(this.actlist)
-
-	}
+		console.log(this.actlist);
+	};
 
 	//Siehe 10 Zeilen oben [*]
-	upddateRow = (time) => {
-
+	upddateRow = time => {
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
-		let altered = this.actlist.slice(this.step, this.actlist.length)
+		let altered = this.actlist.slice(this.step, this.actlist.length);
 
 		//Es muss beim constructor der actstates eine Funktion sein, die Moment-Elemente um X minuten nach hinten schiebt.
-		altered.forEach(elem=> {
+		altered.forEach(elem => {
 			elem.addTime(time);
-		})
+		});
 		console.log(altered);
 
 		//Einfügen der veränderten Werte
 		//splice(startINDEX, deletions in front, new elements)
 		this.actlist.splice(this.step, 7, ...altered);
-	}
+	};
 
 	componentDidMount = () => {
 		//ggf zu lockTolandscapeLeft() aendern
@@ -328,20 +344,18 @@ export default class App extends React.Component {
 
 	updateFlags = () => {
 		//Auffhören mit updaten wenn liste abgearbeitet
-		if(this.step<(this.actlist.length-1)){
+		if (this.step < this.actlist.length - 1) {
 			this.step++;
-			console.log(this.step-1);
+			console.log(this.step - 1);
 			console.log(this.actlist.length);
 			console.log(this.actlist);
 			this.setState(this.actlist[this.step].getState());
 
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
-			this.setState({buttons: this.actlist[this.step].wasStart()});
-		}else{
-
-
-				this.setState({startFinished: true})
+			this.setState({ buttons: this.actlist[this.step].wasStart() });
+		} else {
+			this.setState({ startFinished: true });
 		}
 	};
 
@@ -360,47 +374,45 @@ export default class App extends React.Component {
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
 						//console.log('App.render.onFinished()');
-						if(!this.state.startFinished){
+						if (!this.state.startFinished) {
 							this.updateFlags();
 							//console.log('updateflags')
 						}
 					}}
 				/>
 
-				{
-						this.state.buttons &&
-						<Button
-							title="Single bad Start"
-							color="#841584"
-							onPress={() => {
-								this.setBadStart(true)
-							}}
-							style={{
-								position: 'absolute',
-								marginTop: '13.1%',
-								marginLeft: '12.3%',
-								marginRight: '25.6%',
-							}}
-							accessibilityLabel="Learn more about this purple button"
-						/>
-					}
-					{
-							this.state.buttons &&
-							<Button
-								title="Massive Bad Start"
-								color="#841584"
-								onPress={() => {
-									this.setBadStart(false)
-								}}
-								style={{
-									position: 'absolute',
-									marginTop: '13.1%',
-									marginLeft: '12.3%',
-									marginRight: '25.6%',
-								}}
-								accessibilityLabel="Learn more about this purple button"
-							/>
-						}
+				{this.state.buttons && (
+					<Button
+						title="Single bad Start"
+						color="#841584"
+						onPress={() => {
+							this.setBadStart(true);
+						}}
+						style={{
+							position: 'absolute',
+							marginTop: '13.1%',
+							marginLeft: '12.3%',
+							marginRight: '25.6%',
+						}}
+						accessibilityLabel="Learn more about this purple button"
+					/>
+				)}
+				{this.state.buttons && (
+					<Button
+						title="Massive Bad Start"
+						color="#841584"
+						onPress={() => {
+							this.setBadStart(false);
+						}}
+						style={{
+							position: 'absolute',
+							marginTop: '13.1%',
+							marginLeft: '12.3%',
+							marginRight: '25.6%',
+						}}
+						accessibilityLabel="Learn more about this purple button"
+					/>
+				)}
 			</View>
 		);
 	};

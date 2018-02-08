@@ -20,18 +20,20 @@ export default class ActionItem extends Component {
 					<View style={{ flexDirection: 'row', flex: 1 }}>
 						<Image
 							source={this.props.item.actionPic}
-							style={{ flex: 0.3, height: undefined, width: undefined }}
+							style={{
+								flex: 1,
+								height: undefined,
+								width: undefined,
+							}}
 						/>
 						<Image
-							source={this.props.item.flagPic}
-							style={
-								{
-									//flex: 1,
-									//height: undefined,
-									//width: undefined,
-									//resizeMode: 'contain',
-								}
-							}
+							source={this.props.item.flagPic.pic}
+							style={{
+								flex: 2,
+								height: undefined,
+								width: undefined,
+								resizeMode: 'contain',
+							}}
 						/>
 					</View>
 				)}
@@ -48,8 +50,8 @@ export default class ActionItem extends Component {
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: 'lightgrey', // TODO remove
-		height: '35%',
-		width: '95%',
+		height: 150,
+		marginVertical: 8,
 	},
 });
 

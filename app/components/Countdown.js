@@ -6,7 +6,7 @@
 //TODO Design: Wenn countdown fertig solle die rechte komponente blinken, damit der user weis, dass sie ncht freezed is..
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
@@ -21,12 +21,16 @@ export default class Countdown extends Component {
 			remainingTime: 0,
 			status: COUNTDOWN_NOT_STARTED,
 			intervalId: null,
+			skippable: false,
 		};
 	}
 
 	componentDidMount = () => {
+		console.log('Countdown.componentDidMount()');
 		setTimeout(() => {
+			console.log('timeout 1');
 			let timer = setInterval(() => {
+				console.log('timer 1 tick');
 				this.tick();
 			}, this.props.interval);
 
@@ -37,29 +41,42 @@ export default class Countdown extends Component {
 
 			this.tick();
 		}, this.props.startDelay);
+		console.log('timer 1 intervalId: ' + this.state.intervalId);
 	};
 
-	componentWillReceiveProps = () => {
-		setTimeout(() => {
-			let timer = setInterval(() => {
+	componentWillReceiveProps = newProps => {
+		if (moment(newProps.targetDate).diff(this.props.targetDate) !== 0) {
+			clearInterval(this.state.intervalId); //TODO not sure if needed
+			setTimeout(() => {
+				console.log('timeout 1');
+				let timer = setInterval(() => {
+					console.log('timer 2 tick');
+					this.tick();
+				}, this.props.interval);
+
+				this.setState({
+					status: COUNTDOWN_STARTED,
+					intervalId: timer,
+				});
+
 				this.tick();
-			}, this.props.interval);
-
-			this.setState({
-				status: COUNTDOWN_STARTED,
-				intervalId: timer,
-			});
-
-			this.tick();
-		}, this.props.startDelay);
+			}, this.props.startDelay);
+			console.log('fsjal timer 2 intervalId: ' + this.state.intervalId);
+		}
 	};
 
 	componentWillUnmount = () => {
+		console.log('Countdown.componentWillUnmount()');
 		clearInterval(this.state.intervalId);
 	};
 
 	calculateRemainingTime = () => {
-		return -1 * moment().diff(this.props.targetDate);
+		console.log('Countdown.calculateRemainingTime()');
+		if (moment().diff(this.props.targetDate) < 0) {
+			return -1 * moment().diff(this.props.targetDate);
+		} else {
+			return 0;
+		}
 	};
 
 	addLeadingZero = value => {
@@ -70,19 +87,35 @@ export default class Countdown extends Component {
 	};
 
 	tick = () => {
-		this.setState({
-			remainingTime: this.calculateRemainingTime(),
-		});
-
-		if (this.state.remainingTime <= 0) {
+		if (this.state.status == COUNTDOWN_STARTED) {
+			console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
 			this.setState({
-				status: COUNTDOWN_FINISHED,
+				remainingTime: this.calculateRemainingTime(),
 			});
 
-			if (this.props.onFinished) {
-				this.props.onFinished();
+			if (this.state.remainingTime <= 0) {
+				console.log('ending countdown');
+				this.endCountdown();
 			}
-			clearInterval(this.state.intervalId);
+		}
+	};
+
+	endCountdown = () => {
+		console.log('Countdown.endCountdown()');
+
+		this.setState({
+			status: COUNTDOWN_FINISHED,
+		});
+		if (this.props.onFinished) {
+			this.props.onFinished();
+		}
+		clearInterval(this.state.intervalId);
+	};
+
+	skipCountdown = () => {
+		console.log('Countdown.skipCountdown()');
+		if (this.props.isSkippable) {
+			this.endCountdown();
 		}
 	};
 
@@ -98,20 +131,26 @@ export default class Countdown extends Component {
 		);
 
 		return (
-			<Text style={this.props.style}>
-				{minutes}:{seconds}
-			</Text>
+			<TouchableHighlight
+				onPress={() => {
+					this.skipCountdown();
+				}}
+			>
+				<Text style={this.props.style}>
+					{minutes}:{seconds}
+					{this.props.isSkippable ? 'y' : 'n'}
+				</Text>
+			</TouchableHighlight>
 		);
 	};
 
 	render() {
-		//console.log('Countdown.render()');
-		if (this.state.remTime == 0) {
-			console.log('setting new state to ' + this.props.duration);
-			this.state.remTime = this.props.duration;
-			console.log('new state: remtime=' + this.state.remTime);
+		console.log('Countdown.render()');
+		if (this.state.status != COUNTDOWN_FINISHED) {
+			return <View>{this.renderRemainingTime()}</View>;
+		} else {
+			return <Text style={this.props.style}>--:--</Text>;
 		}
-		return <View>{this.renderRemainingTime()}</View>;
 	}
 }
 
