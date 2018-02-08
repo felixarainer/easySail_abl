@@ -5,7 +5,14 @@
 //
 
 import React, { Component } from 'react';
-import { AppRegistry, View, Text, StyleSheet, FlatList } from 'react-native';
+import {
+	AppRegistry,
+	View,
+	Text,
+	StyleSheet,
+	FlatList,
+	Image,
+} from 'react-native';
 import ActionItem from './ActionItem';
 import Countdown from './Countdown';
 import moment from 'moment';
@@ -75,8 +82,8 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		backgroundColor: 'lightgreen',
 		alignSelf: 'stretch',
-		alignItems: 'center',
-		justifyContent: 'space-between',
+		//alignItems: 'center',
+		//justifyContent: 'space-between',
 	},
 	title: { fontSize: 30, fontWeight: 'bold' },
 	countdownText: { fontSize: 56, fontWeight: 'bold' },

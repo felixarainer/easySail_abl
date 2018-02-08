@@ -9,6 +9,8 @@ import * as res from '../res/res.js';
 
 export default class ActionItem extends Component {
 	render() {
+		console.log(this.props.item.actionPic);
+		console.log(this.props.item.flagPic);
 		return (
 			<View style={styles.container}>
 				{this.props.item.flagPic === undefined ? (
@@ -20,18 +22,20 @@ export default class ActionItem extends Component {
 					<View style={{ flexDirection: 'row', flex: 1 }}>
 						<Image
 							source={this.props.item.actionPic}
-							style={{ flex: 0.3, height: undefined, width: undefined }}
+							style={{
+								flex: 1,
+								height: undefined,
+								width: undefined,
+							}}
 						/>
 						<Image
-							source={this.props.item.flagPic}
-							style={
-								{
-									//flex: 1,
-									//height: undefined,
-									//width: undefined,
-									//resizeMode: 'contain',
-								}
-							}
+							source={this.props.item.flagPic.pic}
+							style={{
+								flex: 2,
+								height: undefined,
+								width: undefined,
+								resizeMode: 'contain',
+							}}
 						/>
 					</View>
 				)}
