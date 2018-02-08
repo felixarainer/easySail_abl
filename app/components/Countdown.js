@@ -27,6 +27,7 @@ export default class Countdown extends Component {
 	componentDidMount = () => {
 		console.log('Countdown.componentDidMount()');
 		setTimeout(() => {
+			console.log('timeout 1');
 			let timer = setInterval(() => {
 				console.log('timer 1 tick');
 				this.tick();
@@ -42,24 +43,24 @@ export default class Countdown extends Component {
 		console.log('timer 1 intervalId: ' + this.state.intervalId);
 	};
 
-	componentWillReceiveProps = () => {
-		console.log('Countdown.componentWillReceiveProps()');
-		//if (this.state.intervalId == null) {
-		setTimeout(() => {
-			let timer = setInterval(() => {
-				console.log('timer 2 tick');
+	componentWillReceiveProps = newProps => {
+		if (moment(newProps.targetDate).diff(this.props.targetDate) !== 0) {
+			setTimeout(() => {
+				console.log('timeout 1');
+				let timer = setInterval(() => {
+					console.log('timer 2 tick');
+					this.tick();
+				}, this.props.interval);
+
+				this.setState({
+					status: COUNTDOWN_STARTED,
+					intervalId: timer,
+				});
+
 				this.tick();
-			}, this.props.interval);
-
-			this.setState({
-				status: COUNTDOWN_STARTED,
-				intervalId: timer,
-			});
-
-			this.tick();
-		}, this.props.startDelay);
-		console.log('timer 2 intervalId: ' + this.state.intervalId);
-		//}
+			}, this.props.startDelay);
+			console.log('fsjal timer 2 intervalId: ' + this.state.intervalId);
+		}
 	};
 
 	componentWillUnmount = () => {

@@ -64,7 +64,7 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment('16:34', 'HH:mm'),
+					time: moment().add(20, 'seconds'), //moment('16:34', 'HH:mm'), for testing purposes
 					condition: 'z',
 				},
 			],
@@ -233,7 +233,6 @@ export default class App extends React.Component {
 			);
 		});
 
-		console.log(ac);
 		return action1.concat(ac);
 	};
 
@@ -281,7 +280,6 @@ export default class App extends React.Component {
 		/*else{
 			//Komplette startwiederholung
 			//Bei einer kompletten startwiderholung wird zuerst die Regatta regelmäßig abgehalten und die erneut zu startende Klasse wird 10 minuten nach dem letzten regulären start gestartet
-
 			//TODO: Condition abfragen
 			let badstartList = this.createStartStates(
 				[
@@ -289,14 +287,9 @@ export default class App extends React.Component {
 					condition: 'z'},
 				],true
 			);
-
-
 		}*/
 
-		console.log(bsacts);
-		console.log(this.actlist);
 		this.actlist = this.actlist.concat(bsacts);
-		console.log(this.actlist);
 
 		this.updateFlags();
 	};
@@ -307,18 +300,16 @@ export default class App extends React.Component {
 	};
 
 	updateFlags = () => {
-		console.log(this.actlist.length);
+		console.log('fsjal App.updateFlags');
 		//Auffhören mit updaten wenn liste abgearbeitet
 		if (this.step < this.actlist.length - 1) {
 			this.step++;
-			console.log(this.step);
 			this.setState(this.actlist[this.step].getState());
 
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
 			this.setState({ buttons: this.actlist[this.step].wasStart() });
 		} else {
-			console.log('switch to other screen');
 			this.setState({ startFinished: true });
 		}
 	};
@@ -337,10 +328,8 @@ export default class App extends React.Component {
 					actions={this.state.curActions}
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
-						console.log('App.render.onFinished()');
 						if (!this.state.startFinished) {
 							this.updateFlags();
-							console.log('updateflags');
 						}
 					}}
 				/>
