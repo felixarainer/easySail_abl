@@ -17,11 +17,12 @@ import moment from 'moment';
 
 class actState{
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags,actions,time,isStart){
+	constructor(flags,actions,time,isStart,isBadStart){
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
+		this.isBadStart = isBadStart;
 	}
 
 	getState = ()=>{
@@ -39,6 +40,10 @@ class actState{
 
 	wasStart = () =>{
 		return this.isStart;
+	}
+
+	wasBadStart = () => {
+		return this.isBadStart;
 	}
 
 	getTime = () => {
@@ -64,7 +69,7 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('21:28','HH:mm'),
+				{time: moment('21:51','HH:mm'),
 				 condition: 'z' },
 		],false);
 		this.setInitialFlags();
@@ -82,14 +87,15 @@ export default class App extends React.Component {
 			action1.push(
 				new actState(
 					//TODO x durch fhs ersetzen
-					[res.flags.x,{},{},{}],
+					[{},{},{},res.flag.x],
 					[{
 						name: 'TestAction2',
 						actionPic: res.actions.flag_down,
 						flagPic: res.flags.x,
 					}],
 					starttime,
-					false
+					false,
+					true
 				)
 
 			)
@@ -104,6 +110,7 @@ export default class App extends React.Component {
 						flagPic: res.flags.l,
 					}],
 					starttime,
+					false,
 					false
 			));
 		}
@@ -127,6 +134,7 @@ export default class App extends React.Component {
 						flagPic: res.flags.klass,
 					}],
 					moment(starttime).add(1,'m'),
+					false,
 					false
 			))
 
@@ -149,6 +157,7 @@ export default class App extends React.Component {
 								flagPic: res.flags[start.condition],
 							}],
 							moment(starttime).add(2,'m'),
+							false,
 							false
 				))
 
@@ -172,6 +181,7 @@ export default class App extends React.Component {
 						}],
 						moment(starttime).add(5,'m'),
 						false,
+						false
 				))
 
 				ac.push(
@@ -193,6 +203,7 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						}],
 						moment(starttime).add(6,'m'),
+						false,
 						false
 				))
 
@@ -204,7 +215,8 @@ export default class App extends React.Component {
 					[{},{},{},{}],
 					[],
 					moment(starttime).add(6,'m').add(10,'s'),
-					true
+					true,
+					false
 				))
 
 				//this.step = 6
@@ -213,7 +225,8 @@ export default class App extends React.Component {
 					[{},{},{},{}],
 					[],
 					moment(starttime).add(6,'m').add(11,'s'),
-					true
+					false,
+					false
 				))
 		})
 
@@ -338,6 +351,10 @@ export default class App extends React.Component {
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
 			this.setState({buttons: this.actlist[this.step].wasStart()});
+
+			//ist das gerade ein allgemeiner neustart?
+			//Wenn ja flagpicker aktivieren
+			this.setState({picker: this.actlist[this.step].wasBadStart()});
 		}else{
 
 
@@ -385,22 +402,83 @@ export default class App extends React.Component {
 						/>
 					}
 					{
-							this.state.buttons &&
-							<Button
-								title="Massive Bad Start"
-								color="#841584"
-								onPress={() => {
-									this.setBadStart(false)
-								}}
-								style={{
-									position: 'absolute',
-									marginTop: '13.1%',
-									marginLeft: '12.3%',
-									marginRight: '25.6%',
-								}}
-								accessibilityLabel="Learn more about this purple button"
-							/>
-						}
+						this.state.buttons &&
+						<Button
+							title="Massive Bad Start"
+							color="#841584"
+							onPress={() => {
+								this.setBadStart(false)
+							}}
+							style={{
+								position: 'absolute',
+								marginTop: '13.1%',
+								marginLeft: '12.3%',
+								marginRight: '25.6%',
+							}}
+							accessibilityLabel="Learn more about this purple button"
+						/>
+					}
+					{
+						this.state.buttons &&
+						<TouchableHighlight
+							onPress={() => {
+								this.setState({picker: false});
+								let acts2 = this.curFlags;
+
+								acts2[3] = res.flags.i;
+								this.setState({curFlags: acts2})
+						}}>
+				      <Image
+				        style={styles.button}
+				        source={require('./res/i.png')}
+				      />
+				    </TouchableHighlight>
+					}
+					{
+						this.state.buttons &&
+						<TouchableHighlight
+							onPress={() => {
+								this.setState({picker: false});
+								let acts2 = this.curFlags;
+								acts2[3] = res.flags.z;
+								this.setState({curFlags: acts2})
+						}}>
+				      <Image
+				        style={styles.button}
+				        source={require('./res/z.png')}
+				      />
+				    </TouchableHighlight>
+					}
+					{
+						this.state.buttons &&
+						<TouchableHighlight
+							onPress={() => {
+								this.setState({picker: false});
+								let acts2 = this.curFlags;
+								acts2[3] = res.flags.black;
+								this.setState({curFlags: acts2})
+						}}>
+				      <Image
+				        style={styles.button}
+				        source={require('./res/black.png')}
+				      />
+				    </TouchableHighlight>
+					}
+					{
+						this.state.buttons &&
+						<TouchableHighlight
+							onPress={() => {
+								this.setState({picker: false});
+								let acts2 = this.curFlags;
+								acts2[3] = res.flags.p;
+								this.setState({curFlags: acts2})
+						}}>
+				      <Image
+				        style={styles.button}
+				        source={require('./res/p.png')}
+				      />
+				    </TouchableHighlight>
+					}
 			</View>
 		);
 	};
