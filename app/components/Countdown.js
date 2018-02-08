@@ -45,6 +45,7 @@ export default class Countdown extends Component {
 
 	componentWillReceiveProps = newProps => {
 		if (moment(newProps.targetDate).diff(this.props.targetDate) !== 0) {
+			clearInterval(this.state.intervalId); //TODO not sure if needed
 			setTimeout(() => {
 				console.log('timeout 1');
 				let timer = setInterval(() => {
