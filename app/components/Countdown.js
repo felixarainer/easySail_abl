@@ -26,11 +26,8 @@ export default class Countdown extends Component {
 	}
 
 	componentDidMount = () => {
-		console.log('Countdown.componentDidMount()');
 		setTimeout(() => {
-			console.log('timeout 1');
 			let timer = setInterval(() => {
-				console.log('timer 1 tick');
 				this.tick();
 			}, this.props.interval);
 
@@ -41,27 +38,25 @@ export default class Countdown extends Component {
 
 			this.tick();
 		}, this.props.startDelay);
-		console.log('timer 1 intervalId: ' + this.state.intervalId);
 	};
 
 	componentWillReceiveProps = newProps => {
 		if (moment(newProps.targetDate).diff(this.props.targetDate) !== 0) {
 			clearInterval(this.state.intervalId); //TODO not sure if needed
-			setTimeout(() => {
-				console.log('timeout 1');
-				let timer = setInterval(() => {
-					console.log('timer 2 tick');
+			if (!this.props.isIndefinite) {
+				setTimeout(() => {
+					let timer = setInterval(() => {
+						this.tick();
+					}, this.props.interval);
+
+					this.setState({
+						status: COUNTDOWN_STARTED,
+						intervalId: timer,
+					});
+
 					this.tick();
-				}, this.props.interval);
-
-				this.setState({
-					status: COUNTDOWN_STARTED,
-					intervalId: timer,
-				});
-
-				this.tick();
-			}, this.props.startDelay);
-			console.log('fsjal timer 2 intervalId: ' + this.state.intervalId);
+				}, this.props.startDelay);
+			}
 		}
 	};
 
@@ -149,7 +144,9 @@ export default class Countdown extends Component {
 				{this.state.status != COUNTDOWN_FINISHED ? (
 					<View>{this.renderRemainingTime()}</View>
 				) : (
-					<Text style={this.props.style}>--:--</Text>
+					<Text style={this.props.style}>
+						--:--{this.props.isSkippable ? 'y' : 'n'}
+					</Text>
 				)}
 			</TouchableHighlight>
 		);
@@ -157,15 +154,19 @@ export default class Countdown extends Component {
 }
 
 Countdown.propTypes = {
-	targetDate: PropTypes.instanceOf(Date).isRequired,
+	targetDate: PropTypes.instanceOf(Date), //.isRequired,
 	interval: PropTypes.number,
 	startDelay: PropTypes.number,
 	onFinished: PropTypes.func,
 	style: Text.propTypes.style,
+	isSkippable: PropTypes.bool,
+	isIndefinite: PropTypes.bool,
 };
 
 Countdown.defaultProps = {
 	interval: 1000,
 	startDelay: 0,
 	style: { fontSize: 56, fontWeight: 'bold' },
+	isSkippable: false,
+	isIndefinite: false,
 };
