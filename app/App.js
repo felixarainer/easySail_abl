@@ -8,7 +8,14 @@
 // ?TODO?: Redux
 
 import React from 'react';
-import { StyleSheet, Text, View, Image, Button, TouchableHighlight } from 'react-native';
+import {
+	StyleSheet,
+	Text,
+	View,
+	Image,
+	Button,
+	TouchableHighlight,
+} from 'react-native';
 import ActionView from './components/ActionView';
 import FlagView from './components/FlagView';
 import Orientation from 'react-native-orientation-locker';
@@ -17,7 +24,7 @@ import moment from 'moment';
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags,actions,time,isStart){
+	constructor(flags, actions, time, isStart) {
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
@@ -48,9 +55,9 @@ class actState {
 		return this.time;
 	};
 
-	addTime = (time) => {
-		this.time = moment(this.time).add(time,'m');
-	}
+	addTime = time => {
+		this.time = moment(this.time).add(time, 'm');
+	};
 }
 
 export default class App extends React.Component {
@@ -68,9 +75,13 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('11:25','HH:mm'),
-				 condition: 'z' },
-		],false);
+				{
+					time: moment().add(1, 'minutes'),
+					condition: 'z',
+				},
+			],
+			false
+		);
 		this.setInitialFlags();
 	}
 
@@ -83,12 +94,14 @@ export default class App extends React.Component {
 			action1.push(
 				new actState(
 					//TODO x durch fhs ersetzen
-					[res.flags.x,{},{},{}],
-					[{
-						name: 'TestAction2',
-						actionPic: res.actions.flag_down,
-						flagPic: res.flags.x,
-					}],
+					[res.flags.x, {}, {}, {}],
+					[
+						{
+							name: 'TestAction2',
+							actionPic: res.actions.flag_down,
+							flagPic: res.flags.x,
+						},
+					],
 					starttime,
 					false
 				)
@@ -116,19 +129,22 @@ export default class App extends React.Component {
 		args.forEach(start => {
 			//2te aktion
 			//l ist geborgen und in einer minute ankündigungssignal + Klassenflagge
-			ac.push(new actState(
-					[{},{},{},{}],
-					[{
-						name: 'TestAction1',
-						actionPic: res.actions.signal_1,
-						flagPic: undefined,
-					},
-					{
-						name: 'TestAction2',
-						actionPic: res.actions.flag_up,
-						flagPic: res.flags.klass,
-					}],
-					moment(starttime).add(1,'m'),
+			ac.push(
+				new actState(
+					[{}, {}, {}, {}],
+					[
+						{
+							name: 'TestAction1',
+							actionPic: res.actions.signal_1,
+							flagPic: undefined,
+						},
+						{
+							name: 'TestAction2',
+							actionPic: res.actions.flag_up,
+							flagPic: res.flags.klass,
+						},
+					],
+					moment(starttime).add(1, 'm'),
 					false
 				)
 			);
@@ -138,22 +154,25 @@ export default class App extends React.Component {
 				//3te aktion
 				//Klassenflagge gesetzt
 				//in einer minute Vorbereitungssignal und Startmethode
-					new actState(
-							[res.flags.klass,{},{},{}],
-							[{
-								name: 'TestAction1',
-								actionPic: res.actions.signal_1,
-								flagPic: undefined,
-							},
-							{
-								name: 'TestAction2',
-								actionPic: res.actions.flag_up,
-								//TODO damir fragen wegen res.flags.{start.condition}
-								flagPic: res.flags[start.condition],
-							}],
-							moment(starttime).add(2,'m'),
-							false
-				))
+				new actState(
+					[res.flags.klass, {}, {}, {}],
+					[
+						{
+							name: 'TestAction1',
+							actionPic: res.actions.signal_1,
+							flagPic: undefined,
+						},
+						{
+							name: 'TestAction2',
+							actionPic: res.actions.flag_up,
+							//TODO damir fragen wegen res.flags.{start.condition}
+							flagPic: res.flags[start.condition],
+						},
+					],
+					moment(starttime).add(2, 'm'),
+					false
+				)
+			);
 
 			ac.push(
 				//4te aktion
@@ -171,10 +190,12 @@ export default class App extends React.Component {
 							name: 'TestAction2',
 							actionPic: res.actions.flag_down,
 							flagPic: res.flags[start.condition],
-						}],
-						moment(starttime).add(5,'m'),
-						false
-				))
+						},
+					],
+					moment(starttime).add(5, 'm'),
+					false
+				)
+			);
 
 			ac.push(
 				//5te aktion
@@ -192,10 +213,12 @@ export default class App extends React.Component {
 							name: 'TestAction2',
 							actionPic: res.actions.flag_down,
 							flagPic: res.flags.klass,
-						}],
-						moment(starttime).add(6,'m'),
-						false
-				))
+						},
+					],
+					moment(starttime).add(6, 'm'),
+					false
+				)
+			);
 
 			//nach dem start alle flaggen bergen und solange
 			//kein button press keine nächsten aktionen
@@ -203,15 +226,20 @@ export default class App extends React.Component {
 				new actState(
 					[{}, {}, {}, {}],
 					[],
-					moment(starttime).add(6,'m').add(10,'s'),
+					moment(starttime)
+						.add(6, 'm')
+						.add(10, 's'),
 					true
-				))
+				)
+			);
 
 			ac.push(
 				new actState(
 					[{}, {}, {}, {}],
 					[],
-					moment(starttime).add(6,'m').add(11,'s'),
+					moment(starttime)
+						.add(6, 'm')
+						.add(11, 's'),
 					false
 				)
 			);
@@ -224,7 +252,7 @@ export default class App extends React.Component {
 		this.setState(this.actlist[0].getState());
 	};
 
-	setBadStart = (single,ARGcondition) => {
+	setBadStart = (single, ARGcondition) => {
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
 		//rückrufbuttons deaktivieren
@@ -237,31 +265,31 @@ export default class App extends React.Component {
 		let bsacts = [];
 
 		if (single) {
-			console.log('single bad start')
+			console.log('single bad start');
 			//Einzelrückruf
 			//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
 			//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
-			bsacts.push(new actState(
-				[res.flags.x,{},{},{}],
-				[],
-				moment(lastStartTime).add(4,'m'),
-				false
-			))
+			bsacts.push(
+				new actState(
+					[res.flags.x, {}, {}, {}],
+					[],
+					moment(lastStartTime).add(4, 'm'),
+					false
+				)
+			);
 
 			//button zur bestätigung aktivieren
 			this.setState({ singleBadStart: true });
 
-			this.setState({curflags: [res.flags.x,{},{},{}]});
+			this.setState({ curflags: [res.flags.x, {}, {}, {}] });
 
 			//TODO: blinkendes ding mit schuss bild drinnen, damit klar ist dass der Schuss JETZT abgegeben werden muss.
 
 			this.actlist = this.actlist.concat(bsacts);
-		}
-		else
-		{
+		} else {
 			console.log('massive bad start');
 
-			this.setState({badStartPicker: false})
+			this.setState({ badStartPicker: false });
 
 			//[*]Alle folgenden rennen um ARG verzögern
 			//Es werden die startzeiten der nachfolgenden starts nicht automatisch nach hinten verschoben!!
@@ -273,9 +301,12 @@ export default class App extends React.Component {
 			bsacts = this.createStartStates(
 				[
 					//TODO MOMENT VERKACKT FELIX FRAGEN
-					{time: moment(lastStartTime).add(10,'m'),
-					condition: ARGcondition},
-				],true
+					{
+						time: moment(lastStartTime).add(10, 'm'),
+						condition: ARGcondition,
+					},
+				],
+				true
 			);
 
 			//durch das Updateflags direkt unter dem Funktionskopf wird der step auf 6/13/20... gesetzt
@@ -287,14 +318,14 @@ export default class App extends React.Component {
 		//Countdown überspringen
 		this.updateFlags();
 		this.updateFlags();
-}
+	};
 
 	//Siehe 10 Zeilen oben [*]
 	upddateRow = time => {
-		console.log('updateRow()')
+		console.log('updateRow()');
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
 		//+2 weil im Moment des Funktionsaufrufs der stepcounter bei 5 ist
-		let altered = this.actlist.slice(this.step+2, this.actlist.length)
+		let altered = this.actlist.slice(this.step + 2, this.actlist.length);
 
 		//Es muss beim constructor der actstates eine Funktion sein, die Moment-Elemente um X minuten nach hinten schiebt.
 		altered.forEach(elem => {
@@ -304,8 +335,8 @@ export default class App extends React.Component {
 
 		//Einfügen der veränderten Werte
 		//splice(startINDEX, deletions in front, new elements)
-		this.actlist.splice(this.step+2, 7, ...altered);
-	}
+		this.actlist.splice(this.step + 2, 7, ...altered);
+	};
 
 	componentDidMount = () => {
 		//ggf zu lockTolandscapeLeft() aendern
@@ -313,10 +344,10 @@ export default class App extends React.Component {
 	};
 
 	updateFlags = () => {
-		console.log('updateflags()')
+		console.log('updateflags()');
 		//Auffhören mit updaten wenn liste abgearbeitet
-		if(this.step<(this.actlist.length-1)){
-			this.setState({startFinished: false})
+		if (this.step < this.actlist.length - 1) {
+			this.setState({ startFinished: false });
 			this.step++;
 			console.log(this.step - 1);
 			console.log(this.actlist.length);
@@ -325,10 +356,10 @@ export default class App extends React.Component {
 
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
-			this.setState({badStartBtns: this.actlist[this.step].wasStart()});
-		}else{
-				console.log('updateflags(): reached end of array')
-				this.setState({startFinished: true})
+			this.setState({ badStartBtns: this.actlist[this.step].wasStart() });
+		} else {
+			console.log('updateflags(): reached end of array');
+			this.setState({ startFinished: true });
 		}
 	};
 
@@ -354,90 +385,80 @@ export default class App extends React.Component {
 					}}
 				/>
 
-				{
-						this.state.badStartBtns &&
-						<Button
-							title="Single bad Start"
-							color="#841584"
-							onPress={() => {
-								this.setState({badStartBtns: false});
-								this.setBadStart(true);
-							}}
-							style={{
-								position: 'absolute',
-								marginTop: '13.1%',
-								marginLeft: '12.3%',
-								marginRight: '25.6%',
-							}}
-							accessibilityLabel="Learn more about this purple button"
-						/>
-					}
-					{
-						this.state.badStartBtns &&
-						<Button
-							title="Massive Bad Start"
-							color="#841584"
-							onPress={() => {
-								this.setState({badStartBtns: false});
-								this.setState({badStartPicker: true});
-							}}
-							style={{
-								position: 'absolute',
-								marginTop: '13.1%',
-								marginLeft: '12.3%',
-								marginRight: '25.6%',
-							}}
-							accessibilityLabel="Learn more about this purple button"
-						/>
-					}
-					{
-						this.state.badStartPicker &&
-						<TouchableHighlight
-							onPress={() => {
-								this.setState({badStartPicker: false})
-								this.setBadStart(false,'i');
-						}}>
-				      <Image
-				        source={res.flags.i.pic}
-				      />
-				    </TouchableHighlight>
-					}
-					{
-						this.state.badStartPicker &&
-						<TouchableHighlight
-							onPress={() => {
-								this.setState({badStartPicker: false})
-								this.setBadStart(false,'z');
-						}}>
-				      <Image
-				        source={res.flags.z.pic}
-				      />
-				    </TouchableHighlight>
-					}
-					{
-						this.state.badStartPicker &&
-						<TouchableHighlight
-							onPress={() => {
-								this.setState({badStartPicker: false})
-								this.setBadStart(false,'black');
-						}}>
-				      <Image
-				        source={res.flags.black.pic}
-				      />
-				    </TouchableHighlight>
-					}
-					{
-						this.state.badStartPicker &&
-						<TouchableHighlight
-							onPress={() => {
-								this.setState({badStartPicker: false})
-								this.setBadStart(false,'p');
-						}}>
-				      <Image
-				        source={res.flags.p.pic}
-				      />
-				    </TouchableHighlight>
-					}
+				{this.state.badStartBtns && (
+					<Button
+						title="Single bad Start"
+						color="#841584"
+						onPress={() => {
+							this.setState({ badStartBtns: false });
+							this.setBadStart(true);
+						}}
+						style={{
+							position: 'absolute',
+							marginTop: '13.1%',
+							marginLeft: '12.3%',
+							marginRight: '25.6%',
+						}}
+						accessibilityLabel="Learn more about this purple button"
+					/>
+				)}
+				{this.state.badStartBtns && (
+					<Button
+						title="Massive Bad Start"
+						color="#841584"
+						onPress={() => {
+							this.setState({ badStartBtns: false });
+							this.setState({ badStartPicker: true });
+						}}
+						style={{
+							position: 'absolute',
+							marginTop: '13.1%',
+							marginLeft: '12.3%',
+							marginRight: '25.6%',
+						}}
+						accessibilityLabel="Learn more about this purple button"
+					/>
+				)}
+				{this.state.badStartPicker && (
+					<TouchableHighlight
+						onPress={() => {
+							this.setState({ badStartPicker: false });
+							this.setBadStart(false, 'i');
+						}}
+					>
+						<Image source={res.flags.i.pic} />
+					</TouchableHighlight>
+				)}
+				{this.state.badStartPicker && (
+					<TouchableHighlight
+						onPress={() => {
+							this.setState({ badStartPicker: false });
+							this.setBadStart(false, 'z');
+						}}
+					>
+						<Image source={res.flags.z.pic} />
+					</TouchableHighlight>
+				)}
+				{this.state.badStartPicker && (
+					<TouchableHighlight
+						onPress={() => {
+							this.setState({ badStartPicker: false });
+							this.setBadStart(false, 'black');
+						}}
+					>
+						<Image source={res.flags.black.pic} />
+					</TouchableHighlight>
+				)}
+				{this.state.badStartPicker && (
+					<TouchableHighlight
+						onPress={() => {
+							this.setState({ badStartPicker: false });
+							this.setBadStart(false, 'p');
+						}}
+					>
+						<Image source={res.flags.p.pic} />
+					</TouchableHighlight>
+				)}
 			</View>
 		);
 	};

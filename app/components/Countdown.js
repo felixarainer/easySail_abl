@@ -131,26 +131,28 @@ export default class Countdown extends Component {
 		);
 
 		return (
-			<TouchableHighlight
-				onPress={() => {
-					this.skipCountdown();
-				}}
-			>
-				<Text style={this.props.style}>
-					{minutes}:{seconds}
-					{this.props.isSkippable ? 'y' : 'n'}
-				</Text>
-			</TouchableHighlight>
+			<Text style={this.props.style}>
+				{minutes}:{seconds}
+				{this.props.isSkippable ? 'y' : 'n'}
+			</Text>
 		);
 	};
 
 	render() {
 		console.log('Countdown.render()');
-		if (this.state.status != COUNTDOWN_FINISHED) {
-			return <View>{this.renderRemainingTime()}</View>;
-		} else {
-			return <Text style={this.props.style}>--:--</Text>;
-		}
+		return (
+			<TouchableHighlight
+				onPress={() => {
+					this.skipCountdown();
+				}}
+			>
+				{this.state.status != COUNTDOWN_FINISHED ? (
+					<View>{this.renderRemainingTime()}</View>
+				) : (
+					<Text style={this.props.style}>--:--</Text>
+				)}
+			</TouchableHighlight>
+		);
 	}
 }
 
