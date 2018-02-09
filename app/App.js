@@ -58,9 +58,9 @@ export default class App extends React.Component {
 		super();
 		this.state = {
 			curFlags: {},
-			buttons: false,
+			badStartBtns: false,
 			startFinished: false,
-			picker: false,
+			badStartPicker: false,
 		};
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
 	}
@@ -68,7 +68,7 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('11:23','HH:mm'),
+				{time: moment('11:25','HH:mm'),
 				 condition: 'z' },
 		],false);
 		this.setInitialFlags();
@@ -228,7 +228,7 @@ export default class App extends React.Component {
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
 		//rückrufbuttons deaktivieren
-		this.setState({ buttons: false });
+		this.setState({ badStartBtns: false });
 		//letzte startzeit
 		let lastStartTime = moment(
 			this.actlist[this.actlist.length - 1].getTime()
@@ -261,7 +261,7 @@ export default class App extends React.Component {
 		{
 			console.log('massive bad start');
 
-			this.setState({picker: false})
+			this.setState({badStartPicker: false})
 
 			//[*]Alle folgenden rennen um ARG verzögern
 			//Es werden die startzeiten der nachfolgenden starts nicht automatisch nach hinten verschoben!!
@@ -325,7 +325,7 @@ export default class App extends React.Component {
 
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
-			this.setState({buttons: this.actlist[this.step].wasStart()});
+			this.setState({badStartBtns: this.actlist[this.step].wasStart()});
 		}else{
 				console.log('updateflags(): reached end of array')
 				this.setState({startFinished: true})
@@ -355,12 +355,12 @@ export default class App extends React.Component {
 				/>
 
 				{
-						this.state.buttons &&
+						this.state.badStartBtns &&
 						<Button
 							title="Single bad Start"
 							color="#841584"
 							onPress={() => {
-								this.setState({buttons: false});
+								this.setState({badStartBtns: false});
 								this.setBadStart(true);
 							}}
 							style={{
@@ -373,13 +373,13 @@ export default class App extends React.Component {
 						/>
 					}
 					{
-						this.state.buttons &&
+						this.state.badStartBtns &&
 						<Button
 							title="Massive Bad Start"
 							color="#841584"
 							onPress={() => {
-								this.setState({buttons: false});
-								this.setState({picker: true});
+								this.setState({badStartBtns: false});
+								this.setState({badStartPicker: true});
 							}}
 							style={{
 								position: 'absolute',
@@ -391,10 +391,10 @@ export default class App extends React.Component {
 						/>
 					}
 					{
-						this.state.picker &&
+						this.state.badStartPicker &&
 						<TouchableHighlight
 							onPress={() => {
-								this.setState({picker: false})
+								this.setState({badStartPicker: false})
 								this.setBadStart(false,'i');
 						}}>
 				      <Image
@@ -403,22 +403,22 @@ export default class App extends React.Component {
 				    </TouchableHighlight>
 					}
 					{
-						this.state.picker &&
+						this.state.badStartPicker &&
 						<TouchableHighlight
 							onPress={() => {
-								this.setState({picker: false})
-								this.setBadStart(false,'i');
+								this.setState({badStartPicker: false})
+								this.setBadStart(false,'z');
 						}}>
 				      <Image
-				        source={res.flags.i.pic}
+				        source={res.flags.z.pic}
 				      />
 				    </TouchableHighlight>
 					}
 					{
-						this.state.picker &&
+						this.state.badStartPicker &&
 						<TouchableHighlight
 							onPress={() => {
-								this.setState({picker: false})
+								this.setState({badStartPicker: false})
 								this.setBadStart(false,'black');
 						}}>
 				      <Image
@@ -427,10 +427,10 @@ export default class App extends React.Component {
 				    </TouchableHighlight>
 					}
 					{
-						this.state.picker &&
+						this.state.badStartPicker &&
 						<TouchableHighlight
 							onPress={() => {
-								this.setState({picker: false})
+								this.setState({badStartPicker: false})
 								this.setBadStart(false,'p');
 						}}>
 				      <Image
