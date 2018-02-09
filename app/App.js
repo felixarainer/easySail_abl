@@ -405,6 +405,28 @@ export default class App extends React.Component {
 							<FlagItem flag={this.state.curFlags.flag3} />
 							<FlagItem flag={this.state.curFlags.flag4} />
 						</View>
+						{this.state.badStartBtns && (
+							<View style={{ flexDirection: 'row', backgroundColor: 'red' }}>
+								<Button
+									title="Single bad Start"
+									color="#841584"
+									onPress={() => {
+										this.setState({ badStartBtns: false });
+										this.setBadStart(true);
+									}}
+									accessibilityLabel="Learn more about this purple button"
+								/>
+								<Button
+									title="Massive Bad Start"
+									color="#841520"
+									onPress={() => {
+										this.setState({ badStartBtns: false });
+										this.setState({ badStartPicker: true });
+									}}
+									accessibilityLabel="Learn more about this purple button"
+								/>
+							</View>
+						)}
 					</Image>
 				</View>
 
@@ -412,47 +434,12 @@ export default class App extends React.Component {
 					actions={this.state.curActions}
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
-						//console.log('App.render.onFinished()');
 						if (!this.state.startFinished) {
 							this.updateFlags();
-							//console.log('updateflags')
 						}
 					}}
 				/>
-				{this.state.badStartBtns && (
-					<Button
-						title="Single bad Start"
-						color="#841584"
-						onPress={() => {
-							this.setState({ badStartBtns: false });
-							this.setBadStart(true);
-						}}
-						style={{
-							position: 'absolute',
-							marginTop: '13.1%',
-							marginLeft: '12.3%',
-							marginRight: '25.6%',
-						}}
-						accessibilityLabel="Learn more about this purple button"
-					/>
-				)}
-				{this.state.badStartBtns && (
-					<Button
-						title="Massive Bad Start"
-						color="#841584"
-						onPress={() => {
-							this.setState({ badStartBtns: false });
-							this.setState({ badStartPicker: true });
-						}}
-						style={{
-							position: 'absolute',
-							marginTop: '13.1%',
-							marginLeft: '12.3%',
-							marginRight: '25.6%',
-						}}
-						accessibilityLabel="Learn more about this purple button"
-					/>
-				)}
+
 				{this.state.badStartPicker && (
 					<TouchableHighlight
 						onPress={() => {
