@@ -66,9 +66,9 @@ export default class App extends React.Component {
 		super();
 		this.state = {
 			curFlags: {},
-			badStartBtns: false,
+			viewBadStartBtns: false,
 			startFinished: false,
-			badStartPicker: false,
+			viewStartPicker: false,
 		};
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
 	}
@@ -257,7 +257,7 @@ export default class App extends React.Component {
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
 		//rückrufbuttons deaktivieren
-		this.setState({ badStartBtns: false });
+		this.setState({ viewBadStartBtns: false });
 		//letzte startzeit
 		let lastStartTime = moment(
 			this.actlist[this.actlist.length - 1].getTime()
@@ -290,7 +290,7 @@ export default class App extends React.Component {
 		} else {
 			console.log('massive bad start');
 
-			this.setState({ badStartPicker: false });
+			this.setState({ viewStartPicker: false });
 
 			//[*]Alle folgenden rennen um ARG verzögern
 			//Es werden die startzeiten der nachfolgenden starts nicht automatisch nach hinten verschoben!!
@@ -357,11 +357,75 @@ export default class App extends React.Component {
 
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
-			this.setState({ badStartBtns: this.actlist[this.step].wasStart() });
+			this.setState({ viewBadStartBtns: this.actlist[this.step].wasStart() });
 		} else {
 			console.log('updateflags(): reached end of array');
 			this.setState({ startFinished: true });
 		}
+	};
+
+	renderStartPicker = () => {
+		return (
+			<View>
+				<TouchableHighlight
+					onPress={() => {
+						this.setState({ viewStartPicker: false });
+						this.setBadStart(false, 'i');
+					}}
+				>
+					<Image source={res.flags.i.pic} />
+				</TouchableHighlight>
+				<TouchableHighlight
+					onPress={() => {
+						this.setState({ viewStartPicker: false });
+						this.setBadStart(false, 'z');
+					}}
+				>
+					<Image source={res.flags.z.pic} />
+				</TouchableHighlight>
+				<TouchableHighlight
+					onPress={() => {
+						this.setState({ viewStartPicker: false });
+						this.setBadStart(false, 'black');
+					}}
+				>
+					<Image source={res.flags.black.pic} />
+				</TouchableHighlight>
+				<TouchableHighlight
+					onPress={() => {
+						this.setState({ viewStartPicker: false });
+						this.setBadStart(false, 'p');
+					}}
+				>
+					<Image source={res.flags.p.pic} />
+				</TouchableHighlight>
+			</View>
+		);
+	};
+
+	renderBadStartBtns = () => {
+		return (
+			<View style={{ flexDirection: 'row', backgroundColor: 'red' }}>
+				<Button
+					title="Single bad Start"
+					color="#841584"
+					onPress={() => {
+						this.setState({ viewBadStartBtns: false });
+						this.setBadStart(true);
+					}}
+					accessibilityLabel="Learn more about this purple button"
+				/>
+				<Button
+					title="Massive Bad Start"
+					color="#841520"
+					onPress={() => {
+						this.setState({ viewBadStartBtns: false });
+						this.setState({ viewStartPicker: true });
+					}}
+					accessibilityLabel="Learn more about this purple button"
+				/>
+			</View>
+		);
 	};
 
 	render = () => {
@@ -405,6 +469,7 @@ export default class App extends React.Component {
 							<FlagItem flag={this.state.curFlags.flag3} />
 							<FlagItem flag={this.state.curFlags.flag4} />
 						</View>
+						{this.state.viewBadStartBtns && this.renderBadStartBtns()}
 					</Image>
 				</View>
 
@@ -412,87 +477,12 @@ export default class App extends React.Component {
 					actions={this.state.curActions}
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
-						//console.log('App.render.onFinished()');
 						if (!this.state.startFinished) {
 							this.updateFlags();
-							//console.log('updateflags')
 						}
 					}}
 				/>
-				{this.state.badStartBtns && (
-					<Button
-						title="Single bad Start"
-						color="#841584"
-						onPress={() => {
-							this.setState({ badStartBtns: false });
-							this.setBadStart(true);
-						}}
-						style={{
-							position: 'absolute',
-							marginTop: '13.1%',
-							marginLeft: '12.3%',
-							marginRight: '25.6%',
-						}}
-						accessibilityLabel="Learn more about this purple button"
-					/>
-				)}
-				{this.state.badStartBtns && (
-					<Button
-						title="Massive Bad Start"
-						color="#841584"
-						onPress={() => {
-							this.setState({ badStartBtns: false });
-							this.setState({ badStartPicker: true });
-						}}
-						style={{
-							position: 'absolute',
-							marginTop: '13.1%',
-							marginLeft: '12.3%',
-							marginRight: '25.6%',
-						}}
-						accessibilityLabel="Learn more about this purple button"
-					/>
-				)}
-				{this.state.badStartPicker && (
-					<TouchableHighlight
-						onPress={() => {
-							this.setState({ badStartPicker: false });
-							this.setBadStart(false, 'i');
-						}}
-					>
-						<Image source={res.flags.i.pic} />
-					</TouchableHighlight>
-				)}
-				{this.state.badStartPicker && (
-					<TouchableHighlight
-						onPress={() => {
-							this.setState({ badStartPicker: false });
-							this.setBadStart(false, 'z');
-						}}
-					>
-						<Image source={res.flags.z.pic} />
-					</TouchableHighlight>
-				)}
-				{this.state.badStartPicker && (
-					<TouchableHighlight
-						onPress={() => {
-							this.setState({ badStartPicker: false });
-							this.setBadStart(false, 'black');
-						}}
-					>
-						<Image source={res.flags.black.pic} />
-					</TouchableHighlight>
-				)}
-				{this.state.badStartPicker && (
-					<TouchableHighlight
-						onPress={() => {
-							this.setState({ badStartPicker: false });
-							this.setBadStart(false, 'p');
-						}}
-					>
-						<Image source={res.flags.p.pic} />
-					</TouchableHighlight>
-				)}
+				{this.state.viewStartPicker && this.renderStartPicker()}
 			</View>
 		);
 	};
@@ -511,5 +501,3 @@ const styles = StyleSheet.create({
 		resizeMode: 'cover',
 	},
 });
-
-//this.setBadStart(false,'black');
