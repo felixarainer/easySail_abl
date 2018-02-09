@@ -21,21 +21,6 @@ import * as res from '../res/res.js';
 export default class ActionView extends Component {
 	constructor() {
 		super();
-		this.state = {
-			nextActions: [
-				{
-					name: 'Startschuss',
-					actionPic: res.actions.signal_1,
-					flagPic: undefined,
-				},
-				{
-					name: 'Flagge bergen',
-					actionPic: res.actions.flag_down,
-					flagPic: res.flags.z,
-				},
-			],
-			//endDate: moment().add(5, 'seconds'),
-		};
 	}
 
 	render() {
@@ -44,7 +29,7 @@ export default class ActionView extends Component {
 			<View style={styles.containerAV}>
 				<View style={styles.actionContainer}>
 					<Text style={styles.title}>next Actions:</Text>
-					{this.state.nextActions.map(action => {
+					{this.props.actions.map(action => {
 						return <ActionItem key={action.name} item={action} />;
 					})}
 				</View>
