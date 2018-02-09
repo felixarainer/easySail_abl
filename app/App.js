@@ -17,7 +17,8 @@ import {
 	TouchableHighlight,
 } from 'react-native';
 import ActionView from './components/ActionView';
-import FlagView from './components/FlagView';
+//import FlagView from './components/FlagView';
+import FlagItem from './components/FlagItem';
 import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
 import moment from 'moment';
@@ -372,7 +373,41 @@ export default class App extends React.Component {
 					backgroundColor: '#fff',
 				}}
 			>
-				<FlagView flags={this.state.curFlags} />
+				{/* <FlagView flags={this.state.curFlags} /> */}
+				<View style={{ flex: 3 }}>
+					<Image
+						source={require('./res/pics/ship.png')}
+						style={styles.backgroundImage}
+					>
+						<View
+							style={[
+								styles.flagRow,
+								{
+									marginTop: '13.1%',
+									marginLeft: '12.3%',
+									marginRight: '25.6%',
+								},
+							]}
+						>
+							<FlagItem flag={this.state.curFlags.flag1} />
+							<FlagItem flag={this.state.curFlags.flag2} />
+						</View>
+						<View
+							style={[
+								styles.flagRow,
+								{
+									marginTop: '7.7%',
+									marginLeft: '19.4%',
+									marginRight: '18.45%',
+								},
+							]}
+						>
+							<FlagItem flag={this.state.curFlags.flag3} />
+							<FlagItem flag={this.state.curFlags.flag4} />
+						</View>
+					</Image>
+				</View>
+
 				<ActionView
 					actions={this.state.curActions}
 					countdownEndDate={this.state.countdownEndDate}
@@ -384,7 +419,6 @@ export default class App extends React.Component {
 						}
 					}}
 				/>
-
 				{this.state.badStartBtns && (
 					<Button
 						title="Single bad Start"
@@ -463,5 +497,19 @@ export default class App extends React.Component {
 		);
 	};
 }
+
+const styles = StyleSheet.create({
+	flagRow: {
+		flex: 0.25,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+	},
+	backgroundImage: {
+		flex: 1,
+		height: undefined,
+		width: undefined,
+		resizeMode: 'cover',
+	},
+});
 
 //this.setBadStart(false,'black');
