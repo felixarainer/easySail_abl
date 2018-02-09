@@ -3,6 +3,7 @@
 //
 // TODO migrate logic to App.js / Redux to allow fullscreen FlagView / differ-
 //		ent screens in general without breaking the countdown
+//TODO Design: Wenn countdown fertig solle die rechte komponente blinken, damit der user weis, dass sie ncht freezed is..
 
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
