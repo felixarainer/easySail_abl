@@ -366,39 +366,48 @@ export default class App extends React.Component {
 
 	renderStartPicker = () => {
 		return (
-			<View>
-				<TouchableHighlight
-					onPress={() => {
-						this.setState({ viewStartPicker: false });
-						this.setBadStart(false, 'i');
-					}}
-				>
-					<Image source={res.flags.i.pic} />
-				</TouchableHighlight>
-				<TouchableHighlight
-					onPress={() => {
-						this.setState({ viewStartPicker: false });
-						this.setBadStart(false, 'z');
-					}}
-				>
-					<Image source={res.flags.z.pic} />
-				</TouchableHighlight>
-				<TouchableHighlight
-					onPress={() => {
-						this.setState({ viewStartPicker: false });
-						this.setBadStart(false, 'black');
-					}}
-				>
-					<Image source={res.flags.black.pic} />
-				</TouchableHighlight>
-				<TouchableHighlight
-					onPress={() => {
-						this.setState({ viewStartPicker: false });
-						this.setBadStart(false, 'p');
-					}}
-				>
-					<Image source={res.flags.p.pic} />
-				</TouchableHighlight>
+			<View style={{ backgroundColor: 'red' }}>
+				<Text style={{ fontSize: 40, fontWeight: 'bold' }}>
+					Choose the starting Flag:
+				</Text>
+				<View style={{ flexDirection: 'row' }}>
+					<TouchableHighlight
+						style={styles.spHighlight}
+						onPress={() => {
+							this.setState({ viewStartPicker: false });
+							this.setBadStart(false, 'i');
+						}}
+					>
+						<Image source={res.flags.i.pic} style={styles.spFlagImage} />
+					</TouchableHighlight>
+					<TouchableHighlight
+						style={styles.spHighlight}
+						onPress={() => {
+							this.setState({ viewStartPicker: false });
+							this.setBadStart(false, 'z');
+						}}
+					>
+						<Image source={res.flags.z.pic} style={styles.spFlagImage} />
+					</TouchableHighlight>
+					<TouchableHighlight
+						style={styles.spHighlight}
+						onPress={() => {
+							this.setState({ viewStartPicker: false });
+							this.setBadStart(false, 'black');
+						}}
+					>
+						<Image source={res.flags.black.pic} style={styles.spFlagImage} />
+					</TouchableHighlight>
+					<TouchableHighlight
+						style={styles.spHighlight}
+						onPress={() => {
+							this.setState({ viewStartPicker: false });
+							this.setBadStart(false, 'p');
+						}}
+					>
+						<Image source={res.flags.p.pic} style={styles.spFlagImage} />
+					</TouchableHighlight>
+				</View>
 			</View>
 		);
 	};
@@ -470,6 +479,7 @@ export default class App extends React.Component {
 							<FlagItem flag={this.state.curFlags.flag4} />
 						</View>
 						{this.state.viewBadStartBtns && this.renderBadStartBtns()}
+						{this.state.viewStartPicker && this.renderStartPicker()}
 					</Image>
 				</View>
 
@@ -482,7 +492,7 @@ export default class App extends React.Component {
 						}
 					}}
 				/>
-				{this.state.viewStartPicker && this.renderStartPicker()}
+				{/* {this.state.viewStartPicker && this.renderStartPicker()} */}
 			</View>
 		);
 	};
@@ -499,5 +509,18 @@ const styles = StyleSheet.create({
 		height: undefined,
 		width: undefined,
 		resizeMode: 'cover',
+	},
+	spFlagImage: {
+		flex: 1,
+		alignSelf: 'stretch',
+		height: undefined,
+		width: undefined,
+		resizeMode: 'contain',
+	},
+	spHighlight: {
+		height: 200,
+		width: 200,
+		// flex: 1,
+		//backgroundColor: 'red',
 	},
 });
