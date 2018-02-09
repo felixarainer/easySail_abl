@@ -17,12 +17,11 @@ import moment from 'moment';
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags,actions,time,isStart,isBadStart){
+	constructor(flags,actions,time,isStart){
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
-		this.isBadStart = isBadStart;
 	}
 
 	getState = () => {
@@ -44,10 +43,6 @@ class actState {
 	wasStart = () => {
 		return this.isStart;
 	};
-
-	wasBadStart = () => {
-		return this.isBadStart;
-	}
 
 	getTime = () => {
 		return this.time;
@@ -73,7 +68,7 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('10:03','HH:mm'),
+				{time: moment('11:23','HH:mm'),
 				 condition: 'z' },
 		],false);
 		this.setInitialFlags();
@@ -88,14 +83,13 @@ export default class App extends React.Component {
 			action1.push(
 				new actState(
 					//TODO x durch fhs ersetzen
-					[res.flags[start.condition],{},{},{}],
+					[res.flags.x,{},{},{}],
 					[{
 						name: 'TestAction2',
 						actionPic: res.actions.flag_down,
 						flagPic: res.flags.x,
 					}],
 					starttime,
-					false,
 					false
 				)
 			);
@@ -112,7 +106,6 @@ export default class App extends React.Component {
 						},
 					],
 					starttime,
-					false,
 					false
 				)
 			);
@@ -136,7 +129,6 @@ export default class App extends React.Component {
 						flagPic: res.flags.klass,
 					}],
 					moment(starttime).add(1,'m'),
-					false,
 					false
 				)
 			);
@@ -160,7 +152,6 @@ export default class App extends React.Component {
 								flagPic: res.flags[start.condition],
 							}],
 							moment(starttime).add(2,'m'),
-							false,
 							false
 				))
 
@@ -182,7 +173,6 @@ export default class App extends React.Component {
 							flagPic: res.flags[start.condition],
 						}],
 						moment(starttime).add(5,'m'),
-						false,
 						false
 				))
 
@@ -204,7 +194,6 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						}],
 						moment(starttime).add(6,'m'),
-						false,
 						false
 				))
 
@@ -215,8 +204,7 @@ export default class App extends React.Component {
 					[{}, {}, {}, {}],
 					[],
 					moment(starttime).add(6,'m').add(10,'s'),
-					true,
-					false
+					true
 				))
 
 			ac.push(
@@ -224,7 +212,6 @@ export default class App extends React.Component {
 					[{}, {}, {}, {}],
 					[],
 					moment(starttime).add(6,'m').add(11,'s'),
-					false,
 					false
 				)
 			);
@@ -238,14 +225,8 @@ export default class App extends React.Component {
 	};
 
 	setBadStart = (single,ARGcondition) => {
-
-		console.log('setbadstart()' + this.step);
-		console.log('setbadstart()' + this.actlist.length);
-		console.log('setbadstart()' + single);
-
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
-
 		//rückrufbuttons deaktivieren
 		this.setState({ buttons: false });
 		//letzte startzeit
@@ -256,6 +237,7 @@ export default class App extends React.Component {
 		let bsacts = [];
 
 		if (single) {
+			console.log('single bad start')
 			//Einzelrückruf
 			//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
 			//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
@@ -284,13 +266,7 @@ export default class App extends React.Component {
 			//[*]Alle folgenden rennen um ARG verzögern
 			//Es werden die startzeiten der nachfolgenden starts nicht automatisch nach hinten verschoben!!
 			//Daher braucht es eine Funktion die das erledigt
-			console.log(this.actlist)
-
 			this.upddateRow(10);
-
-			console.log(ARGcondition)
-
-
 
 			//Komplette startwiederholung
 			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
@@ -305,19 +281,17 @@ export default class App extends React.Component {
 			//durch das Updateflags direkt unter dem Funktionskopf wird der step auf 6/13/20... gesetzt
 			//das entspricht der letzten aktion des vorherigen starts, also des deaktivieren der rückrufbuttons
 			//der neue start wird in die liste eingeschoben
-
 			this.actlist.splice(this.step + 2, 0, ...bsacts);
 		}
 
 		//Countdown überspringen
 		this.updateFlags();
 		this.updateFlags();
-
-
-	}
+}
 
 	//Siehe 10 Zeilen oben [*]
 	upddateRow = time => {
+		console.log('updateRow()')
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
 		//+2 weil im Moment des Funktionsaufrufs der stepcounter bei 5 ist
 		let altered = this.actlist.slice(this.step+2, this.actlist.length)
@@ -352,12 +326,8 @@ export default class App extends React.Component {
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
 			this.setState({buttons: this.actlist[this.step].wasStart()});
-
-			//ist das gerade ein allgemeiner neustart?
-			//Wenn ja flagpicker aktivieren
-			this.setState({picker: this.actlist[this.step].wasBadStart()});
 		}else{
-				console.log('reached end of array')
+				console.log('updateflags(): reached end of array')
 				this.setState({startFinished: true})
 		}
 	};
@@ -437,8 +407,7 @@ export default class App extends React.Component {
 						<TouchableHighlight
 							onPress={() => {
 								this.setState({picker: false})
-
-
+								this.setBadStart(false,'i');
 						}}>
 				      <Image
 				        source={res.flags.i.pic}
@@ -450,7 +419,7 @@ export default class App extends React.Component {
 						<TouchableHighlight
 							onPress={() => {
 								this.setState({picker: false})
-
+								this.setBadStart(false,'black');
 						}}>
 				      <Image
 				        source={res.flags.black.pic}
@@ -462,7 +431,7 @@ export default class App extends React.Component {
 						<TouchableHighlight
 							onPress={() => {
 								this.setState({picker: false})
-
+								this.setBadStart(false,'p');
 						}}>
 				      <Image
 				        source={res.flags.p.pic}
