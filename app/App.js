@@ -74,10 +74,6 @@ export default class App extends React.Component {
 				 condition: 'z' },
 		],false);
 		this.setInitialFlags();
-
-		console.log(this.actlist.length)
-
-		//
 	}
 
 	createStartStates = (args,badstart) => {
