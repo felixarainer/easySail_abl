@@ -128,7 +128,8 @@ export default class Countdown extends Component {
 		return (
 			<Text style={this.props.style}>
 				{minutes}:{seconds}
-				{this.props.isSkippable ? 'y' : 'n'}
+				{this.props.isSkippable ? 's' : ''}
+				{this.props.isIndefinite ? 'i' : ''}
 			</Text>
 		);
 	};
@@ -142,10 +143,12 @@ export default class Countdown extends Component {
 				}}
 			>
 				{this.state.status != COUNTDOWN_FINISHED ? (
-					<View>{this.renderRemainingTime()}</View>
+					this.renderRemainingTime()
 				) : (
 					<Text style={this.props.style}>
-						--:--{this.props.isSkippable ? 'y' : 'n'}
+						--:--
+						{this.props.isSkippable ? 's' : ''}
+						{this.props.isIndefinite ? 'i' : ''}
 					</Text>
 				)}
 			</TouchableHighlight>
