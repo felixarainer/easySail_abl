@@ -51,7 +51,7 @@ class actState{
 	}
 
 	addTime = (time) => {
-		this.time += time;
+		this.time = moment(this.time).add(time,'m');
 	}
 }
 
@@ -70,7 +70,7 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates(
 			[
-				{time: moment('22:23','HH:mm'),
+				{time: moment('10:03','HH:mm'),
 				 condition: 'z' },
 		],false);
 		this.setInitialFlags();
@@ -90,7 +90,7 @@ export default class App extends React.Component {
 			action1.push(
 				new actState(
 					//TODO x durch fhs ersetzen
-					[res.flags.x,{},{},{}],
+					[res.flags[start.condition],{},{},{}],
 					[{
 						name: 'TestAction2',
 						actionPic: res.actions.flag_down,
@@ -98,7 +98,7 @@ export default class App extends React.Component {
 					}],
 					starttime,
 					false,
-					true
+					false
 				)
 
 			)
@@ -179,7 +179,6 @@ export default class App extends React.Component {
 						{
 							name: 'TestAction2',
 							actionPic: res.actions.flag_down,
-							//TODO damir fragen wegen res.flags.{start.condition}
 							flagPic: res.flags[start.condition],
 						}],
 						moment(starttime).add(5,'m'),
@@ -202,7 +201,6 @@ export default class App extends React.Component {
 						{
 							name: 'TestAction2',
 							actionPic: res.actions.flag_down,
-							//TODO damir fragen wegen res.flags.{start.condition}
 							flagPic: res.flags.klass,
 						}],
 						moment(starttime).add(6,'m'),
@@ -275,7 +273,6 @@ export default class App extends React.Component {
 			//button zur bestätigung aktivieren
 			this.setState({singleBadStart: true})
 
-			//TODO: möglichkeit finden flaggen sofort zu ändern
 			this.setState({curflags: [res.flags.x,{},{},{}]});
 
 			//TODO: blinkendes ding mit schuss bild drinnen, damit klar ist dass der Schuss JETZT abgegeben werden muss.
@@ -287,12 +284,23 @@ export default class App extends React.Component {
 			console.log('massive bad start');
 
 			this.setState({picker: false})
+
+			//[*]Alle folgenden rennen um ARG verzögern
+			//Es werden die startzeiten der nachfolgenden starts nicht automatisch nach hinten verschoben!!
+			//Daher braucht es eine Funktion die das erledigt
+			console.log(this.actlist)
+
+			this.upddateRow(10);
+
+			console.log(ARGcondition)
+
+
+
 			//Komplette startwiederholung
 			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
-
-			//TODO: Condition abfragen ob sie geändert werden soll
 			bsacts = this.createStartStates(
 				[
+					//TODO MOMENT VERKACKT FELIX FRAGEN
 					{time: moment(lastStartTime).add(10,'m'),
 					condition: ARGcondition},
 				],true
@@ -309,14 +317,6 @@ export default class App extends React.Component {
 		this.updateFlags();
 		this.updateFlags();
 
-		console.log(this.actlist);
-
-		//[*]Alle folgenden rennen um ARG verzögern
-		//Es werden die startzeiten der nachfolgenden starts nicht automatisch nach hinten verschoben!!
-		//Daher braucht es eine Funktion die das erledigt
-		this.upddateRow(10);
-
-		console.log(this.actlist)
 
 	}
 
@@ -324,7 +324,8 @@ export default class App extends React.Component {
 	upddateRow = (time) => {
 
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
-		let altered = this.actlist.slice(this.step, this.actlist.length)
+		//+2 weil im Moment des Funktionsaufrufs der stepcounter bei 5 ist
+		let altered = this.actlist.slice(this.step+2, this.actlist.length)
 
 		//Es muss beim constructor der actstates eine Funktion sein, die Moment-Elemente um X minuten nach hinten schiebt.
 		altered.forEach(elem=> {
@@ -334,7 +335,7 @@ export default class App extends React.Component {
 
 		//Einfügen der veränderten Werte
 		//splice(startINDEX, deletions in front, new elements)
-		this.actlist.splice(this.step, 7, ...altered);
+		this.actlist.splice(this.step+2, 7, ...altered);
 	}
 
 	componentDidMount = () => {
