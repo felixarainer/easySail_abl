@@ -369,7 +369,7 @@ export default class App extends React.Component {
 
 	renderStartPicker = () => {
 		return (
-			<View style={{ backgroundColor: 'red' }}>
+			<View style={{ backgroundColor: 'red', opacity: 0.7 }}>
 				<Text style={{ fontSize: 40, fontWeight: 'bold' }}>
 					Choose the starting Flag:
 				</Text>
@@ -440,6 +440,29 @@ export default class App extends React.Component {
 		);
 	};
 
+	renderMenu = () => {
+		return (
+			<View
+				style={{
+					flex: 1,
+					backgroundColor: 'white',
+					opacity: 0.7,
+					flexDirection: 'row',
+				}}
+			>
+				<View style={{ flex: 1, backgroundColor: 'lightgreen' }}>
+					<Text style={{ fontSize: 40 }}>Liste</Text>
+					<TouchableOpacity onPress={this.toggleModal}>
+						<Text style={{ fontSize: 40 }}>Hide me!</Text>
+					</TouchableOpacity>
+				</View>
+				<View style={{ flex: 3, backgroundColor: 'lightblue' }}>
+					<Text style={{ fontSize: 40 }}>Beschreibung</Text>
+				</View>
+			</View>
+		);
+	};
+
 	toggleModal = () =>
 		this.setState({ isModalVisible: !this.state.isModalVisible });
 
@@ -493,16 +516,13 @@ export default class App extends React.Component {
 								}}
 								accessibilityLabel="Learn more about this purple button"
 							/>
-							<Modal isVisible={this.state.isModalVisible}>
-								<View style={{ flex: 1 }}>
-									<Text>Hello!</Text>
-									<TouchableOpacity onPress={this._toggleModal}>
-										<Text>Hide me!</Text>
-									</TouchableOpacity>
-								</View>
-							</Modal>
 							{this.state.viewBadStartBtns && this.renderBadStartBtns()}
-							{this.state.viewStartPicker && this.renderStartPicker()}
+							<Modal isVisible={this.state.isModalVisible}>
+								{this.renderMenu()}
+							</Modal>
+							<Modal isVisible={this.state.viewStartPicker}>
+								{this.renderStartPicker()}
+							</Modal>
 						</View>
 					</Image>
 				</View>
