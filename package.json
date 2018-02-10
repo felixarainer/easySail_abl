@@ -36,6 +36,7 @@
     "react": "16.0.0-beta.5",
     "react-native": "^0.49.5",
     "react-native-left-aligned-image": "^0.9.1",
+    "react-native-modal": "^5.0.0",
     "react-native-orientation-locker": "^1.0.7",
     "redux": "^3.7.2"
   }
