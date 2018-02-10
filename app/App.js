@@ -4,8 +4,8 @@
 // 	down to children as props i.e. sets next state for the whole app ('Regelsys-
 //	tem')
 //:
-// TODO: migrate Countdown logic here
-// ?TODO?: Redux
+// TODO: migrate Countdown logic here; UPDATE: not nessecary
+// ?TODO?: Redux; UPDATE: not nessecary
 
 import React from 'react';
 import {
