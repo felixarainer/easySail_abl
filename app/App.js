@@ -15,6 +15,7 @@ import {
 	Image,
 	Button,
 	TouchableHighlight,
+	TouchableOpacity,
 } from 'react-native';
 import ActionView from './components/ActionView';
 //import FlagView from './components/FlagView';
@@ -22,6 +23,7 @@ import FlagItem from './components/FlagItem';
 import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
 import moment from 'moment';
+import Modal from 'react-native-modal';
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
@@ -69,6 +71,7 @@ export default class App extends React.Component {
 			viewBadStartBtns: false,
 			startFinished: false,
 			viewStartPicker: false,
+			isModalVisible: false,
 		};
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
 	}
@@ -295,7 +298,7 @@ export default class App extends React.Component {
 			//[*]Alle folgenden rennen um ARG verzögern
 			//Es werden die startzeiten der nachfolgenden starts nicht automatisch nach hinten verschoben!!
 			//Daher braucht es eine Funktion die das erledigt
-			this.upddateRow(10);
+			this.updateRow(10);
 
 			//Komplette startwiederholung
 			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
@@ -322,7 +325,7 @@ export default class App extends React.Component {
 	};
 
 	//Siehe 10 Zeilen oben [*]
-	upddateRow = time => {
+	updateRow = time => {
 		console.log('updateRow()');
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
 		//+2 weil im Moment des Funktionsaufrufs der stepcounter bei 5 ist
@@ -437,6 +440,9 @@ export default class App extends React.Component {
 		);
 	};
 
+	toggleModal = () =>
+		this.setState({ isModalVisible: !this.state.isModalVisible });
+
 	render = () => {
 		return (
 			<View
@@ -478,8 +484,26 @@ export default class App extends React.Component {
 							<FlagItem flag={this.state.curFlags.flag3} />
 							<FlagItem flag={this.state.curFlags.flag4} />
 						</View>
-						{this.state.viewBadStartBtns && this.renderBadStartBtns()}
-						{this.state.viewStartPicker && this.renderStartPicker()}
+						<View>
+							<Button
+								title="Special Actions"
+								color="#845084"
+								onPress={() => {
+									this.toggleModal();
+								}}
+								accessibilityLabel="Learn more about this purple button"
+							/>
+							<Modal isVisible={this.state.isModalVisible}>
+								<View style={{ flex: 1 }}>
+									<Text>Hello!</Text>
+									<TouchableOpacity onPress={this._toggleModal}>
+										<Text>Hide me!</Text>
+									</TouchableOpacity>
+								</View>
+							</Modal>
+							{this.state.viewBadStartBtns && this.renderBadStartBtns()}
+							{this.state.viewStartPicker && this.renderStartPicker()}
+						</View>
 					</Image>
 				</View>
 
