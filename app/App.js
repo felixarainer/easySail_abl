@@ -57,11 +57,11 @@ class actState {
 
 	getFlags = () => {
 		return this.flags;
-	}
+	};
 
-	setFlags = (newFlags) => {
+	setFlags = newFlags => {
 		this.flags = newFlags;
-	}
+	};
 
 	wasStart = () => {
 		return this.isStart;
@@ -481,9 +481,9 @@ export default class App extends React.Component {
 		);
 	};
 
-	setDescription = (text) => {
+	setDescription = text => {
 		this.specialDescription = text;
-	}
+	};
 
 	// <TouchableOpacity onPress={() => {
 	// 	this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'})
@@ -615,6 +615,8 @@ export default class App extends React.Component {
 							this.updateFlags();
 						}
 					}}
+					isSkippable={true}
+					isIndefinite={true}
 				/>
 				{/* {this.state.viewStartPicker && this.renderStartPicker()} */}
 			</View>
