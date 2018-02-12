@@ -32,11 +32,12 @@ const RACING = 3;
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags, actions, time, isStart) {
+	constructor(flags, actions, time, isStart, rank) {
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
+		this.rank = rank;
 	}
 
 	getState = () => {
@@ -55,6 +56,10 @@ class actState {
 		};
 	};
 
+	getRank = () => {
+		return this.rank;
+	}
+
 	getFlags = () => {
 		return this.flags;
 	};
@@ -71,9 +76,13 @@ class actState {
 		return this.time;
 	};
 
-	addTime = time => {
-		this.time = moment(this.time).add(time, 'm');
+	addTime = (time, type) => {
+		this.time = moment(this.time).add(time, type);
 	};
+
+	subtractTime = (time, type) => {
+		this.time = moment(this.time).subtract(time,type)
+	}
 }
 
 export default class App extends React.Component {
@@ -87,14 +96,15 @@ export default class App extends React.Component {
 			isModalVisible: false,
 			phase: PRE_RACE,
 			specialDescription: '',
-			specialChoice: 0,
+			specialChoice: undefined,
+			isSpecial: false,
 		};
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
 
 		this.specialBtnsDescs = [
-			{choice: 0, button: 'Verschieben (kurz)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'},
-			{choice: 1,button: 'Verschieben (lang)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.'},
-			{choice: 2,button: 'Verschieben und abbrechen', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "A".'},
+			{key: 0, button: 'Verschieben (kurz)', description: 'Alle noch nicht gestarteten Renen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'},
+			{key: 1,button: 'Verschieben (lang)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.'},
+			{key: 2,button: 'Verschieben und abbrechen', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "A".'},
 		];
 
 	}
@@ -103,7 +113,7 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(1, 'minutes'),
+					time: moment().add(2, 'minutes'),
 					condition: 'z',
 				},
 			],
@@ -130,7 +140,8 @@ export default class App extends React.Component {
 						},
 					],
 					starttime,
-					false
+					false,
+					0
 				)
 			);
 		} else {
@@ -146,7 +157,8 @@ export default class App extends React.Component {
 						},
 					],
 					starttime,
-					false
+					false,
+					0
 				)
 			);
 		}
@@ -172,7 +184,8 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(1, 'm'),
-					false
+					false,
+					1
 				)
 			);
 
@@ -197,7 +210,8 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(2, 'm'),
-					false
+					false,
+					2
 				)
 			);
 
@@ -220,7 +234,8 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(5, 'm'),
-					false
+					false,
+					3
 				)
 			);
 
@@ -243,7 +258,8 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(6, 'm'),
-					false
+					false,
+					4
 				)
 			);
 
@@ -256,7 +272,8 @@ export default class App extends React.Component {
 					moment(starttime)
 						.add(6, 'm')
 						.add(10, 's'),
-					true
+					true,
+					5
 				)
 			);
 
@@ -267,7 +284,8 @@ export default class App extends React.Component {
 					moment(starttime)
 						.add(6, 'm')
 						.add(11, 's'),
-					false
+					false,
+					6
 				)
 			);
 		});
@@ -348,7 +366,7 @@ export default class App extends React.Component {
 	};
 
 	//Siehe 10 Zeilen oben [*]
-	updateRow = time => {
+	updateRow = arg => {
 		console.log('updateRow()');
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
 		//+2 weil im Moment des Funktionsaufrufs der stepcounter bei 5 ist
@@ -356,13 +374,13 @@ export default class App extends React.Component {
 
 		//Es muss beim constructor der actstates eine Funktion sein, die Moment-Elemente um X minuten nach hinten schiebt.
 		altered.forEach(elem => {
-			elem.addTime(time);
+			elem.addTime(arg.time, 'minutes');
 		});
 		console.log(altered);
 
 		//Einfügen der veränderten Werte
 		//splice(startINDEX, deletions in front, new elements)
-		this.actlist.splice(this.step + 2, 7, ...altered);
+		this.actlist.splice(this.step + 2, altered.length, ...altered);
 	};
 
 	componentDidMount = () => {
@@ -391,6 +409,7 @@ export default class App extends React.Component {
 	};
 
 	postponeAP = () => {
+		console.log('postponeAP()')
 		let postActs = [];
 		let newTime = 0;
 
@@ -399,13 +418,55 @@ export default class App extends React.Component {
 				//TODO: flagge ap statt x
 				[res.flags.x, {}, {}, {}],
 				[],
-				{},
+				moment(),
 				false
 			)
 		);
 
 		this.actlist.splice(this.step, 0, ...postActs)
+		this.step--;
+		this.updateFlags();
 
+	}
+
+	postponeAPH = () => {
+		console.log('postponeAPH()')
+		let postActs = [];
+		let newTime = 0;
+
+		postActs.push(
+			new actState(
+				//TODO: flagge ap über h statt x
+				[res.flags.x, {}, {}, {}],
+				[],
+				moment(),
+				false
+			)
+		);
+
+		this.actlist.splice(this.step, 0, ...postActs)
+		this.step--;
+		this.updateFlags();
+	}
+
+	postponeAPA = () => {
+		console.log('postponeAPA()')
+		let postActs = [];
+		let newTime = 0;
+
+		postActs.push(
+			new actState(
+				//TODO: flagge ap über h statt x
+				[res.flags.x, {}, {}, {}],
+				[],
+				moment(),
+				false
+			)
+		);
+
+		this.actlist = postActs;
+		this.step = -1;
+		this.updateFlags();
 	}
 
 	renderStartPicker = () => {
@@ -498,10 +559,16 @@ export default class App extends React.Component {
 	// </TouchableOpacity>
 
 	makeSpecialDecision = () => {
+		console.log('makeSpecialDecision')
 		switch (this.state.specialChoice) {
 			case 0:
 				this.postponeAP();
-
+				break;
+			case 1:
+				this.postponeAPH();
+				break;
+			case 2:
+				this.postponeAPA();
 				break;
 			default:
 
@@ -523,7 +590,7 @@ export default class App extends React.Component {
 						this.specialBtnsDescs.map(args => {
 							return (<TouchableOpacity onPress={() => {
 								this.setState({specialDescription: args.description})
-								this.setState({specialChoice: args.choice})
+								this.setState({specialChoice: args.key})
 							}}>
 								<Text style={{ fontSize: 40 }}>{args.button}</Text>
 							</TouchableOpacity>)
@@ -545,6 +612,61 @@ export default class App extends React.Component {
 
 	toggleModal = () =>
 		this.setState({ isModalVisible: !this.state.isModalVisible });
+
+	updateRowSpecific = (time) => {
+
+			//Removes current element which is the indefinite countdown which has to be skipped by user
+			this.actlist.splice(this.step, 1);
+
+			//Setting back this.step to before start
+			if((this.actlist[this.step].getRank() !== undefined)  || (this.actlist[this.step].getRank() < 5)){
+				this.step -= this.actlist[this.step].getRank();
+			}
+
+			this.setState({specialChoice: undefined})
+
+			//TODO schauen ob des stimmt.
+			let altered = this.actlist.slice(this.step, this.actlist.length);
+
+			//Es muss beim constructor der actstates eine Funktion sein, die Moment-Elemente um X minuten nach hinten schiebt.
+
+			let oldTime = this.actlist[this.step].getTime();
+			let newtime = moment().add(60,'seconds');
+
+			let diff = newtime.diff(oldTime, 'seconds')
+
+
+			console.log(altered);
+
+			if(diff < 0){
+				diff *= -1;
+				altered.forEach(elem => {
+					return elem.subtractTime(diff, 'seconds');
+				});
+			}else{
+				altered.forEach(elem => {
+					return elem.addTime(diff, 'seconds');
+				});
+			}
+
+
+			console.log(altered);
+
+
+
+
+			console.log(this.actlist)
+			//Einfügen der veränderten Werte
+			//splice(startINDEX, deletions in front, new elements)
+			this.actlist.splice(this.step, altered.length, ...altered);
+
+			console.log(this.actlist)
+
+			this.step--;
+
+
+
+	}
 
 	render = () => {
 		return (
@@ -612,11 +734,19 @@ export default class App extends React.Component {
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
 						if (!this.state.startFinished) {
+							if(this.state.specialChoice !== undefined){
+								switch(this.state.specialChoice){
+									case 0:
+										this.updateRowSpecific(1);
+										break;
+								}
+							}
+
 							this.updateFlags();
 						}
 					}}
 					isSkippable={true}
-					isIndefinite={true}
+					isIndefinite={false}
 				/>
 				{/* {this.state.viewStartPicker && this.renderStartPicker()} */}
 			</View>
