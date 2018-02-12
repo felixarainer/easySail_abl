@@ -57,11 +57,11 @@ class actState {
 
 	getFlags = () => {
 		return this.flags;
-	}
+	};
 
-	setFlags = (newFlags) => {
+	setFlags = newFlags => {
 		this.flags = newFlags;
-	}
+	};
 
 	wasStart = () => {
 		return this.isStart;
@@ -89,10 +89,6 @@ export default class App extends React.Component {
 			specialDescription: '',
 		};
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
-
-
-
-
 	}
 
 	componentWillMount() {
@@ -398,19 +394,18 @@ export default class App extends React.Component {
 				{},
 				false
 			)
-		)
+		);
 
-		actlist.forEach((act) => {
-			if(act.wasStart){
-				newTime = act.getTime
+		actlist.forEach(act => {
+			if (act.wasStart) {
+				newTime = act.getTime;
 			}
-		})
+		});
 
-		newTime.diff(moment)
+		newTime.diff(moment);
 
-		this.actlist.splice(this.step + 2, 0, ...postActs)
-
-	}
+		this.actlist.splice(this.step + 2, 0, ...postActs);
+	};
 
 	renderStartPicker = () => {
 		return (
@@ -485,12 +480,9 @@ export default class App extends React.Component {
 		);
 	};
 
-	setDescription = (text) => {
+	setDescription = text => {
 		this.specialDescription = text;
-	}
-
-
-
+	};
 
 	renderMenu = () => {
 		return (
@@ -503,23 +495,34 @@ export default class App extends React.Component {
 				}}
 			>
 				<View style={{ flex: 2, backgroundColor: 'lightgreen' }}>
-					<TouchableOpacity onPress={() => {
-						this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'})
-
-					}
-					}>
+					<TouchableOpacity
+						onPress={() => {
+							this.setState({
+								specialDescription:
+									'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown',
+							});
+						}}
+					>
 						<Text style={{ fontSize: 40 }}>Verschieben (kurz)</Text>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => {
-						this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.'})
-					}
-					}>
+					<TouchableOpacity
+						onPress={() => {
+							this.setState({
+								specialDescription:
+									'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.',
+							});
+						}}
+					>
 						<Text style={{ fontSize: 40 }}>Verschieben (lang)</Text>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => {
-						this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "A".'})
-					}
-					}>
+					<TouchableOpacity
+						onPress={() => {
+							this.setState({
+								specialDescription:
+									'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "A".',
+							});
+						}}
+					>
 						<Text style={{ fontSize: 40 }}>Verschieben und abbrechen</Text>
 					</TouchableOpacity>
 					<Text style={{ fontSize: 40 }}>Abbrechen (kurz)</Text>
@@ -610,6 +613,8 @@ export default class App extends React.Component {
 							this.updateFlags();
 						}
 					}}
+					isSkippable={true}
+					isIndefinite={true}
 				/>
 				{/* {this.state.viewStartPicker && this.renderStartPicker()} */}
 			</View>
