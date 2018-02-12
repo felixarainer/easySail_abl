@@ -87,11 +87,15 @@ export default class App extends React.Component {
 			isModalVisible: false,
 			phase: PRE_RACE,
 			specialDescription: '',
+			specialChoice: 0,
 		};
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
 
-
-
+		this.specialBtnsDescs = [
+			{choice: 0, button: 'Verschieben (kurz)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'},
+			{choice: 1,button: 'Verschieben (lang)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.'},
+			{choice: 2,button: 'Verschieben und abbrechen', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "A".'},
+		];
 
 	}
 
@@ -398,17 +402,9 @@ export default class App extends React.Component {
 				{},
 				false
 			)
-		)
+		);
 
-		actlist.forEach((act) => {
-			if(act.wasStart){
-				newTime = act.getTime
-			}
-		})
-
-		newTime.diff(moment)
-
-		this.actlist.splice(this.step + 2, 0, ...postActs)
+		this.actlist.splice(this.step, 0, ...postActs)
 
 	}
 
@@ -489,8 +485,28 @@ export default class App extends React.Component {
 		this.specialDescription = text;
 	}
 
+	// <TouchableOpacity onPress={() => {
+	// 	this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'})
+  //
+	// }
+	// }>
+	// 	<Text style={{ fontSize: 40 }}>Verschieben (kurz)</Text>
+	// </TouchableOpacity>
+  //
+	// <TouchableOpacity onPress={this.toggleModal}>
+	// 	<Text style={{ fontSize: 40 }}>Hide me!</Text>
+	// </TouchableOpacity>
 
+	makeSpecialDecision = () => {
+		switch (this.state.specialChoice) {
+			case 0:
+				this.postponeAP();
 
+				break;
+			default:
+
+		}
+	}
 
 	renderMenu = () => {
 		return (
@@ -503,31 +519,20 @@ export default class App extends React.Component {
 				}}
 			>
 				<View style={{ flex: 2, backgroundColor: 'lightgreen' }}>
-					<TouchableOpacity onPress={() => {
-						this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'})
-
+					{
+						this.specialBtnsDescs.map(args => {
+							return (<TouchableOpacity onPress={() => {
+								this.setState({specialDescription: args.description})
+								this.setState({specialChoice: args.choice})
+							}}>
+								<Text style={{ fontSize: 40 }}>{args.button}</Text>
+							</TouchableOpacity>)
+						})
 					}
-					}>
-						<Text style={{ fontSize: 40 }}>Verschieben (kurz)</Text>
-					</TouchableOpacity>
 					<TouchableOpacity onPress={() => {
-						this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.'})
-					}
-					}>
-						<Text style={{ fontSize: 40 }}>Verschieben (lang)</Text>
-					</TouchableOpacity>
-					<TouchableOpacity onPress={() => {
-						this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "A".'})
-					}
-					}>
-						<Text style={{ fontSize: 40 }}>Verschieben und abbrechen</Text>
-					</TouchableOpacity>
-					<Text style={{ fontSize: 40 }}>Abbrechen (kurz)</Text>
-					<Text style={{ fontSize: 40 }}>Abbrechen (lang)</Text>
-					<Text style={{ fontSize: 40 }}>Abbrechen</Text>
-					<Text style={{ fontSize: 40 }}>In Rufweite kommen</Text>
-					<Text style={{ fontSize: 40 }}>Schwimmweste anlegen</Text>
-					<TouchableOpacity onPress={this.toggleModal}>
+						this.toggleModal();
+						this.makeSpecialDecision();
+					}}>
 						<Text style={{ fontSize: 40 }}>Hide me!</Text>
 					</TouchableOpacity>
 				</View>
