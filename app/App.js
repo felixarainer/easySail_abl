@@ -25,6 +25,11 @@ import * as res from './res/res.js';
 import moment from 'moment';
 import Modal from 'react-native-modal';
 
+const PRE_RACE = 0;
+const PRE_START = 1;
+const START = 2;
+const RACING = 3;
+
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
 	constructor(flags, actions, time, isStart) {
@@ -50,6 +55,14 @@ class actState {
 		};
 	};
 
+	getFlags = () => {
+		return this.flags;
+	}
+
+	setFlags = (newFlags) => {
+		this.flags = newFlags;
+	}
+
 	wasStart = () => {
 		return this.isStart;
 	};
@@ -72,8 +85,14 @@ export default class App extends React.Component {
 			startFinished: false,
 			viewStartPicker: false,
 			isModalVisible: false,
+			phase: PRE_RACE,
+			specialDescription: '',
 		};
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
+
+
+
+
 	}
 
 	componentWillMount() {
@@ -367,6 +386,32 @@ export default class App extends React.Component {
 		}
 	};
 
+	postponeAP = () => {
+		let postActs = [];
+		let newTime = 0;
+
+		postActs.push(
+			new actState(
+				//TODO: flagge ap statt x
+				[res.flags.x, {}, {}, {}],
+				[],
+				{},
+				false
+			)
+		)
+
+		actlist.forEach((act) => {
+			if(act.wasStart){
+				newTime = act.getTime
+			}
+		})
+
+		newTime.diff(moment)
+
+		this.actlist.splice(this.step + 2, 0, ...postActs)
+
+	}
+
 	renderStartPicker = () => {
 		return (
 			<View style={{ backgroundColor: 'red', opacity: 0.7 }}>
@@ -440,6 +485,13 @@ export default class App extends React.Component {
 		);
 	};
 
+	setDescription = (text) => {
+		this.specialDescription = text;
+	}
+
+
+
+
 	renderMenu = () => {
 		return (
 			<View
@@ -450,14 +502,37 @@ export default class App extends React.Component {
 					flexDirection: 'row',
 				}}
 			>
-				<View style={{ flex: 1, backgroundColor: 'lightgreen' }}>
-					<Text style={{ fontSize: 40 }}>Liste</Text>
+				<View style={{ flex: 2, backgroundColor: 'lightgreen' }}>
+					<TouchableOpacity onPress={() => {
+						this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'})
+
+					}
+					}>
+						<Text style={{ fontSize: 40 }}>Verschieben (kurz)</Text>
+					</TouchableOpacity>
+					<TouchableOpacity onPress={() => {
+						this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.'})
+					}
+					}>
+						<Text style={{ fontSize: 40 }}>Verschieben (lang)</Text>
+					</TouchableOpacity>
+					<TouchableOpacity onPress={() => {
+						this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "A".'})
+					}
+					}>
+						<Text style={{ fontSize: 40 }}>Verschieben und abbrechen</Text>
+					</TouchableOpacity>
+					<Text style={{ fontSize: 40 }}>Abbrechen (kurz)</Text>
+					<Text style={{ fontSize: 40 }}>Abbrechen (lang)</Text>
+					<Text style={{ fontSize: 40 }}>Abbrechen</Text>
+					<Text style={{ fontSize: 40 }}>In Rufweite kommen</Text>
+					<Text style={{ fontSize: 40 }}>Schwimmweste anlegen</Text>
 					<TouchableOpacity onPress={this.toggleModal}>
 						<Text style={{ fontSize: 40 }}>Hide me!</Text>
 					</TouchableOpacity>
 				</View>
 				<View style={{ flex: 3, backgroundColor: 'lightblue' }}>
-					<Text style={{ fontSize: 40 }}>Beschreibung</Text>
+					<Text style={{ fontSize: 40 }}>{this.state.specialDescription}</Text>
 				</View>
 			</View>
 		);
