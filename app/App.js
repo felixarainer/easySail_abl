@@ -113,7 +113,7 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(2, 'minutes'),
+					time: moment().add(1, 'minutes'),
 					condition: 'z',
 				},
 			],
@@ -423,12 +423,35 @@ export default class App extends React.Component {
 			)
 		);
 
-		this.actlist.splice(this.step, 0, ...postActs)
-		this.step--;
-		this.updateFlags();
+		//Ob der aktuelle Start noch nicht fertig ist
+		if(this.actlist[this.step].getRank()<5){
+			//Boote sind noch nicht gestartet
+			this.actlist.splice(this.step, 0, ...postActs);
+			this.step--;
+			this.updateFlags();
+		}else{
+			//Boote sind bereits gestartet
+			if(this.actlist.length - this.step > 2){
+				//Es wären nachher noch starts drinnen im Ablauf, das boot wird erst upgedated wenn die fehlstart ereignisse weg sind
+				if(this.actlist[this.step].getRank() === 5){
+					//rank 5
+					this.actlist.splice(this.step+2, 0, ...postActs)
+				}else{
+					//rank 6
+					this.actlist.splice(this.step+1, 0, ...postActs)
+				}
+			}else{
+				//Es sind nachher keine Starts mehr drinnen.
+				this.actlist.concat(...postActs);
+			}
+		}
 
+		// this.actlist.splice(this.step, 0, ...postActs)
+		// this.step--;
+		// this.updateFlags();
 	}
 
+	//TODO: debuggen
 	postponeAPH = () => {
 		console.log('postponeAPH()')
 		let postActs = [];
@@ -444,9 +467,28 @@ export default class App extends React.Component {
 			)
 		);
 
-		this.actlist.splice(this.step, 0, ...postActs)
-		this.step--;
-		this.updateFlags();
+		//Ob der aktuelle Start noch nicht fertig ist
+		if(this.actlist[this.step].getRank()<5){
+			//Boote sind noch nicht gestartet
+			this.actlist.splice(this.step, 0, ...postActs);
+			this.step--;
+			this.updateFlags();
+		}else{
+			//Boote sind bereits gestartet
+			if(this.actlist.length - this.step > 2){
+				//Es wären nachher noch starts drinnen im Ablauf, das boot wird erst upgedated wenn die fehlstart ereignisse weg sind
+				if(this.actlist[this.step].getRank() === 5){
+					//rank 5
+					this.actlist.splice(this.step+2, 0, ...postActs)
+				}else{
+					//rank 6
+					this.actlist.splice(this.step+1, 0, ...postActs)
+				}
+			}else{
+				//Es sind nachher keine Starts mehr drinnen.
+				this.actlist.concat(...postActs);
+			}
+		}
 	}
 
 	postponeAPA = () => {
@@ -546,18 +588,6 @@ export default class App extends React.Component {
 		this.specialDescription = text;
 	};
 
-	// <TouchableOpacity onPress={() => {
-	// 	this.setState({specialDescription: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'})
-  //
-	// }
-	// }>
-	// 	<Text style={{ fontSize: 40 }}>Verschieben (kurz)</Text>
-	// </TouchableOpacity>
-  //
-	// <TouchableOpacity onPress={this.toggleModal}>
-	// 	<Text style={{ fontSize: 40 }}>Hide me!</Text>
-	// </TouchableOpacity>
-
 	makeSpecialDecision = () => {
 		console.log('makeSpecialDecision')
 		switch (this.state.specialChoice) {
@@ -618,25 +648,21 @@ export default class App extends React.Component {
 			//Removes current element which is the indefinite countdown which has to be skipped by user
 			this.actlist.splice(this.step, 1);
 
-			//Setting back this.step to before start
+			//Setting back this.step au elem 1/7 des startvorgangs setzen
 			if((this.actlist[this.step].getRank() !== undefined)  || (this.actlist[this.step].getRank() < 5)){
 				this.step -= this.actlist[this.step].getRank();
 			}
 
 			this.setState({specialChoice: undefined})
 
-			//TODO schauen ob des stimmt.
+			//Teil der Liste, der verändert wird
 			let altered = this.actlist.slice(this.step, this.actlist.length);
 
-			//Es muss beim constructor der actstates eine Funktion sein, die Moment-Elemente um X minuten nach hinten schiebt.
-
+			//This.steps ist am Anfang des Startvorgangs, daher kann man direkt von hier die Zeit nehmen
 			let oldTime = this.actlist[this.step].getTime();
 			let newtime = moment().add(60,'seconds');
 
 			let diff = newtime.diff(oldTime, 'seconds')
-
-
-			console.log(altered);
 
 			if(diff < 0){
 				diff *= -1;
@@ -649,23 +675,11 @@ export default class App extends React.Component {
 				});
 			}
 
-
-			console.log(altered);
-
-
-
-
-			console.log(this.actlist)
 			//Einfügen der veränderten Werte
 			//splice(startINDEX, deletions in front, new elements)
 			this.actlist.splice(this.step, altered.length, ...altered);
 
-			console.log(this.actlist)
-
 			this.step--;
-
-
-
 	}
 
 	render = () => {
