@@ -2,7 +2,6 @@
 //
 // ?TODO: display last action(s)
 // TODO: add (static) action images; pass nextActions down from App.js as props
-//
 
 import React, { Component } from 'react';
 import {
