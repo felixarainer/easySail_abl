@@ -3,9 +3,6 @@
 // Hosts FlagView and ActionView. Passes current Flags / Actions (TODO) / Count-
 // 	down to children as props i.e. sets next state for the whole app ('Regelsys-
 //	tem')
-//:
-// TODO: migrate Countdown logic here; UPDATE: not nessecary
-// ?TODO?: Redux; UPDATE: not nessecary
 
 import React from 'react';
 import {
@@ -37,7 +34,6 @@ class actState {
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
-<<<<<<< HEAD
 		this.rank = rank;
 	}
 
@@ -73,9 +69,17 @@ class actState {
 		return this.time;
 	};
 
-	addTime = time => {
-		this.time = moment(this.time).add(time, 'm');
+	addTime = (time,unit) => {
+		this.time = moment(this.time).add(time, unit);
 	};
+
+	subtractTime = (time,unit) => {
+		this.time = moment(this.time).subtract(time, unit);
+	};
+
+	getRank = () => {
+		return this.rank;
+	}
 }
 
 export default class App extends React.Component {
@@ -89,11 +93,11 @@ export default class App extends React.Component {
 			isModalVisible: false,
 			phase: PRE_RACE,
 			specialDescription: '',
-<<<<<<< HEAD
+
 			specialChoice: undefined,
 			isSpecial: false,
 		};
-		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
+		this.step = 0;
 
 		this.specialBtnsDescs = [
 			{choice: 0, button: 'Verschieben (kurz)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'},
@@ -124,8 +128,7 @@ export default class App extends React.Component {
 		if (badstart) {
 			action1.push(
 				new actState(
-					//TODO x durch fhs ersetzen
-					[res.flags.x, {}, {}, {}],
+					[res.flags.fhs, {}, {}, {}],
 					[
 						{
 							name: 'TestAction2',
@@ -134,7 +137,7 @@ export default class App extends React.Component {
 						},
 					],
 					starttime,
-<<<<<<< HEAD
+
 					false,
 					0
 				)
@@ -152,7 +155,7 @@ export default class App extends React.Component {
 						},
 					],
 					starttime,
-<<<<<<< HEAD
+
 					false,
 					0
 				)
@@ -180,7 +183,7 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(1, 'm'),
-<<<<<<< HEAD
+
 					false,
 					1
 				)
@@ -207,7 +210,7 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(2, 'm'),
-<<<<<<< HEAD
+
 					false,
 					2
 				)
@@ -232,7 +235,7 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(5, 'm'),
-<<<<<<< HEAD
+
 					false,
 					3
 				)
@@ -257,7 +260,7 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(6, 'm'),
-<<<<<<< HEAD
+
 					false,
 					4
 				)
@@ -374,7 +377,7 @@ export default class App extends React.Component {
 
 		//Es muss beim constructor der actstates eine Funktion sein, die Moment-Elemente um X minuten nach hinten schiebt.
 		altered.forEach(elem => {
-			elem.addTime(time);
+			elem.addTime(time,'m');
 		});
 		console.log(altered);
 
@@ -464,15 +467,8 @@ export default class App extends React.Component {
 				false
 			)
 		);
-=======
-				{},
-				false
-			)
-		);
 
 		this.actlist.splice(this.step, 0, ...postActs)
->>>>>>> parent of 5c51985... Startverschiebung 1 fertig
-
 	}
 
 	renderStartPicker = () => {
@@ -601,7 +597,6 @@ export default class App extends React.Component {
 	toggleModal = () =>
 		this.setState({ isModalVisible: !this.state.isModalVisible });
 
-<<<<<<< HEAD
 	updateRowSpecific = (time) => {
 
 			//Removes current element which is the indefinite countdown which has to be skipped by user
@@ -641,8 +636,6 @@ export default class App extends React.Component {
 			this.step--;
 	}
 
-=======
->>>>>>> parent of 5c51985... Startverschiebung 1 fertig
 	render = () => {
 		return (
 			<View
