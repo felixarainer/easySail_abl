@@ -37,6 +37,7 @@ class actState {
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
+<<<<<<< HEAD
 		this.rank = rank;
 	}
 
@@ -56,10 +57,6 @@ class actState {
 		};
 	};
 
-	getRank = () => {
-		return this.rank;
-	}
-
 	getFlags = () => {
 		return this.flags;
 	};
@@ -76,13 +73,9 @@ class actState {
 		return this.time;
 	};
 
-	addTime = (time, type) => {
-		this.time = moment(this.time).add(time, type);
+	addTime = time => {
+		this.time = moment(this.time).add(time, 'm');
 	};
-
-	subtractTime = (time, type) => {
-		this.time = moment(this.time).subtract(time,type)
-	}
 }
 
 export default class App extends React.Component {
@@ -96,15 +89,16 @@ export default class App extends React.Component {
 			isModalVisible: false,
 			phase: PRE_RACE,
 			specialDescription: '',
+<<<<<<< HEAD
 			specialChoice: undefined,
 			isSpecial: false,
 		};
 		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
 
 		this.specialBtnsDescs = [
-			{key: 0, button: 'Verschieben (kurz)', description: 'Alle noch nicht gestarteten Renen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'},
-			{key: 1,button: 'Verschieben (lang)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.'},
-			{key: 2,button: 'Verschieben und abbrechen', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "A".'},
+			{choice: 0, button: 'Verschieben (kurz)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'},
+			{choice: 1,button: 'Verschieben (lang)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.'},
+			{choice: 2,button: 'Verschieben und abbrechen', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "A".'},
 		];
 
 	}
@@ -140,6 +134,7 @@ export default class App extends React.Component {
 						},
 					],
 					starttime,
+<<<<<<< HEAD
 					false,
 					0
 				)
@@ -157,6 +152,7 @@ export default class App extends React.Component {
 						},
 					],
 					starttime,
+<<<<<<< HEAD
 					false,
 					0
 				)
@@ -184,6 +180,7 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(1, 'm'),
+<<<<<<< HEAD
 					false,
 					1
 				)
@@ -210,6 +207,7 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(2, 'm'),
+<<<<<<< HEAD
 					false,
 					2
 				)
@@ -234,6 +232,7 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(5, 'm'),
+<<<<<<< HEAD
 					false,
 					3
 				)
@@ -258,6 +257,7 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(6, 'm'),
+<<<<<<< HEAD
 					false,
 					4
 				)
@@ -366,7 +366,7 @@ export default class App extends React.Component {
 	};
 
 	//Siehe 10 Zeilen oben [*]
-	updateRow = arg => {
+	updateRow = time => {
 		console.log('updateRow()');
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
 		//+2 weil im Moment des Funktionsaufrufs der stepcounter bei 5 ist
@@ -374,13 +374,13 @@ export default class App extends React.Component {
 
 		//Es muss beim constructor der actstates eine Funktion sein, die Moment-Elemente um X minuten nach hinten schiebt.
 		altered.forEach(elem => {
-			elem.addTime(arg.time, 'minutes');
+			elem.addTime(time);
 		});
 		console.log(altered);
 
 		//Einfügen der veränderten Werte
 		//splice(startINDEX, deletions in front, new elements)
-		this.actlist.splice(this.step + 2, altered.length, ...altered);
+		this.actlist.splice(this.step + 2, 7, ...altered);
 	};
 
 	componentDidMount = () => {
@@ -410,7 +410,6 @@ export default class App extends React.Component {
 	};
 
 	postponeAP = () => {
-		console.log('postponeAP()')
 		let postActs = [];
 		let newTime = 0;
 
@@ -465,10 +464,15 @@ export default class App extends React.Component {
 				false
 			)
 		);
+=======
+				{},
+				false
+			)
+		);
 
-		this.actlist = postActs;
-		this.step = -1;
-		this.updateFlags();
+		this.actlist.splice(this.step, 0, ...postActs)
+>>>>>>> parent of 5c51985... Startverschiebung 1 fertig
+
 	}
 
 	renderStartPicker = () => {
@@ -549,16 +553,10 @@ export default class App extends React.Component {
 	};
 
 	makeSpecialDecision = () => {
-		console.log('makeSpecialDecision')
 		switch (this.state.specialChoice) {
 			case 0:
 				this.postponeAP();
-				break;
-			case 1:
-				this.postponeAPH();
-				break;
-			case 2:
-				this.postponeAPA();
+
 				break;
 			default:
 
@@ -580,7 +578,7 @@ export default class App extends React.Component {
 						this.specialBtnsDescs.map(args => {
 							return (<TouchableOpacity onPress={() => {
 								this.setState({specialDescription: args.description})
-								this.setState({specialChoice: args.key})
+								this.setState({specialChoice: args.choice})
 							}}>
 								<Text style={{ fontSize: 40 }}>{args.button}</Text>
 							</TouchableOpacity>)
@@ -603,6 +601,7 @@ export default class App extends React.Component {
 	toggleModal = () =>
 		this.setState({ isModalVisible: !this.state.isModalVisible });
 
+<<<<<<< HEAD
 	updateRowSpecific = (time) => {
 
 			//Removes current element which is the indefinite countdown which has to be skipped by user
@@ -642,6 +641,8 @@ export default class App extends React.Component {
 			this.step--;
 	}
 
+=======
+>>>>>>> parent of 5c51985... Startverschiebung 1 fertig
 	render = () => {
 		return (
 			<View
