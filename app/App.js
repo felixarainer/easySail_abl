@@ -106,6 +106,7 @@ export default class App extends React.Component {
 			{choice: 3,button: 'Abbrechen (rasche WH)', description: 'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nSofortiges setzen der Flagge "N". \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
 			{choice: 4,button: 'Abbrechen (spätere WH)', description: 'Alle bereits gestarteten Rennen werden abgebrochen \nSofortiges setzen der Flagge "N" über der Flagge "H". \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
 			{choice: 5,button: 'Regatta Abbrechen', description: 'Alle bereits gestarteten Rennen werden abgebrochen \nHeute findet keine Wettfahrt mehr statt\nSofortiges setzen der Flagge "N" über der Flagge "A"'},
+			{choice: undefined,button: 'Schwimmwesten anlegen (Aufruf)', description: 'Setzen der Flagge "Y"'},
 
 		];
 
