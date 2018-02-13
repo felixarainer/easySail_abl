@@ -29,12 +29,14 @@ const RACING = 3;
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags, actions, time, isStart, rank) {
+	constructor(flags, actions, time, isStart, rank, isIndefinite, isSkippable) {
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
 		this.rank = rank;
+		this.isIndefinite = isIndefinite;
+		this.isSkippable = isSkippable;
 	}
 
 	getState = () => {
@@ -50,6 +52,8 @@ class actState {
 				typeof this.time === 'number'
 					? moment().add(this.time, 'seconds')
 					: this.time,
+			isIndefinite: this.isIndefinite,
+			isSkippable: this.isSkippable,
 		};
 	};
 
@@ -151,7 +155,9 @@ export default class App extends React.Component {
 						],
 						starttime,
 						false,
-						0
+						0,
+						false,
+						false,
 					)
 				);
 			} else {
@@ -168,7 +174,9 @@ export default class App extends React.Component {
 						],
 						starttime,
 						false,
-						0
+						0,
+						false,
+						false,
 					)
 				);
 			}
@@ -193,7 +201,9 @@ export default class App extends React.Component {
 					//moment(starttime).add(1, 'm'),
 					moment(starttime).add(15, 's'),
 					false,
-					1
+					1,
+					false,
+					false,
 				)
 			);
 
@@ -220,7 +230,9 @@ export default class App extends React.Component {
 					//moment(starttime).add(2, 'm'),
 					moment(starttime).add(30, 's'),
 					false,
-					2
+					2,
+					false,
+					false,
 				)
 			);
 
@@ -245,7 +257,9 @@ export default class App extends React.Component {
 					// moment(starttime).add(5, 'm'),
 					moment(starttime).add(45, 's'),
 					false,
-					3
+					3,
+					false,
+					false,
 				)
 			);
 
@@ -270,7 +284,9 @@ export default class App extends React.Component {
 					//moment(starttime).add(6, 'm'),
 					moment(starttime).add(60, 's'),
 					false,
-					4
+					4,
+					false,
+					false,
 				)
 			);
 
@@ -285,7 +301,9 @@ export default class App extends React.Component {
 					// 	.add(10, 's'),
 					moment(starttime).add(75, 's'),
 					true,
-					5
+					5,
+					false,
+					false,
 				)
 			);
 
@@ -298,7 +316,9 @@ export default class App extends React.Component {
 					// 	.add(11, 's'),
 					moment(starttime).add(90, 's'),
 					false,
-					6
+					6,
+					false,
+					false,
 				)
 			);
 		});
@@ -332,7 +352,10 @@ export default class App extends React.Component {
 					[res.flags.x, {}, {}, {}],
 					[],
 					moment(lastStartTime).add(4, 'm'),
-					false
+					false,
+					undefined,
+					false,
+					false,
 				)
 			);
 
@@ -431,7 +454,10 @@ export default class App extends React.Component {
 				[res.flags.ap, {}, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false
+				false,
+				undefined,
+				true,
+				true,
 			)
 		);
 
@@ -451,7 +477,10 @@ export default class App extends React.Component {
 				[res.flags.apoh, {}, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false
+				false,
+				undefined,
+				true,
+				true
 			)
 		);
 
@@ -471,7 +500,10 @@ export default class App extends React.Component {
 				[res.flags.apoa, {}, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false
+				false,
+				undefined,
+				false,
+				false,
 			)
 		);
 
@@ -731,8 +763,8 @@ export default class App extends React.Component {
 							this.updateFlags();
 						}
 					}}
-					isSkippable={true}
-					isIndefinite={false}
+					isSkippable={this.state.isIndefinite}
+					isIndefinite={this.state.isSkippable}
 				/>
 				{/* {this.state.viewStartPicker && this.renderStartPicker()} */}
 			</View>
