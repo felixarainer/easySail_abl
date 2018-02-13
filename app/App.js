@@ -466,7 +466,7 @@ export default class App extends React.Component {
 			new actState(
 				[res.flags.ap, {}, {}, {}],
 				[],
-				moment().add(5,'s'),
+				moment().add(1,'h'),
 				false,
 				undefined,
 				true,
@@ -616,6 +616,8 @@ export default class App extends React.Component {
 				break;
 			default:
 
+			//WENN DA WAS IS IM ANDEREN ZWEIG MIT DEM HIER ÜBERSCHREIBEN
+
 		}
 	}
 
@@ -657,44 +659,36 @@ export default class App extends React.Component {
 	toggleModal = () =>
 		this.setState({ isModalVisible: !this.state.isModalVisible });
 
-	updateRowSpecific = (time) => {
-			console.log('updateRowSpecific()')
-
-			//Removes current element which is the indefinite countdown which has to be skipped by user
-			this.actlist.splice(this.step, 1);
-
-			//Setting back this.step au elem 1/7 des startvorgangs setzen
-			if((this.actlist[this.step].getRank() !== undefined)  || (this.actlist[this.step].getRank() < 5)){
-				this.step -= this.actlist[this.step].getRank();
-			}
+	//Soll erst bei
+	updateRowSpecial = (time) => {
+			console.log('updateRowSpecial()')
 
 			this.setState({specialChoice: undefined})
 
-			//Teil der Liste, der verändert wird
-			let altered = this.actlist.slice(this.step, this.actlist.length);
+			// console.log(this.step)
+			// console.log(this.actlist)
+			// console.log(this.actlist[this.step])
+			// console.log('isSkippable ' + this.state.isSkippable)
+			// console.log('isIndefinite ' + this.state.isIndefinite)
 
-			//This.steps ist am Anfang des Startvorgangs, daher kann man direkt von hier die Zeit nehmen
-			let oldTime = this.actlist[this.step].getTime();
-			let newtime = moment().add(60,'seconds');
+			this.actlist.splice(this.step,1)
 
-			let diff = newtime.diff(oldTime, 'seconds')
 
-			if(diff < 0){
-				diff *= -1;
-				altered.forEach(elem => {
-					return elem.subtractTime(diff, 'seconds');
-				});
-			}else{
-				altered.forEach(elem => {
-					return elem.addTime(diff, 'seconds');
-				});
-			}
+			// console.log(this.step)
+			// console.log(this.actlist)
+			// console.log(this.actlist[this.step])
+			// console.log('isSkippable ' + this.state.isSkippable)
+			// console.log('isIndefinite ' + this.state.isIndefinite)
 
-			//Einfügen der veränderten Werte
-			//splice(startINDEX, deletions in front, new elements)
-			this.actlist.splice(this.step, altered.length, ...altered);
+			this.setState({isSkippable: this.actlist[this.step].isSkippable})
+			this.setState({isIndefinite: this.actlist[this.step].isIndefinite})
 
 			this.step--;
+
+
+
+
+
 	}
 
 	render = () => {
@@ -768,12 +762,15 @@ export default class App extends React.Component {
 								switch(this.state.specialChoice){
 									case 0:
 									case 1:
-										this.updateRowSpecific(1);
+										this.updateRowSpecial(1);
 										break;
 								}
 							}
 
 							this.updateFlags();
+
+
+
 						}
 					}}
 					isSkippable={this.state.isIndefinite}
