@@ -29,12 +29,14 @@ const RACING = 3;
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags, actions, time, isStart, rank) {
+	constructor(flags, actions, time, isStart, rank, isIndefinite, isSkippable) {
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
 		this.rank = rank;
+		this.isIndefinite = isIndefinite;
+		this.isSkippable = isSkippable;
 	}
 
 	getState = () => {
@@ -50,6 +52,8 @@ class actState {
 				typeof this.time === 'number'
 					? moment().add(this.time, 'seconds')
 					: this.time,
+			isIndefinite: this.isIndefinite,
+			isSkippable: this.isSkippable,
 		};
 	};
 
@@ -93,9 +97,10 @@ export default class App extends React.Component {
 			isModalVisible: false,
 			phase: PRE_RACE,
 			specialDescription: '',
-
 			specialChoice: undefined,
 			isSpecial: false,
+			isIndefinite: false,
+			isSkippable: false,
 		};
 		this.step = 0;
 
@@ -114,12 +119,6 @@ export default class App extends React.Component {
 					//time: moment().add(3, 'minutes'),
 					time: moment().add(150, 's'), //2,5min
 					condition: 'i',
-					badstart: false,
-				},
-				{
-					//time: moment().add(6, 'minutes'),
-					time: moment().add(300, 's'),	//5min
-					condition: 'p',
 					badstart: false,
 				},
 			],
@@ -151,7 +150,9 @@ export default class App extends React.Component {
 						],
 						starttime,
 						false,
-						0
+						0,
+						false,
+						false,
 					)
 				);
 			} else {
@@ -168,7 +169,9 @@ export default class App extends React.Component {
 						],
 						starttime,
 						false,
-						0
+						0,
+						false,
+						false,
 					)
 				);
 			}
@@ -193,7 +196,9 @@ export default class App extends React.Component {
 					//moment(starttime).add(1, 'm'),
 					moment(starttime).add(15, 's'),
 					false,
-					1
+					1,
+					false,
+					false,
 				)
 			);
 
@@ -220,7 +225,9 @@ export default class App extends React.Component {
 					//moment(starttime).add(2, 'm'),
 					moment(starttime).add(30, 's'),
 					false,
-					2
+					2,
+					false,
+					false,
 				)
 			);
 
@@ -245,7 +252,9 @@ export default class App extends React.Component {
 					// moment(starttime).add(5, 'm'),
 					moment(starttime).add(45, 's'),
 					false,
-					3
+					3,
+					false,
+					false,
 				)
 			);
 
@@ -270,7 +279,9 @@ export default class App extends React.Component {
 					//moment(starttime).add(6, 'm'),
 					moment(starttime).add(60, 's'),
 					false,
-					4
+					4,
+					false,
+					false,
 				)
 			);
 
@@ -285,7 +296,9 @@ export default class App extends React.Component {
 					// 	.add(10, 's'),
 					moment(starttime).add(75, 's'),
 					true,
-					5
+					5,
+					false,
+					false,
 				)
 			);
 
@@ -298,7 +311,9 @@ export default class App extends React.Component {
 					// 	.add(11, 's'),
 					moment(starttime).add(90, 's'),
 					false,
-					6
+					6,
+					false,
+					false,
 				)
 			);
 		});
@@ -307,7 +322,15 @@ export default class App extends React.Component {
 	};
 
 	setInitialFlags = () => {
+		console.log('initialFlags-beforeSetState')
+		console.log(this.step);
+		console.log(this.actlist.length);
+		console.log(this.actlist);
+		console.log(this.actlist[this.step].getState())
 		this.setState(this.actlist[0].getState());
+		console.log('initialFlags-afterSetState')
+		console.log(this.state.isSkippable)
+		console.log(this.state.isIndefinite)
 	};
 
 	setBadStart = (single, ARGcondition) => {
@@ -332,7 +355,10 @@ export default class App extends React.Component {
 					[res.flags.x, {}, {}, {}],
 					[],
 					moment(lastStartTime).add(4, 'm'),
-					false
+					false,
+					undefined,
+					false,
+					false,
 				)
 			);
 
@@ -406,11 +432,15 @@ export default class App extends React.Component {
 		if (this.step < this.actlist.length - 1) {
 			this.setState({ startFinished: false });
 			this.step++;
-			console.log(this.step - 1);
+			console.log('updateFlags-beforeSetState')
+			console.log(this.step);
 			console.log(this.actlist.length);
 			console.log(this.actlist);
 			console.log(this.actlist[this.step].getState())
 			this.setState(this.actlist[this.step].getState());
+			console.log('updateFlags-afterSetState')
+			console.log(this.state.isSkippable)
+			console.log(this.state.isIndefinite)
 
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
@@ -431,7 +461,10 @@ export default class App extends React.Component {
 				[res.flags.ap, {}, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false
+				false,
+				undefined,
+				true,
+				true,
 			)
 		);
 
@@ -451,7 +484,10 @@ export default class App extends React.Component {
 				[res.flags.apoh, {}, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false
+				false,
+				undefined,
+				true,
+				true,
 			)
 		);
 
@@ -471,7 +507,10 @@ export default class App extends React.Component {
 				[res.flags.apoa, {}, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false
+				false,
+				undefined,
+				false,
+				false,
 			)
 		);
 
@@ -731,8 +770,8 @@ export default class App extends React.Component {
 							this.updateFlags();
 						}
 					}}
-					isSkippable={true}
-					isIndefinite={false}
+					isSkippable={this.state.isIndefinite}
+					isIndefinite={this.state.isIndefinite}
 				/>
 				{/* {this.state.viewStartPicker && this.renderStartPicker()} */}
 			</View>
