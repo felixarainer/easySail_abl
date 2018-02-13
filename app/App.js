@@ -111,60 +111,64 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(1, 'minutes'),
-					condition: 'z',
+					time: moment().add(10, 'minutes'),
+					condition: 'i',
+					badstart: false,
+				},{
+					time: moment().add(20, 'minutes'),
+					condition: 'p',
+					badstart: false,
 				},
 			],
-			false
 		);
 		this.setInitialFlags();
 	}
 
-	createStartStates = (args, badstart) => {
-		starttime = moment(args[0].time).subtract(6, 'minutes');
+	createStartStates = (args) => {
 
-		let action1 = [];
-
-		if (badstart) {
-			action1.push(
-				new actState(
-					[res.flags.fhs, {}, {}, {}],
-					[
-						{
-							name: 'TestAction2',
-							actionPic: res.actions.flag_down,
-							flagPic: res.flags.x,
-						},
-					],
-					starttime,
-
-					false,
-					0
-				)
-			);
-		} else {
-			action1.push(
-				//flagge l setzen und 6 min vor Start bergen
-				new actState(
-					[res.flags.l, {}, {}, {}],
-					[
-						{
-							name: 'TestAction2',
-							actionPic: res.actions.flag_down,
-							flagPic: res.flags.l,
-						},
-					],
-					starttime,
-
-					false,
-					0
-				)
-			);
-		}
 
 		let ac = [];
 
 		args.forEach(start => {
+
+			starttime = moment(start.time).subtract(6, 'minutes');
+
+			//1ste aktion
+			if (start.badstart) {
+				ac.push(
+					new actState(
+						[res.flags.fhs, {}, {}, {}],
+						[
+							{
+								name: 'TestAction2',
+								actionPic: res.actions.flag_down,
+								flagPic: res.flags.x,
+							},
+						],
+						starttime,
+						false,
+						0
+					)
+				);
+			} else {
+				ac.push(
+					//flagge l setzen und 6 min vor Start bergen
+					new actState(
+						[res.flags.l, {}, {}, {}],
+						[
+							{
+								name: 'TestAction2',
+								actionPic: res.actions.flag_down,
+								flagPic: res.flags.l,
+							},
+						],
+						starttime,
+						false,
+						0
+					)
+				);
+			}
+
 			//2te aktion
 			//l ist geborgen und in einer minute ankündigungssignal + Klassenflagge
 			ac.push(
@@ -183,7 +187,6 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(1, 'm'),
-
 					false,
 					1
 				)
@@ -210,7 +213,6 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(2, 'm'),
-
 					false,
 					2
 				)
@@ -235,7 +237,6 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(5, 'm'),
-
 					false,
 					3
 				)
@@ -260,7 +261,6 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(6, 'm'),
-
 					false,
 					4
 				)
@@ -293,7 +293,7 @@ export default class App extends React.Component {
 			);
 		});
 
-		return action1.concat(ac);
+		return ac;
 	};
 
 	setInitialFlags = () => {
@@ -352,9 +352,9 @@ export default class App extends React.Component {
 					{
 						time: moment(lastStartTime).add(10, 'm'),
 						condition: ARGcondition,
+						badstart: true,
 					},
 				],
-				true
 			);
 
 			//durch das Updateflags direkt unter dem Funktionskopf wird der step auf 6/13/20... gesetzt
@@ -431,7 +431,6 @@ export default class App extends React.Component {
 		this.updateFlags();
 	}
 
-	//TODO: debuggen
 	postponeAPH = () => {
 		console.log('postponeAPH()')
 		let postActs = [];
