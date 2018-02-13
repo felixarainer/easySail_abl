@@ -423,31 +423,7 @@ export default class App extends React.Component {
 			)
 		);
 
-
-
-		// //Ob der aktuelle Start noch nicht fertig ist
-		// if(this.actlist[this.step].getRank()<5){
-		// 	//Boote sind noch nicht gestartet
-		// 	this.actlist.splice(this.step, 0, ...postActs);
-		// 	this.step--;
-		// 	this.updateFlags();
-		// }else{
-		// 	//Boote sind bereits gestartet
-		// 	if(this.actlist.length - this.step > 2){
-		// 		//Es wären nachher noch starts drinnen im Ablauf, das boot wird erst upgedated wenn die fehlstart ereignisse weg sind
-		// 		if(this.actlist[this.step].getRank() === 5){
-		// 			//rank 5
-		// 			this.actlist.splice(this.step+2, 0, ...postActs)
-		// 		}else{
-		// 			//rank 6
-		// 			this.actlist.splice(this.step+1, 0, ...postActs)
-		// 		}
-		// 	}else{
-		// 		//Es sind nachher keine Starts mehr drinnen.
-		// 		this.actlist.concat(...postActs);
-		// 	}
-		// }
-
+		//TODO: versichern, dass verschieben Buttons nicht während der startphase verfügbar sind.
 		this.actlist.splice(this.step, 0, ...postActs)
 		this.step--;
 		this.updateFlags();
@@ -461,36 +437,19 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				//TODO: flagge ap über h statt x
-				[res.flags.x, {}, {}, {}],
+				[res.flags.apoh, {}, {}, {}],
 				[],
-				moment(),
+				moment().add(5,'s'),
 				false
 			)
 		);
 
-		//Ob der aktuelle Start noch nicht fertig ist
-		if(this.actlist[this.step].getRank()<5){
-			//Boote sind noch nicht gestartet
-			this.actlist.splice(this.step, 0, ...postActs);
-			this.step--;
-			this.updateFlags();
-		}else{
-			//Boote sind bereits gestartet
-			if(this.actlist.length - this.step > 2){
-				//Es wären nachher noch starts drinnen im Ablauf, das boot wird erst upgedated wenn die fehlstart ereignisse weg sind
-				if(this.actlist[this.step].getRank() === 5){
-					//rank 5
-					this.actlist.splice(this.step+2, 0, ...postActs)
-				}else{
-					//rank 6
-					this.actlist.splice(this.step+1, 0, ...postActs)
-				}
-			}else{
-				//Es sind nachher keine Starts mehr drinnen.
-				this.actlist.concat(...postActs);
-			}
-		}
+		//TODO: versichern, dass verschieben Buttons nicht während der startphase verfügbar sind.
+		this.actlist.splice(this.step, 0, ...postActs)
+		this.step--;
+		this.updateFlags();
+
+
 	}
 
 	postponeAPA = () => {
@@ -500,8 +459,7 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				//TODO: flagge ap über h statt x
-				[res.flags.x, {}, {}, {}],
+				[res.flags.apoa, {}, {}, {}],
 				[],
 				moment(),
 				false
@@ -753,6 +711,9 @@ export default class App extends React.Component {
 							if(this.state.specialChoice !== undefined){
 								switch(this.state.specialChoice){
 									case 0:
+										this.updateRowSpecific(1);
+										break;
+									case 1:
 										this.updateRowSpecific(1);
 										break;
 								}
