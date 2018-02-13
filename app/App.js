@@ -97,7 +97,8 @@ export default class App extends React.Component {
 			isModalVisible: false,
 			phase: PRE_RACE,
 			specialDescription: '',
-
+			isSkippable: undefined,
+			isIndefinite: undefined,
 			specialChoice: undefined,
 			isSpecial: false,
 		};
@@ -327,7 +328,15 @@ export default class App extends React.Component {
 	};
 
 	setInitialFlags = () => {
+		console.log('setInitFlags() - before setState()')
+		console.log('this.step: ' + this.step);
+		console.log('actlist.length: ' + this.actlist.length);
+		console.log(this.actlist);
+		console.log(this.actlist[this.step].getState())
 		this.setState(this.actlist[0].getState());
+		console.log('setInitFlags() - after setState()')
+		console.log('indef?' + this.state.isIndefinite)
+		console.log('skip?' + this.state.isSkippable)
 	};
 
 	setBadStart = (single, ARGcondition) => {
@@ -429,11 +438,15 @@ export default class App extends React.Component {
 		if (this.step < this.actlist.length - 1) {
 			this.setState({ startFinished: false });
 			this.step++;
-			console.log(this.step - 1);
-			console.log(this.actlist.length);
+			console.log('updateFlags() - before setState()')
+			console.log('this.step: ' + this.step);
+			console.log('actlist.length: ' + this.actlist.length);
 			console.log(this.actlist);
 			console.log(this.actlist[this.step].getState())
 			this.setState(this.actlist[this.step].getState());
+			console.log('updateFlags() - after setState()')
+			console.log('indef?' + this.state.isIndefinite)
+			console.log('skip?' + this.state.isSkippable)
 
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
