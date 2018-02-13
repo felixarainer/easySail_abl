@@ -271,7 +271,7 @@ export default class App extends React.Component {
 					[],
 					moment(starttime)
 						.add(6, 'm')
-						.add(10, 's'),
+						.add(100, 's'),
 					true,
 					5
 				)
@@ -283,7 +283,7 @@ export default class App extends React.Component {
 					[],
 					moment(starttime)
 						.add(6, 'm')
-						.add(11, 's'),
+						.add(100, 's'),
 					false,
 					6
 				)
@@ -425,26 +425,34 @@ export default class App extends React.Component {
 
 		//Ob der aktuelle Start noch nicht fertig ist
 		if(this.actlist[this.step].getRank()<5){
+			console.log('1')
 			//Boote sind noch nicht gestartet
 			this.actlist.splice(this.step, 0, ...postActs);
 			this.step--;
 			this.updateFlags();
 		}else{
+			console.log('2')
 			//Boote sind bereits gestartet
 			if(this.actlist.length - this.step > 2){
+				console.log('2.1')
 				//Es wären nachher noch starts drinnen im Ablauf, das boot wird erst upgedated wenn die fehlstart ereignisse weg sind
 				if(this.actlist[this.step].getRank() === 5){
+					console.log('2.1.1')
 					//rank 5
 					this.actlist.splice(this.step+2, 0, ...postActs)
 				}else{
+					console.log('2.1.2')
 					//rank 6
 					this.actlist.splice(this.step+1, 0, ...postActs)
 				}
 			}else{
+				console.log('2.2')
 				//Es sind nachher keine Starts mehr drinnen.
 				this.actlist.concat(...postActs);
 			}
 		}
+
+		console.log(this.actlist);
 
 		// this.actlist.splice(this.step, 0, ...postActs)
 		// this.step--;
