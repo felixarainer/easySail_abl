@@ -3,9 +3,6 @@
 // Hosts FlagView and ActionView. Passes current Flags / Actions (TODO) / Count-
 // 	down to children as props i.e. sets next state for the whole app ('Regelsys-
 //	tem')
-//:
-// TODO: migrate Countdown logic here; UPDATE: not nessecary
-// ?TODO?: Redux; UPDATE: not nessecary
 
 import React from 'react';
 import {
@@ -32,12 +29,14 @@ const RACING = 3;
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags, actions, time, isStart, rank) {
+	constructor(flags, actions, time, isStart, rank, isSkippable, isIndef) {
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
 		this.rank = rank;
+		this.isSkippable = isSkippable;
+		this.isIndef = isIndef;
 	}
 
 	getState = () => {
@@ -53,6 +52,8 @@ class actState {
 				typeof this.time === 'number'
 					? moment().add(this.time, 'seconds')
 					: this.time,
+			isIndef: this.isIndef,
+			isSkippable: this.isSkippable,
 		};
 	};
 
@@ -98,8 +99,10 @@ export default class App extends React.Component {
 			specialDescription: '',
 			specialChoice: undefined,
 			isSpecial: false,
+			isIndef: false,
+			isSkippable: false,
 		};
-		this.step = 0; //TODO(Reder): ordentlich implementieren (ggf. redux, keine ahnung wie gscheider)
+		this.step = 0;
 
 		this.specialBtnsDescs = [
 			{key: 0, button: 'Verschieben (kurz)', description: 'Alle noch nicht gestarteten Renen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'},
@@ -130,8 +133,7 @@ export default class App extends React.Component {
 		if (badstart) {
 			action1.push(
 				new actState(
-					//TODO x durch fhs ersetzen
-					[res.flags.x, {}, {}, {}],
+					[res.flags.fhs, {}, {}, {}],
 					[
 						{
 							name: 'TestAction2',
@@ -141,7 +143,9 @@ export default class App extends React.Component {
 					],
 					starttime,
 					false,
-					0
+					0,
+					false,
+					false,
 				)
 			);
 		} else {
@@ -158,7 +162,9 @@ export default class App extends React.Component {
 					],
 					starttime,
 					false,
-					0
+					0,
+					false,
+					false,
 				)
 			);
 		}
@@ -185,7 +191,9 @@ export default class App extends React.Component {
 					],
 					moment(starttime).add(1, 'm'),
 					false,
-					1
+					1,
+					false,
+					false,
 				)
 			);
 
@@ -205,13 +213,14 @@ export default class App extends React.Component {
 						{
 							name: 'TestAction2',
 							actionPic: res.actions.flag_up,
-							//TODO damir fragen wegen res.flags.{start.condition}
 							flagPic: res.flags[start.condition],
 						},
 					],
 					moment(starttime).add(2, 'm'),
 					false,
-					2
+					2,
+					false,
+					false,
 				)
 			);
 
@@ -235,7 +244,9 @@ export default class App extends React.Component {
 					],
 					moment(starttime).add(5, 'm'),
 					false,
-					3
+					3,
+					false,
+					false,
 				)
 			);
 
@@ -259,7 +270,9 @@ export default class App extends React.Component {
 					],
 					moment(starttime).add(6, 'm'),
 					false,
-					4
+					4,
+					false,
+					false,
 				)
 			);
 
@@ -273,7 +286,9 @@ export default class App extends React.Component {
 						.add(6, 'm')
 						.add(100, 's'),
 					true,
-					5
+					5,
+					false,
+					false,
 				)
 			);
 
@@ -285,7 +300,9 @@ export default class App extends React.Component {
 						.add(6, 'm')
 						.add(100, 's'),
 					false,
-					6
+					6,
+					false,
+					false,
 				)
 			);
 		});
@@ -319,7 +336,9 @@ export default class App extends React.Component {
 					[res.flags.x, {}, {}, {}],
 					[],
 					moment(lastStartTime).add(4, 'm'),
-					false
+					false,
+					false,
+					false,
 				)
 			);
 
@@ -345,7 +364,6 @@ export default class App extends React.Component {
 			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
 			bsacts = this.createStartStates(
 				[
-					//TODO MOMENT VERKACKT FELIX FRAGEN
 					{
 						time: moment(lastStartTime).add(10, 'm'),
 						condition: ARGcondition,
@@ -415,11 +433,12 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				//TODO: flagge ap statt x
-				[res.flags.x, {}, {}, {}],
+				[res.flags.ap, {}, {}, {}],
 				[],
 				moment(),
-				false
+				false,
+				true,
+				true,
 			)
 		);
 
@@ -467,11 +486,12 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				//TODO: flagge ap über h statt x
-				[res.flags.x, {}, {}, {}],
+				[res.flags.apoh, {}, {}, {}],
 				[],
 				moment(),
-				false
+				false,
+				true,
+				true,
 			)
 		);
 
@@ -506,11 +526,12 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				//TODO: flagge ap über h statt x
-				[res.flags.x, {}, {}, {}],
+				[res.flags.apoa, {}, {}, {}],
 				[],
 				moment(),
-				false
+				false,
+				true,
+				true,
 			)
 		);
 
@@ -768,7 +789,7 @@ export default class App extends React.Component {
 						}
 					}}
 					isSkippable={true}
-					isIndefinite={false}
+					isIndefinite={true}
 				/>
 				{/* {this.state.viewStartPicker && this.renderStartPicker()} */}
 			</View>
