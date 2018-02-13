@@ -13,6 +13,7 @@ import {
 	Button,
 	TouchableHighlight,
 	TouchableOpacity,
+	Alert,
 } from 'react-native';
 import ActionView from './components/ActionView';
 //import FlagView from './components/FlagView';
@@ -29,14 +30,14 @@ const RACING = 3;
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags, actions, time, isStart, rank, isSkippable, isIndef) {
+	constructor(flags, actions, time, isStart, rank, isSkippable, isIndefinite) {
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
 		this.rank = rank;
 		this.isSkippable = isSkippable;
-		this.isIndef = isIndef;
+		this.isIndefinite = isIndefinite;
 	}
 
 	getState = () => {
@@ -52,7 +53,7 @@ class actState {
 				typeof this.time === 'number'
 					? moment().add(this.time, 'seconds')
 					: this.time,
-			isIndef: this.isIndef,
+			isIndefinite: this.isIndefinite,
 			isSkippable: this.isSkippable,
 		};
 	};
@@ -99,7 +100,7 @@ export default class App extends React.Component {
 			specialDescription: '',
 			specialChoice: undefined,
 			isSpecial: false,
-			isIndef: false,
+			isIndefinite: false,
 			isSkippable: false,
 		};
 		this.step = 0;
@@ -116,7 +117,7 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(1, 'minutes'),
+					time: moment().add(3, 'minutes'),
 					condition: 'z',
 				},
 			],
@@ -337,6 +338,7 @@ export default class App extends React.Component {
 					[],
 					moment(lastStartTime).add(4, 'm'),
 					false,
+					undefined,
 					false,
 					false,
 				)
@@ -412,10 +414,13 @@ export default class App extends React.Component {
 		if (this.step < this.actlist.length - 1) {
 			this.setState({ startFinished: false });
 			this.step++;
-			console.log(this.step - 1);
+			console.log(this.step);
 			console.log(this.actlist.length);
 			console.log(this.actlist);
+			console.log(this.actlist[this.step].getState())
 			this.setState(this.actlist[this.step].getState());
+
+
 
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
@@ -437,6 +442,7 @@ export default class App extends React.Component {
 				[],
 				moment(),
 				false,
+				undefined,
 				true,
 				true,
 			)
@@ -446,9 +452,26 @@ export default class App extends React.Component {
 		if(this.actlist[this.step].getRank()<5){
 			console.log('1')
 			//Boote sind noch nicht gestartet
-			this.actlist.splice(this.step, 0, ...postActs);
-			this.step--;
+			this.actlist.splice(this.step-this.actlist[this.step].getRank(), 0, ...postActs);
+			this.step -= this.actlist[this.step].getRank();
+
+			console.log(this.step)
+
+			this.step -= 2;
+
+			console.log(this.step)
+			console.log('should now show flag ap:')
+
+			//Alert.alert(this.step,'',[],{ cancelable: true})
+			//Alert.alert(this.actlist[this.step].getState(),'',[],{ cancelable: true})
+
+
 			this.updateFlags();
+
+			console.log(this.actlist)
+
+			//Alert.alert(this.state.isIndefinite,'',[],{ cancelable: true})
+
 		}else{
 			console.log('2')
 			//Boote sind bereits gestartet
@@ -467,11 +490,10 @@ export default class App extends React.Component {
 			}else{
 				console.log('2.2')
 				//Es sind nachher keine Starts mehr drinnen.
-				this.actlist.concat(...postActs);
+				//Nichts tun
 			}
 		}
 
-		console.log(this.actlist);
 
 		// this.actlist.splice(this.step, 0, ...postActs)
 		// this.step--;
@@ -490,6 +512,7 @@ export default class App extends React.Component {
 				[],
 				moment(),
 				false,
+				undefined,
 				true,
 				true,
 			)
@@ -530,6 +553,7 @@ export default class App extends React.Component {
 				[],
 				moment(),
 				false,
+				undefined,
 				true,
 				true,
 			)
@@ -658,6 +682,8 @@ export default class App extends React.Component {
 					<TouchableOpacity onPress={() => {
 						this.toggleModal();
 						this.makeSpecialDecision();
+						this.setState({popupClose: true})
+						console.log('Hide Me!')
 					}}>
 						<Text style={{ fontSize: 40 }}>Hide me!</Text>
 					</TouchableOpacity>
@@ -675,7 +701,7 @@ export default class App extends React.Component {
 	updateRowSpecific = (time) => {
 
 			//Removes current element which is the indefinite countdown which has to be skipped by user
-			this.actlist.splice(this.step, 1);
+			this.actlist.splice(this.step-1, 1);
 
 			//Setting back this.step au elem 1/7 des startvorgangs setzen
 			if((this.actlist[this.step].getRank() !== undefined)  || (this.actlist[this.step].getRank() < 5)){
@@ -686,6 +712,9 @@ export default class App extends React.Component {
 
 			//Teil der Liste, der verändert wird
 			let altered = this.actlist.slice(this.step, this.actlist.length);
+
+			console.log(this.actlist);
+			console.log(altered);
 
 			//This.steps ist am Anfang des Startvorgangs, daher kann man direkt von hier die Zeit nehmen
 			let oldTime = this.actlist[this.step].getTime();
@@ -704,10 +733,13 @@ export default class App extends React.Component {
 				});
 			}
 
+			console.log(altered);
+
 			//Einfügen der veränderten Werte
 			//splice(startINDEX, deletions in front, new elements)
 			this.actlist.splice(this.step, altered.length, ...altered);
 
+			console.log(this.actlist);
 			this.step--;
 	}
 
@@ -776,20 +808,28 @@ export default class App extends React.Component {
 					actions={this.state.curActions}
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
+						console.log('onFinished')
 						if (!this.state.startFinished) {
-							if(this.state.specialChoice !== undefined){
+							if(this.state.specialChoice !== undefined && !this.state.popupClose){
 								switch(this.state.specialChoice){
 									case 0:
 										this.updateRowSpecific(1);
 										break;
 								}
+							}else if(this.state.popupClose){
+								this.setState({popupClose: false})
 							}
 
 							this.updateFlags();
 						}
 					}}
-					isSkippable={true}
-					isIndefinite={true}
+
+					isSkippable={this.state.isSkippable}
+					isIndefinite={this.state.isIndefinite}
+
+					//isSkippable={true}
+					//isIndefinite={true}
+
 				/>
 				{/* {this.state.viewStartPicker && this.renderStartPicker()} */}
 			</View>
