@@ -111,11 +111,14 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(10, 'minutes'),
+					//time: moment().add(3, 'minutes'),
+					time: moment().add(150, 's'), //2,5min
 					condition: 'i',
 					badstart: false,
-				},{
-					time: moment().add(20, 'minutes'),
+				},
+				{
+					//time: moment().add(6, 'minutes'),
+					time: moment().add(300, 's'),	//5min
 					condition: 'p',
 					badstart: false,
 				},
@@ -131,7 +134,8 @@ export default class App extends React.Component {
 
 		args.forEach(start => {
 
-			starttime = moment(start.time).subtract(6, 'minutes');
+			// starttime = moment(start.time).subtract(6, 'minutes');
+			starttime = moment(start.time).subtract(2, 'minutes');
 
 			//1ste aktion
 			if (start.badstart) {
@@ -186,7 +190,8 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						},
 					],
-					moment(starttime).add(1, 'm'),
+					//moment(starttime).add(1, 'm'),
+					moment(starttime).add(15, 's'),
 					false,
 					1
 				)
@@ -212,7 +217,8 @@ export default class App extends React.Component {
 							flagPic: res.flags[start.condition],
 						},
 					],
-					moment(starttime).add(2, 'm'),
+					//moment(starttime).add(2, 'm'),
+					moment(starttime).add(30, 's'),
 					false,
 					2
 				)
@@ -236,7 +242,8 @@ export default class App extends React.Component {
 							flagPic: res.flags[start.condition],
 						},
 					],
-					moment(starttime).add(5, 'm'),
+					// moment(starttime).add(5, 'm'),
+					moment(starttime).add(45, 's'),
 					false,
 					3
 				)
@@ -260,7 +267,8 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						},
 					],
-					moment(starttime).add(6, 'm'),
+					//moment(starttime).add(6, 'm'),
+					moment(starttime).add(60, 's'),
 					false,
 					4
 				)
@@ -272,9 +280,10 @@ export default class App extends React.Component {
 				new actState(
 					[{}, {}, {}, {}],
 					[],
-					moment(starttime)
-						.add(6, 'm')
-						.add(10, 's'),
+					// moment(starttime)
+					// 	.add(6, 'm')
+					// 	.add(10, 's'),
+					moment(starttime).add(75, 's'),
 					true,
 					5
 				)
@@ -284,9 +293,10 @@ export default class App extends React.Component {
 				new actState(
 					[{}, {}, {}, {}],
 					[],
-					moment(starttime)
-						.add(6, 'm')
-						.add(11, 's'),
+					// moment(starttime)
+					// 	.add(6, 'm')
+					// 	.add(11, 's'),
+					moment(starttime).add(90, 's'),
 					false,
 					6
 				)
@@ -368,8 +378,8 @@ export default class App extends React.Component {
 		this.updateFlags();
 	};
 
-	//Siehe 10 Zeilen oben [*]
 	updateRow = time => {
+		//Siehe 10 Zeilen oben [*]
 		console.log('updateRow()');
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
 		//+2 weil im Moment des Funktionsaufrufs der stepcounter bei 5 ist
@@ -379,7 +389,6 @@ export default class App extends React.Component {
 		altered.forEach(elem => {
 			elem.addTime(time,'m');
 		});
-		console.log(altered);
 
 		//Einfügen der veränderten Werte
 		//splice(startINDEX, deletions in front, new elements)
@@ -413,6 +422,7 @@ export default class App extends React.Component {
 	};
 
 	postponeAP = () => {
+		console.log('postponeAP')
 		let postActs = [];
 		let newTime = 0;
 
@@ -449,8 +459,6 @@ export default class App extends React.Component {
 		this.actlist.splice(this.step, 0, ...postActs)
 		this.step--;
 		this.updateFlags();
-
-
 	}
 
 	postponeAPA = () => {
@@ -462,12 +470,14 @@ export default class App extends React.Component {
 			new actState(
 				[res.flags.apoa, {}, {}, {}],
 				[],
-				moment(),
+				moment().add(5,'s'),
 				false
 			)
 		);
 
-		this.actlist.splice(this.step, 0, ...postActs)
+		this.actlist = postActs;
+		this.step--;
+		this.updateFlags();
 	}
 
 	renderStartPicker = () => {
@@ -548,10 +558,16 @@ export default class App extends React.Component {
 	};
 
 	makeSpecialDecision = () => {
+		console.log('makeSpecialDecision')
 		switch (this.state.specialChoice) {
 			case 0:
 				this.postponeAP();
-
+				break;
+			case 1:
+				this.postponeAPH();
+				break;
+			case 2:
+				this.postponeAPA();
 				break;
 			default:
 
@@ -597,6 +613,7 @@ export default class App extends React.Component {
 		this.setState({ isModalVisible: !this.state.isModalVisible });
 
 	updateRowSpecific = (time) => {
+			console.log('updateRowSpecific()')
 
 			//Removes current element which is the indefinite countdown which has to be skipped by user
 			this.actlist.splice(this.step, 1);
@@ -700,12 +717,11 @@ export default class App extends React.Component {
 					actions={this.state.curActions}
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
+						console.log('onFinished()')
 						if (!this.state.startFinished) {
 							if(this.state.specialChoice !== undefined){
 								switch(this.state.specialChoice){
 									case 0:
-										this.updateRowSpecific(1);
-										break;
 									case 1:
 										this.updateRowSpecific(1);
 										break;
