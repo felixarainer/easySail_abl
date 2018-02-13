@@ -66,6 +66,21 @@ export const flags = {
 		pic: require('./pics/flags/ap.png'),
 		ratio: 1,
 	},
+	n: {
+		name: 'n',
+		pic: require('./pics/flags/n.png'),
+		ratio: 1,
+	},
+	noa: {
+		name: 'noa',
+		pic: require('./pics/flags/noa.png'),
+		ratio: 1,
+	},
+	noh: {
+		name: 'noh',
+		pic: require('./pics/flags/noh.png'),
+		ratio: 1,
+	},
 };
 
 export const actions = {

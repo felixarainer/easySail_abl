@@ -29,14 +29,12 @@ const RACING = 3;
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags, actions, time, isStart, rank, isIndefinite, isSkippable) {
+	constructor(flags, actions, time, isStart, rank) {
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
 		this.rank = rank;
-		this.isIndefinite = isIndefinite;
-		this.isSkippable = isSkippable;
 	}
 
 	getState = () => {
@@ -52,8 +50,6 @@ class actState {
 				typeof this.time === 'number'
 					? moment().add(this.time, 'seconds')
 					: this.time,
-			isIndefinite: this.isIndefinite,
-			isSkippable: this.isSkippable,
 		};
 	};
 
@@ -97,17 +93,20 @@ export default class App extends React.Component {
 			isModalVisible: false,
 			phase: PRE_RACE,
 			specialDescription: '',
+
 			specialChoice: undefined,
 			isSpecial: false,
-			isIndefinite: false,
-			isSkippable: false,
 		};
 		this.step = 0;
 
 		this.specialBtnsDescs = [
-			{choice: 0, button: 'Verschieben (kurz)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt fortführen möchten klicken Sie auf den Countdown'},
-			{choice: 1,button: 'Verschieben (lang)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.'},
+			{choice: 0, button: 'Verschieben (kurz)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
+			{choice: 1,button: 'Verschieben (lang)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
 			{choice: 2,button: 'Verschieben und abbrechen', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "A".'},
+			{choice: 3,button: 'Abbrechen (rasche WH)', description: 'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nSofortiges setzen der Flagge "N". \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
+			{choice: 4,button: 'Abbrechen (spätere WH)', description: 'Alle bereits gestarteten Rennen werden abgebrochen \nSofortiges setzen der Flagge "N" über der Flagge "H". \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
+			{choice: 5,button: 'Regatta Abbrechen', description: 'Alle bereits gestarteten Rennen werden abgebrochen \nHeute findet keine Wettfahrt mehr statt\nSofortiges setzen der Flagge "N" über der Flagge "A"'},
+
 		];
 
 	}
@@ -119,6 +118,12 @@ export default class App extends React.Component {
 					//time: moment().add(3, 'minutes'),
 					time: moment().add(150, 's'), //2,5min
 					condition: 'i',
+					badstart: false,
+				},
+				{
+					//time: moment().add(6, 'minutes'),
+					time: moment().add(300, 's'),	//5min
+					condition: 'p',
 					badstart: false,
 				},
 			],
@@ -150,9 +155,7 @@ export default class App extends React.Component {
 						],
 						starttime,
 						false,
-						0,
-						false,
-						false,
+						0
 					)
 				);
 			} else {
@@ -169,9 +172,7 @@ export default class App extends React.Component {
 						],
 						starttime,
 						false,
-						0,
-						false,
-						false,
+						0
 					)
 				);
 			}
@@ -196,9 +197,7 @@ export default class App extends React.Component {
 					//moment(starttime).add(1, 'm'),
 					moment(starttime).add(15, 's'),
 					false,
-					1,
-					false,
-					false,
+					1
 				)
 			);
 
@@ -225,9 +224,7 @@ export default class App extends React.Component {
 					//moment(starttime).add(2, 'm'),
 					moment(starttime).add(30, 's'),
 					false,
-					2,
-					false,
-					false,
+					2
 				)
 			);
 
@@ -252,9 +249,7 @@ export default class App extends React.Component {
 					// moment(starttime).add(5, 'm'),
 					moment(starttime).add(45, 's'),
 					false,
-					3,
-					false,
-					false,
+					3
 				)
 			);
 
@@ -279,9 +274,7 @@ export default class App extends React.Component {
 					//moment(starttime).add(6, 'm'),
 					moment(starttime).add(60, 's'),
 					false,
-					4,
-					false,
-					false,
+					4
 				)
 			);
 
@@ -296,9 +289,7 @@ export default class App extends React.Component {
 					// 	.add(10, 's'),
 					moment(starttime).add(75, 's'),
 					true,
-					5,
-					false,
-					false,
+					5
 				)
 			);
 
@@ -311,9 +302,7 @@ export default class App extends React.Component {
 					// 	.add(11, 's'),
 					moment(starttime).add(90, 's'),
 					false,
-					6,
-					false,
-					false,
+					6
 				)
 			);
 		});
@@ -322,15 +311,7 @@ export default class App extends React.Component {
 	};
 
 	setInitialFlags = () => {
-		console.log('initialFlags-beforeSetState')
-		console.log(this.step);
-		console.log(this.actlist.length);
-		console.log(this.actlist);
-		console.log(this.actlist[this.step].getState())
 		this.setState(this.actlist[0].getState());
-		console.log('initialFlags-afterSetState')
-		console.log(this.state.isSkippable)
-		console.log(this.state.isIndefinite)
 	};
 
 	setBadStart = (single, ARGcondition) => {
@@ -355,10 +336,7 @@ export default class App extends React.Component {
 					[res.flags.x, {}, {}, {}],
 					[],
 					moment(lastStartTime).add(4, 'm'),
-					false,
-					undefined,
-					false,
-					false,
+					false
 				)
 			);
 
@@ -461,10 +439,7 @@ export default class App extends React.Component {
 				[res.flags.ap, {}, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false,
-				undefined,
-				true,
-				true,
+				false
 			)
 		);
 
@@ -484,10 +459,7 @@ export default class App extends React.Component {
 				[res.flags.apoh, {}, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false,
-				undefined,
-				true,
-				true,
+				false
 			)
 		);
 
@@ -507,15 +479,71 @@ export default class App extends React.Component {
 				[res.flags.apoa, {}, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false,
-				undefined,
-				false,
-				false,
+				false
 			)
 		);
 
 		this.actlist = postActs;
-		this.step--;
+		this.step = -1;
+		this.updateFlags();
+	}
+
+	cancelN = () => {
+		console.log('cancel_N')
+		let cancelActs = [];
+		let newTime = 0;
+
+		cancelActs.push(
+			new actState(
+				[res.flags.n, {}, {}, {}],
+				[],
+				moment().add(5,'s'),
+				false
+			)
+		);
+
+
+		this.actlist.splice(0, 0, ...cancelActs)
+		this.step = -1;
+		this.updateFlags();
+	}
+
+	cancelNH = () => {
+		console.log('cancel_NOH')
+		let cancelActs = [];
+		let newTime = 0;
+
+		cancelActs.push(
+			new actState(
+				[res.flags.noh, {}, {}, {}],
+				[],
+				moment().add(5,'s'),
+				false
+			)
+		);
+
+
+		this.actlist.splice(0, 0, ...cancelActs)
+		this.step = -1;
+		this.updateFlags();
+	}
+
+	cancelNA = () => {
+		console.log('cancel_NOA()')
+		let cancelActs = [];
+		let newTime = 0;
+
+		cancelActs.push(
+			new actState(
+				[res.flags.noa, {}, {}, {}],
+				[],
+				moment().add(5,'s'),
+				false
+			)
+		);
+
+		this.actlist = cancelActs;
+		this.step = -1;
 		this.updateFlags();
 	}
 
@@ -608,8 +636,18 @@ export default class App extends React.Component {
 			case 2:
 				this.postponeAPA();
 				break;
+			case 3:
+				this.cancelN();
+				break;
+			case 4:
+				this.cancelNH();
+				break;
+			case 5:
+				this.cancelNA();
+				break;
 			default:
 
+		this.setState({specialChoice: undefined})
 		}
 	}
 
@@ -762,6 +800,8 @@ export default class App extends React.Component {
 								switch(this.state.specialChoice){
 									case 0:
 									case 1:
+									case 3:
+									case 4:
 										this.updateRowSpecific(1);
 										break;
 								}
@@ -770,8 +810,8 @@ export default class App extends React.Component {
 							this.updateFlags();
 						}
 					}}
-					isSkippable={this.state.isIndefinite}
-					isIndefinite={this.state.isIndefinite}
+					isSkippable={true}
+					isIndefinite={false}
 				/>
 				{/* {this.state.viewStartPicker && this.renderStartPicker()} */}
 			</View>
