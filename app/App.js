@@ -114,13 +114,13 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(1, 'minutes'),
+					time: moment().add(10, 'minutes'),
 					//time: moment().add(150, 's'), //2,5min
 					condition: 'i',
 					badstart: false,
 				},
 				{
-					time: moment().add(11, 'minutes'),
+					time: moment().add(20, 'minutes'),
 					//time: moment().add(300, 's'),	//5min
 					condition: 'p',
 					badstart: false,
@@ -328,7 +328,7 @@ export default class App extends React.Component {
 			//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
 			//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
 
-			
+
 			bsacts.push(
 				new actState(
 					[res.flags.x, {}, {}, {}],
