@@ -50,6 +50,8 @@ class actState {
 				typeof this.time === 'number'
 					? moment().add(this.time, 'seconds')
 					: this.time,
+			viewBadStartBtns: this.isStart,
+
 		};
 	};
 
@@ -59,10 +61,6 @@ class actState {
 
 	setFlags = newFlags => {
 		this.flags = newFlags;
-	};
-
-	wasStart = () => {
-		return this.isStart;
 	};
 
 	getTime = () => {
@@ -116,14 +114,14 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					//time: moment().add(3, 'minutes'),
-					time: moment().add(150, 's'), //2,5min
+					time: moment().add(3, 'minutes'),
+					//time: moment().add(150, 's'), //2,5min
 					condition: 'i',
 					badstart: false,
 				},
 				{
-					//time: moment().add(6, 'minutes'),
-					time: moment().add(300, 's'),	//5min
+					time: moment().add(6, 'minutes'),
+					//time: moment().add(300, 's'),	//5min
 					condition: 'p',
 					badstart: false,
 				},
@@ -139,8 +137,8 @@ export default class App extends React.Component {
 
 		args.forEach(start => {
 
-			// starttime = moment(start.time).subtract(6, 'minutes');
-			starttime = moment(start.time).subtract(2, 'minutes');
+			starttime = moment(start.time).subtract(6, 'minutes');
+			//starttime = moment(start.time).subtract(2, 'minutes');
 
 			//1ste aktion
 			if (start.badstart) {
@@ -151,7 +149,7 @@ export default class App extends React.Component {
 							{
 								name: 'TestAction2',
 								actionPic: res.actions.flag_down,
-								flagPic: res.flags.x,
+								flagPic: res.flags.fhs,
 							},
 						],
 						starttime,
@@ -195,8 +193,8 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						},
 					],
-					//moment(starttime).add(1, 'm'),
-					moment(starttime).add(15, 's'),
+					moment(starttime).add(1, 'm'),
+					//moment(starttime).add(15, 's'),
 					false,
 					1
 				)
@@ -222,8 +220,8 @@ export default class App extends React.Component {
 							flagPic: res.flags[start.condition],
 						},
 					],
-					//moment(starttime).add(2, 'm'),
-					moment(starttime).add(30, 's'),
+					moment(starttime).add(2, 'm'),
+					//moment(starttime).add(30, 's'),
 					false,
 					2
 				)
@@ -247,8 +245,8 @@ export default class App extends React.Component {
 							flagPic: res.flags[start.condition],
 						},
 					],
-					// moment(starttime).add(5, 'm'),
-					moment(starttime).add(45, 's'),
+					moment(starttime).add(5, 'm'),
+					//moment(starttime).add(45, 's'),
 					false,
 					3
 				)
@@ -272,8 +270,8 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						},
 					],
-					//moment(starttime).add(6, 'm'),
-					moment(starttime).add(60, 's'),
+					moment(starttime).add(6, 'm'),
+					//moment(starttime).add(60, 's'),
 					false,
 					4
 				)
@@ -285,10 +283,10 @@ export default class App extends React.Component {
 				new actState(
 					[{}, {}, {}, {}],
 					[],
-					// moment(starttime)
-					// 	.add(6, 'm')
-					// 	.add(10, 's'),
-					moment(starttime).add(75, 's'),
+					moment(starttime)
+						.add(6, 'm')
+						.add(10, 's'),
+					//moment(starttime).add(75, 's'),
 					true,
 					5
 				)
@@ -298,10 +296,10 @@ export default class App extends React.Component {
 				new actState(
 					[{}, {}, {}, {}],
 					[],
-					// moment(starttime)
-					// 	.add(6, 'm')
-					// 	.add(11, 's'),
-					moment(starttime).add(90, 's'),
+					moment(starttime)
+						.add(6, 'm')
+						.add(11, 's'),
+					//moment(starttime).add(90, 's'),
 					false,
 					6
 				)
@@ -320,10 +318,7 @@ export default class App extends React.Component {
 		this.setState({ startFinished: false });
 		//rückrufbuttons deaktivieren
 		this.setState({ viewBadStartBtns: false });
-		//letzte startzeit
-		let lastStartTime = moment(
-			this.actlist[this.actlist.length - 1].getTime()
-		).subtract(10, 's');
+
 		//neue actions
 		let bsacts = [];
 
@@ -336,19 +331,15 @@ export default class App extends React.Component {
 				new actState(
 					[res.flags.x, {}, {}, {}],
 					[],
-					moment(lastStartTime).add(4, 'm'),
+					//TODO genaue Zeit herausfinden
+					moment().add(4, 'm'),
 					false
 				)
 			);
 
-			//button zur bestätigung aktivieren
-			this.setState({ singleBadStart: true });
+			this.actlist.splice(this.step+1, 0, ...bsacts)
+			this.updateFlags();
 
-			this.setState({ curflags: [res.flags.x, {}, {}, {}] });
-
-			//TODO: blinkendes ding mit schuss bild drinnen, damit klar ist dass der Schuss JETZT abgegeben werden muss.
-
-			this.actlist = this.actlist.concat(bsacts);
 		} else {
 			console.log('massive bad start');
 
@@ -363,9 +354,9 @@ export default class App extends React.Component {
 			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
 			bsacts = this.createStartStates(
 				[
-					//TODO MOMENT VERKACKT FELIX FRAGEN
+					//TODO genaue zeit herausfinden
 					{
-						time: moment(lastStartTime).add(10, 'm'),
+						time: moment().add(10, 'm'),
 						condition: ARGcondition,
 						badstart: true,
 					},
@@ -420,10 +411,6 @@ export default class App extends React.Component {
 			console.log('updateFlags-afterSetState')
 			console.log(this.state.isSkippable)
 			console.log(this.state.isIndefinite)
-
-			//war aktuelles element ein start?
-			//wenn ja fehlstartbuttons anzeigen
-			this.setState({ viewBadStartBtns: this.actlist[this.step].wasStart() });
 		} else {
 			console.log('updateflags(): reached end of array');
 			this.setState({ startFinished: true });
