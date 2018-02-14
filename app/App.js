@@ -176,8 +176,8 @@ export default class App extends React.Component {
 						starttime,
 						false,
 						0,
-						false,
-						false,
+						true,
+						true,
 					)
 				);
 			}
@@ -186,7 +186,7 @@ export default class App extends React.Component {
 			//l ist geborgen und in einer minute ankündigungssignal + Klassenflagge
 			ac.push(
 				new actState(
-					[{}, {}, {}, {}],
+					[res.flags.black, {}, {}, {}],
 					[
 						{
 							name: 'TestAction1',
@@ -444,9 +444,8 @@ export default class App extends React.Component {
 			console.log(this.actlist);
 			console.log(this.actlist[this.step].getState())
 			this.setState(this.actlist[this.step].getState());
-			console.log('updateFlags() - after setState()')
-			console.log('indef?' + this.state.isIndefinite)
-			console.log('skip?' + this.state.isSkippable)
+
+
 
 			//war aktuelles element ein start?
 			//wenn ja fehlstartbuttons anzeigen
@@ -466,7 +465,7 @@ export default class App extends React.Component {
 			new actState(
 				[res.flags.ap, {}, {}, {}],
 				[],
-				moment().add(1,'h'),
+				moment().add(30,'s'),
 				false,
 				undefined,
 				true,
@@ -692,6 +691,9 @@ export default class App extends React.Component {
 	}
 
 	render = () => {
+		console.log('indef?' + this.state.isIndefinite)
+		console.log('skip?' + this.state.isSkippable)
+
 		return (
 			<View
 				style={{
@@ -756,7 +758,7 @@ export default class App extends React.Component {
 					actions={this.state.curActions}
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
-						console.log('onFinished()')
+						console.log('onFinished()------------------')
 						if (!this.state.startFinished) {
 							if(this.state.specialChoice !== undefined){
 								switch(this.state.specialChoice){
