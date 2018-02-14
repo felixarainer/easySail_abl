@@ -114,13 +114,13 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(3, 'minutes'),
+					time: moment().add(1, 'minutes'),
 					//time: moment().add(150, 's'), //2,5min
 					condition: 'i',
 					badstart: false,
 				},
 				{
-					time: moment().add(6, 'minutes'),
+					time: moment().add(11, 'minutes'),
 					//time: moment().add(300, 's'),	//5min
 					condition: 'p',
 					badstart: false,
@@ -327,18 +327,23 @@ export default class App extends React.Component {
 			//Einzelrückruf
 			//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
 			//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
+
+			
 			bsacts.push(
 				new actState(
 					[res.flags.x, {}, {}, {}],
 					[],
-					//TODO genaue Zeit herausfinden
+					//TODO genaue Zeit herausfinden WICHTIG NICHT IGNORIEREN
 					moment().add(4, 'm'),
-					false
+					false,
+					undefined
 				)
 			);
 
 			this.actlist.splice(this.step+1, 0, ...bsacts)
 			this.updateFlags();
+			this.actlist.splice(this.step, 1)
+
 
 		} else {
 			console.log('massive bad start');
@@ -354,7 +359,7 @@ export default class App extends React.Component {
 			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
 			bsacts = this.createStartStates(
 				[
-					//TODO genaue zeit herausfinden
+					//TODO genaue zeit herausfinden WICHTIG NICHT IGNORIEREN
 					{
 						time: moment().add(10, 'm'),
 						condition: ARGcondition,
@@ -367,11 +372,11 @@ export default class App extends React.Component {
 			//das entspricht der letzten aktion des vorherigen starts, also des deaktivieren der rückrufbuttons
 			//der neue start wird in die liste eingeschoben
 			this.actlist.splice(this.step + 2, 0, ...bsacts);
-		}
 
-		//Countdown überspringen
-		this.updateFlags();
-		this.updateFlags();
+
+			this.updateFlags();
+			this.updateFlags();
+		}
 	};
 
 	updateRow = time => {
@@ -409,8 +414,8 @@ export default class App extends React.Component {
 			console.log(this.actlist[this.step].getState())
 			this.setState(this.actlist[this.step].getState());
 			console.log('updateFlags-afterSetState')
-			console.log(this.state.isSkippable)
-			console.log(this.state.isIndefinite)
+			// console.log(this.state.isSkippable)
+			// console.log(this.state.isIndefinite)
 		} else {
 			console.log('updateflags(): reached end of array');
 			this.setState({ startFinished: true });
