@@ -107,7 +107,6 @@ export default class App extends React.Component {
 			{choice: undefined,button: 'Schwimmwesten anlegen (Aufruf)', description: 'Setzen der Flagge "Y"'},
 
 		];
-
 	}
 
 	componentWillMount() {
@@ -137,14 +136,14 @@ export default class App extends React.Component {
 
 		args.forEach(start => {
 
-			starttime = moment(start.time).subtract(6, 'minutes');
+			starttime = moment(start.time).subtract(10, 'minutes');
 			//starttime = moment(start.time).subtract(2, 'minutes');
 
 			//1ste aktion
 			if (start.badstart) {
 				ac.push(
 					new actState(
-						[res.flags.fhs, {}, {}, {}],
+						[res.flags.orange,res.flags.fhs, {}, {}],
 						[
 							{
 								name: 'TestAction2',
@@ -161,12 +160,12 @@ export default class App extends React.Component {
 				ac.push(
 					//flagge l setzen und 6 min vor Start bergen
 					new actState(
-						[res.flags.l, {}, {}, {}],
+						[{},{}, {}, {}],
 						[
 							{
 								name: 'TestAction2',
-								actionPic: res.actions.flag_down,
-								flagPic: res.flags.l,
+								actionPic: res.actions.flag_up,
+								flagPic: res.flags.orange,
 							},
 						],
 						starttime,
@@ -180,7 +179,7 @@ export default class App extends React.Component {
 			//l ist geborgen und in einer minute ankündigungssignal + Klassenflagge
 			ac.push(
 				new actState(
-					[{}, {}, {}, {}],
+					[res.flags.orange, {}, {}, {}],
 					[
 						{
 							name: 'TestAction1',
@@ -206,7 +205,7 @@ export default class App extends React.Component {
 				//Klassenflagge gesetzt
 				//in einer minute Vorbereitungssignal und Startmethode
 				new actState(
-					[res.flags.klass, {}, {}, {}],
+					[res.flags.orange, res.flags.klass, {}, {}],
 					[
 						{
 							name: 'TestAction1',
@@ -232,7 +231,7 @@ export default class App extends React.Component {
 				//Condition Flagge gesetzt
 				//3 minuten bis zum 1 min signal
 				new actState(
-					[res.flags.klass, res.flags[start.condition], {}, {}],
+				 [res.flags.orange, res.flags.klass, res.flags[start.condition], {}],
 					[
 						{
 							name: 'TestAction1',
@@ -257,7 +256,7 @@ export default class App extends React.Component {
 				//1 minuten signal geschossen, condition flagge geborgen
 				//1 minute bis start
 				new actState(
-					[res.flags.klass, {}, {}, {}],
+					[res.flags.orange, res.flags.klass, {}, {}],
 					[
 						{
 							name: 'TestAction1',
@@ -281,7 +280,7 @@ export default class App extends React.Component {
 			//kein button press keine nächsten aktionen
 			ac.push(
 				new actState(
-					[{}, {}, {}, {}],
+					[res.flags.orange, {}, {}, {}],
 					[],
 					moment(starttime)
 						.add(6, 'm')
@@ -294,7 +293,7 @@ export default class App extends React.Component {
 
 			ac.push(
 				new actState(
-					[{}, {}, {}, {}],
+					[res.flags.orange, {}, {}, {}],
 					[],
 					moment(starttime)
 						.add(6, 'm')
@@ -331,7 +330,7 @@ export default class App extends React.Component {
 
 			bsacts.push(
 				new actState(
-					[res.flags.x, {}, {}, {}],
+					[res.flags.orange, res.flags.x,  {}, {}],
 					[],
 					//TODO genaue Zeit herausfinden WICHTIG NICHT IGNORIEREN
 					moment().add(4, 'm'),
@@ -429,7 +428,7 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				[res.flags.ap, {}, {}, {}],
+				[res.flags.orange,res.flags.ap, {}, {}],
 				[],
 				moment().add(5,'s'),
 				false
@@ -449,7 +448,7 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				[res.flags.apoh, {}, {}, {}],
+				[res.flags.orange, res.flags.apoh, {}, {}],
 				[],
 				moment().add(5,'s'),
 				false
@@ -469,7 +468,7 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				[res.flags.apoa, {}, {}, {}],
+				[res.flags.orange, res.flags.apoa, {}, {}],
 				[],
 				moment().add(5,'s'),
 				false
@@ -488,7 +487,7 @@ export default class App extends React.Component {
 
 		cancelActs.push(
 			new actState(
-				[res.flags.n, {}, {}, {}],
+				[res.flags.orange, res.flags.n, {}, {}],
 				[],
 				moment().add(5,'s'),
 				false
@@ -508,7 +507,7 @@ export default class App extends React.Component {
 
 		cancelActs.push(
 			new actState(
-				[res.flags.noh, {}, {}, {}],
+				[res.flags.orange, res.flags.noh, {}, {}],
 				[],
 				moment().add(5,'s'),
 				false
@@ -528,7 +527,7 @@ export default class App extends React.Component {
 
 		cancelActs.push(
 			new actState(
-				[res.flags.noa, {}, {}, {}],
+				[res.flags.orange, res.flags.noa, {}, {}],
 				[],
 				moment().add(5,'s'),
 				false
