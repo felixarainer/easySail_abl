@@ -121,6 +121,11 @@ export default class App extends React.Component {
 					//time: moment().add(150, 's'), //2,5min
 					condition: 'i',
 					badstart: false,
+				},{
+					time: moment().add(14, 'minutes'),
+					//time: moment().add(150, 's'), //2,5min
+					condition: 'p',
+					badstart: false,
 				},
 			],
 		);
@@ -155,22 +160,25 @@ export default class App extends React.Component {
 					)
 				);
 			} else {
-				ac.push(
-					//flagge l setzen und 6 min vor Start bergen
-					new actState(
-						[{},{}, {}, {}],
-						[
-							{
-								name: 'TestAction2',
-								actionPic: res.actions.flag_up,
-								flagPic: res.flags.orange,
-							},
-						],
-						starttime,
-						false,
-						0
-					)
-				);
+				//worange flagge muss nur gesetzt werden, wenn startanfang
+				if(ac.length < 1){
+					ac.push(
+						//flagge l setzen und 6 min vor Start bergen
+						new actState(
+							[{},{}, {}, {}],
+							[
+								{
+									name: 'TestAction2',
+									actionPic: res.actions.flag_up,
+									flagPic: res.flags.orange,
+								},
+							],
+							starttime,
+							false,
+							0
+						)
+					);
+				}
 			}
 
 			//2te aktion
