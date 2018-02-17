@@ -55,6 +55,10 @@ class actState {
 		};
 	};
 
+	wasStart = () => {
+		return this.isStart;
+	}
+
 	getFlags = () => {
 		return this.flags;
 	};
@@ -113,15 +117,9 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(10, 'minutes'),
+					time: moment().add(4, 'minutes'),
 					//time: moment().add(150, 's'), //2,5min
 					condition: 'i',
-					badstart: false,
-				},
-				{
-					time: moment().add(20, 'minutes'),
-					//time: moment().add(300, 's'),	//5min
-					condition: 'p',
 					badstart: false,
 				},
 			],
@@ -400,6 +398,31 @@ export default class App extends React.Component {
 		Orientation.lockToLandscape();
 	};
 
+	dropOrangeFlag = () => {
+		let swapStates = [];
+
+		let oldFlags = this.actlist[this.actlist.length -1].getFlags();
+		let oldTime = this.actlist[this.actlist.length -1].getTime();
+		let oldStart = this.actlist[this.actlist.length -1].wasStart();
+
+		swapStates.push(
+			new actState(
+				oldFlags,
+				[
+					{
+						name: 'TestAction2',
+						actionPic: res.actions.flag_down,
+						flagPic: res.flags.orange,
+					},
+				],
+				oldTime,
+				oldStart,
+			)
+		);
+
+		this.actlist.splice(this.actlist.length-1, 1, ...swapStates);
+	}
+
 	updateFlags = () => {
 		console.log('updateflags()');
 		//Auffhören mit updaten wenn liste abgearbeitet
@@ -413,8 +436,9 @@ export default class App extends React.Component {
 			console.log(this.actlist[this.step].getState())
 			this.setState(this.actlist[this.step].getState());
 			console.log('updateFlags-afterSetState')
-			// console.log(this.state.isSkippable)
-			// console.log(this.state.isIndefinite)
+			if(this.step === this.actlist.length - 3){
+				this.dropOrangeFlag();
+			}
 		} else {
 			console.log('updateflags(): reached end of array');
 			this.setState({ startFinished: true });
