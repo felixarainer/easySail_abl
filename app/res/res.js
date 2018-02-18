@@ -1,7 +1,7 @@
 //res - saves flags / actions (TODO) as constants, is imported by App.js
 
 export const flags = {
-	_1hs: {
+	fhs: {
 		name: 'fhs',
 		pic: require('./pics/flags/1hs.png'),
 		ratio: 1.57,
@@ -39,6 +39,51 @@ export const flags = {
 	klass: {
 		name: 'klass',
 		pic: require('./pics/flags/klass.png'),
+		ratio: 1,
+	},
+	a: {
+		name: 'a',
+		pic: require('./pics/flags/a.png'),
+		ratio: 1,
+	},
+	h: {
+		name: 'h',
+		pic: require('./pics/flags/h.png'),
+		ratio: 1,
+	},
+	apoa: {
+		name: 'apoa',
+		pic: require('./pics/flags/apoa.png'),
+		ratio: 1,
+	},
+	apoh: {
+		name: 'apoh',
+		pic: require('./pics/flags/apoh.png'),
+		ratio: 1,
+	},
+	ap: {
+		name: 'ap',
+		pic: require('./pics/flags/ap.png'),
+		ratio: 1,
+	},
+	n: {
+		name: 'n',
+		pic: require('./pics/flags/n.png'),
+		ratio: 1,
+	},
+	noa: {
+		name: 'noa',
+		pic: require('./pics/flags/noa.png'),
+		ratio: 1,
+	},
+	noh: {
+		name: 'noh',
+		pic: require('./pics/flags/noh.png'),
+		ratio: 1,
+	},
+	orange: {
+		name: 'orange',
+		pic: require('./pics/flags/orange.png'),
 		ratio: 1,
 	},
 };

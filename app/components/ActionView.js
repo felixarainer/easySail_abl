@@ -23,7 +23,7 @@ export default class ActionView extends Component {
 	}
 
 	render() {
-		console.log('AV.render()');
+		//console.log('AV.render()');
 		return (
 			<View style={styles.containerAV}>
 				<View style={styles.actionContainer}>
@@ -39,7 +39,7 @@ export default class ActionView extends Component {
 						isSkippable={this.props.isSkippable}
 						isIndefinite={this.props.isIndefinite}
 						onFinished={() => {
-							console.log('AV.render.onFinished()');
+							//console.log('AV.render.onFinished()');
 							this.props.onFinished();
 						}}
 						style={styles.countdownText}

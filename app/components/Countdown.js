@@ -61,12 +61,12 @@ export default class Countdown extends Component {
 	};
 
 	componentWillUnmount = () => {
-		console.log('Countdown.componentWillUnmount()');
+		//console.log('Countdown.componentWillUnmount()');
 		clearInterval(this.state.intervalId);
 	};
 
 	calculateRemainingTime = () => {
-		console.log('Countdown.calculateRemainingTime()');
+		//console.log('Countdown.calculateRemainingTime()');
 		if (moment().diff(this.props.targetDate) < 0) {
 			return -1 * moment().diff(this.props.targetDate);
 		} else {
@@ -83,20 +83,20 @@ export default class Countdown extends Component {
 
 	tick = () => {
 		if (this.state.status == COUNTDOWN_STARTED) {
-			console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
+			//console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
 			this.setState({
 				remainingTime: this.calculateRemainingTime(),
 			});
 
 			if (this.state.remainingTime <= 0) {
-				console.log('ending countdown');
+				//console.log('ending countdown');
 				this.endCountdown();
 			}
 		}
 	};
 
 	endCountdown = () => {
-		console.log('Countdown.endCountdown()');
+		//console.log('Countdown.endCountdown()');
 
 		this.setState({
 			status: COUNTDOWN_FINISHED,
@@ -108,7 +108,7 @@ export default class Countdown extends Component {
 	};
 
 	skipCountdown = () => {
-		console.log('Countdown.skipCountdown()');
+		//console.log('Countdown.skipCountdown()');
 		if (this.props.isSkippable) {
 			this.endCountdown();
 		}
@@ -135,7 +135,7 @@ export default class Countdown extends Component {
 	};
 
 	render() {
-		console.log('Countdown.render()');
+		//console.log('Countdown.render()');
 		return (
 			<TouchableHighlight
 				onPress={() => {
