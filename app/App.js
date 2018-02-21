@@ -13,6 +13,7 @@ import {
 	Button,
 	TouchableHighlight,
 	TouchableOpacity,
+  Alert,
 } from 'react-native';
 import ActionView from './components/ActionView';
 //import FlagView from './components/FlagView';
@@ -21,6 +22,7 @@ import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
 import moment from 'moment';
 import Modal from 'react-native-modal';
+//import { CheckBox } from 'react-native-elements';
 
 const PRE_RACE = 0;
 const PRE_START = 1;
@@ -95,7 +97,7 @@ export default class App extends React.Component {
 			isModalVisible: false,
 			phase: PRE_RACE,
 			specialDescription: '',
-
+      postPoneBadStart: undefined,
 			specialChoice: undefined,
 			isSpecial: false,
 		};
@@ -290,7 +292,7 @@ export default class App extends React.Component {
 					[],
 					moment(starttime)
 						.add(6, 'm')
-						.add(10, 's'),
+						.add(30, 's'),
 					//moment(starttime).add(75, 's'),
 					true,
 					5
@@ -303,7 +305,7 @@ export default class App extends React.Component {
 					[],
 					moment(starttime)
 						.add(6, 'm')
-						.add(11, 's'),
+						.add(30, 's'),
 					//moment(starttime).add(90, 's'),
 					false,
 					6
@@ -373,14 +375,24 @@ export default class App extends React.Component {
 				],
 			);
 
-			//durch das Updateflags direkt unter dem Funktionskopf wird der step auf 6/13/20... gesetzt
-			//das entspricht der letzten aktion des vorherigen starts, also des deaktivieren der rückrufbuttons
-			//der neue start wird in die liste eingeschoben
-			this.actlist.splice(this.step + 2, 0, ...bsacts);
+
+      if(this.state.postPoneBadStart){
+        //Alert.alert('Alert Title','My Alert Msg',[],{ cancelable: true })
+        this.setState({postPoneBadStart: false})
+
+        this.actlist.splice(this.step + 9, 0, ...bsacts)
 
 
-			this.updateFlags();
-			this.updateFlags();
+      }else{
+        //durch das Updateflags direkt unter dem Funktionskopf wird der step auf 6/13/20... gesetzt
+  			//das entspricht der letzten aktion des vorherigen starts, also des deaktivieren der rückrufbuttons
+  			//der neue start wird in die liste eingeschoben
+  			this.actlist.splice(this.step + 2, 0, ...bsacts);
+        this.updateFlags();
+        this.updateFlags();
+
+      }
+
 		}
 	};
 
@@ -614,10 +626,25 @@ export default class App extends React.Component {
 					>
 						<Image source={res.flags.p.pic} style={styles.spFlagImage} />
 					</TouchableHighlight>
+          <TouchableHighlight
+						style={styles.spHighlight}
+						onPress={() => {
+							this.setState({postPoneBadStart: true})
+						}}
+					>
+						<Image source={res.flags.p.pic} style={styles.spFlagImage} />
+					</TouchableHighlight>
+
 				</View>
 			</View>
 		);
 	};
+
+//TODO:
+  // <CheckBox
+  //   title='Diese Klasse nachher starten'
+  //   checked={this.state.postPoneBadStart}
+  // />
 
 	renderBadStartBtns = () => {
 		return (
