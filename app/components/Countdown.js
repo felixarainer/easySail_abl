@@ -26,18 +26,21 @@ export default class Countdown extends Component {
 	}
 
 	componentDidMount = () => {
-		setTimeout(() => {
-			let timer = setInterval(() => {
+		clearInterval(this.state.intervalId); //TODO not sure if needed
+		if (!this.props.isIndefinite) {
+			setTimeout(() => {
+				let timer = setInterval(() => {
+					this.tick();
+				}, this.props.interval);
+
+				this.setState({
+					status: COUNTDOWN_STARTED,
+					intervalId: timer,
+				});
+
 				this.tick();
-			}, this.props.interval);
-
-			this.setState({
-				status: COUNTDOWN_STARTED,
-				intervalId: timer,
-			});
-
-			this.tick();
-		}, this.props.startDelay);
+			}, this.props.startDelay);
+		}
 	};
 
 	componentWillReceiveProps = newProps => {
@@ -83,7 +86,7 @@ export default class Countdown extends Component {
 
 	tick = () => {
 		if (this.state.status == COUNTDOWN_STARTED) {
-			//console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
+			console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
 			this.setState({
 				remainingTime: this.calculateRemainingTime(),
 			});
