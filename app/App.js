@@ -15,7 +15,6 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import ActionView from './components/ActionView';
-//import FlagView from './components/FlagView';
 import FlagItem from './components/FlagItem';
 import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
@@ -29,12 +28,14 @@ const RACING = 3;
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags, actions, time, isStart, rank) {
+	constructor(flags, actions, time, isStart, rank, isIndefinite, isSkippable) {
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
 		this.isStart = isStart;
 		this.rank = rank;
+		this.isIndefinite = isIndefinite;
+		this.isSkippable = isSkippable;
 	}
 
 	getState = () => {
@@ -71,17 +72,17 @@ class actState {
 		return this.time;
 	};
 
-	addTime = (time,unit) => {
+	addTime = (time, unit) => {
 		this.time = moment(this.time).add(time, unit);
 	};
 
-	subtractTime = (time,unit) => {
+	subtractTime = (time, unit) => {
 		this.time = moment(this.time).subtract(time, unit);
 	};
 
 	getRank = () => {
 		return this.rank;
-	}
+	};
 }
 
 export default class App extends React.Component {
@@ -95,7 +96,8 @@ export default class App extends React.Component {
 			isModalVisible: false,
 			phase: PRE_RACE,
 			specialDescription: '',
-
+			isSkippable: undefined,
+			isIndefinite: undefined,
 			specialChoice: undefined,
 			isSpecial: false,
 		};
@@ -132,12 +134,12 @@ export default class App extends React.Component {
 		this.setInitialFlags();
 	}
 
-	createStartStates = (args) => {
-
-
+	createStartStates = args => {
 		let ac = [];
 
 		args.forEach(start => {
+			starttime = moment(start.time).subtract(6, 'minutes');
+			//starttime = moment(start.time).subtract(2, 'minutes');
 
 			starttime = moment(start.time).subtract(10, 'minutes');
 			//starttime = moment(start.time).subtract(2, 'minutes');
@@ -156,7 +158,9 @@ export default class App extends React.Component {
 						],
 						starttime,
 						false,
-						0
+						0,
+						false,
+						false
 					)
 				);
 			} else {
@@ -201,7 +205,9 @@ export default class App extends React.Component {
 					moment(starttime).add(1, 'm'),
 					//moment(starttime).add(15, 's'),
 					false,
-					1
+					1,
+					false,
+					false
 				)
 			);
 
@@ -228,7 +234,9 @@ export default class App extends React.Component {
 					moment(starttime).add(2, 'm'),
 					//moment(starttime).add(30, 's'),
 					false,
-					2
+					2,
+					false,
+					false
 				)
 			);
 
@@ -253,7 +261,9 @@ export default class App extends React.Component {
 					moment(starttime).add(5, 'm'),
 					//moment(starttime).add(45, 's'),
 					false,
-					3
+					3,
+					false,
+					false
 				)
 			);
 
@@ -278,7 +288,9 @@ export default class App extends React.Component {
 					moment(starttime).add(6, 'm'),
 					//moment(starttime).add(60, 's'),
 					false,
-					4
+					4,
+					false,
+					false
 				)
 			);
 
@@ -293,7 +305,9 @@ export default class App extends React.Component {
 						.add(10, 's'),
 					//moment(starttime).add(75, 's'),
 					true,
-					5
+					5,
+					false,
+					false
 				)
 			);
 
@@ -306,7 +320,9 @@ export default class App extends React.Component {
 						.add(11, 's'),
 					//moment(starttime).add(90, 's'),
 					false,
-					6
+					6,
+					false,
+					false
 				)
 			);
 		});
@@ -328,7 +344,6 @@ export default class App extends React.Component {
 		let bsacts = [];
 
 		if (single) {
-			console.log('single bad start');
 			//Einzelrückruf
 			//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
 			//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
@@ -351,8 +366,6 @@ export default class App extends React.Component {
 
 
 		} else {
-			console.log('massive bad start');
-
 			this.setState({ viewStartPicker: false });
 
 			//[*]Alle folgenden rennen um ARG verzögern
@@ -386,14 +399,13 @@ export default class App extends React.Component {
 
 	updateRow = time => {
 		//Siehe 10 Zeilen oben [*]
-		console.log('updateRow()');
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
 		//+2 weil im Moment des Funktionsaufrufs der stepcounter bei 5 ist
 		let altered = this.actlist.slice(this.step + 2, this.actlist.length);
 
 		//Es muss beim constructor der actstates eine Funktion sein, die Moment-Elemente um X minuten nach hinten schiebt.
 		altered.forEach(elem => {
-			elem.addTime(time,'m');
+			elem.addTime(time, 'm');
 		});
 
 		//Einfügen der veränderten Werte
@@ -432,7 +444,6 @@ export default class App extends React.Component {
 	}
 
 	updateFlags = () => {
-		console.log('updateflags()');
 		//Auffhören mit updaten wenn liste abgearbeitet
 		if (this.step < this.actlist.length - 1) {
 			this.setState({ startFinished: false });
@@ -448,13 +459,11 @@ export default class App extends React.Component {
 				this.dropOrangeFlag();
 			}
 		} else {
-			console.log('updateflags(): reached end of array');
 			this.setState({ startFinished: true });
 		}
 	};
 
 	postponeAP = () => {
-		console.log('postponeAP')
 		let postActs = [];
 		let newTime = 0;
 
@@ -462,19 +471,22 @@ export default class App extends React.Component {
 			new actState(
 				[res.flags.orange,res.flags.ap, {}, {}],
 				[],
-				moment().add(5,'s'),
-				false
+				moment().add(30, 's'),
+				false,
+				undefined,
+				true,
+				true
 			)
 		);
 
 		//TODO: versichern, dass verschieben Buttons nicht während der startphase verfügbar sind.
-		this.actlist.splice(this.step, 0, ...postActs)
+		this.actlist.splice(this.step, 0, ...postActs);
 		this.step--;
 		this.updateFlags();
-	}
+	};
 
 	postponeAPH = () => {
-		console.log('postponeAPH()')
+		console.log('postponeAPH()');
 		let postActs = [];
 		let newTime = 0;
 
@@ -482,19 +494,22 @@ export default class App extends React.Component {
 			new actState(
 				[res.flags.orange, res.flags.apoh, {}, {}],
 				[],
-				moment().add(5,'s'),
-				false
+				moment().add(5, 's'),
+				false,
+				undefined,
+				true,
+				true
 			)
 		);
 
 		//TODO: versichern, dass verschieben Buttons nicht während der startphase verfügbar sind.
-		this.actlist.splice(this.step, 0, ...postActs)
+		this.actlist.splice(this.step, 0, ...postActs);
 		this.step--;
 		this.updateFlags();
-	}
+	};
 
 	postponeAPA = () => {
-		console.log('postponeAPA()')
+		console.log('postponeAPA()');
 		let postActs = [];
 		let newTime = 0;
 
@@ -502,7 +517,10 @@ export default class App extends React.Component {
 			new actState(
 				[res.flags.orange, res.flags.apoa, {}, {}],
 				[],
-				moment().add(5,'s'),
+				moment().add(5, 's'),
+				false,
+				undefined,
+				false,
 				false
 			)
 		);
@@ -510,7 +528,7 @@ export default class App extends React.Component {
 		this.actlist = postActs;
 		this.step = -1;
 		this.updateFlags();
-	}
+	};
 
 	cancelN = () => {
 		console.log('cancel_N')
@@ -649,7 +667,7 @@ export default class App extends React.Component {
 	};
 
 	makeSpecialDecision = () => {
-		console.log('makeSpecialDecision')
+		console.log('makeSpecialDecision');
 		switch (this.state.specialChoice) {
 			case 0:
 				this.postponeAP();
@@ -673,7 +691,7 @@ export default class App extends React.Component {
 
 		this.setState({specialChoice: undefined})
 		}
-	}
+	};
 
 	renderMenu = () => {
 		return (
@@ -686,20 +704,24 @@ export default class App extends React.Component {
 				}}
 			>
 				<View style={{ flex: 2, backgroundColor: 'lightgreen' }}>
-					{
-						this.specialBtnsDescs.map(args => {
-							return (<TouchableOpacity onPress={() => {
-								this.setState({specialDescription: args.description})
-								this.setState({specialChoice: args.choice})
-							}}>
+					{this.specialBtnsDescs.map(args => {
+						return (
+							<TouchableOpacity
+								onPress={() => {
+									this.setState({ specialDescription: args.description });
+									this.setState({ specialChoice: args.choice });
+								}}
+							>
 								<Text style={{ fontSize: 40 }}>{args.button}</Text>
-							</TouchableOpacity>)
-						})
-					}
-					<TouchableOpacity onPress={() => {
-						this.toggleModal();
-						this.makeSpecialDecision();
-					}}>
+							</TouchableOpacity>
+						);
+					})}
+					<TouchableOpacity
+						onPress={() => {
+							this.toggleModal();
+							this.makeSpecialDecision();
+						}}
+					>
 						<Text style={{ fontSize: 40 }}>Hide me!</Text>
 					</TouchableOpacity>
 				</View>
@@ -713,47 +735,36 @@ export default class App extends React.Component {
 	toggleModal = () =>
 		this.setState({ isModalVisible: !this.state.isModalVisible });
 
-	updateRowSpecific = (time) => {
-			console.log('updateRowSpecific()')
+	//Soll erst bei
+	updateRowSpecial = time => {
+		console.log('updateRowSpecial()');
 
-			//Removes current element which is the indefinite countdown which has to be skipped by user
-			this.actlist.splice(this.step, 1);
+		this.setState({ specialChoice: undefined });
 
-			//Setting back this.step au elem 1/7 des startvorgangs setzen
-			if((this.actlist[this.step].getRank() !== undefined)  || (this.actlist[this.step].getRank() < 5)){
-				this.step -= this.actlist[this.step].getRank();
-			}
+		// console.log(this.step)
+		// console.log(this.actlist)
+		// console.log(this.actlist[this.step])
+		// console.log('isSkippable ' + this.state.isSkippable)
+		// console.log('isIndefinite ' + this.state.isIndefinite)
 
-			this.setState({specialChoice: undefined})
+		this.actlist.splice(this.step, 1);
 
-			//Teil der Liste, der verändert wird
-			let altered = this.actlist.slice(this.step, this.actlist.length);
+		// console.log(this.step)
+		// console.log(this.actlist)
+		// console.log(this.actlist[this.step])
+		// console.log('isSkippable ' + this.state.isSkippable)
+		// console.log('isIndefinite ' + this.state.isIndefinite)
 
-			//This.steps ist am Anfang des Startvorgangs, daher kann man direkt von hier die Zeit nehmen
-			let oldTime = this.actlist[this.step].getTime();
-			let newtime = moment().add(60,'seconds');
+		this.setState({ isSkippable: this.actlist[this.step].isSkippable });
+		this.setState({ isIndefinite: this.actlist[this.step].isIndefinite });
 
-			let diff = newtime.diff(oldTime, 'seconds')
-
-			if(diff < 0){
-				diff *= -1;
-				altered.forEach(elem => {
-					return elem.subtractTime(diff, 'seconds');
-				});
-			}else{
-				altered.forEach(elem => {
-					return elem.addTime(diff, 'seconds');
-				});
-			}
-
-			//Einfügen der veränderten Werte
-			//splice(startINDEX, deletions in front, new elements)
-			this.actlist.splice(this.step, altered.length, ...altered);
-
-			this.step--;
-	}
+		this.step--;
+	};
 
 	render = () => {
+		console.log('indef?' + this.state.isIndefinite);
+		console.log('skip?' + this.state.isSkippable);
+
 		return (
 			<View
 				style={{
@@ -818,10 +829,10 @@ export default class App extends React.Component {
 					actions={this.state.curActions}
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
-						console.log('onFinished()')
+						console.log('onFinished()------------------');
 						if (!this.state.startFinished) {
-							if(this.state.specialChoice !== undefined){
-								switch(this.state.specialChoice){
+							if (this.state.specialChoice !== undefined) {
+								switch (this.state.specialChoice) {
 									case 0:
 									case 1:
 									case 3:
@@ -834,8 +845,8 @@ export default class App extends React.Component {
 							this.updateFlags();
 						}
 					}}
-					isSkippable={true}
-					isIndefinite={false}
+					isSkippable={this.state.isIndefinite}
+					isIndefinite={this.state.isSkippable}
 				/>
 				{/* {this.state.viewStartPicker && this.renderStartPicker()} */}
 			</View>

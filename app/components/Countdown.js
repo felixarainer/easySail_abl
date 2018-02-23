@@ -26,18 +26,21 @@ export default class Countdown extends Component {
 	}
 
 	componentDidMount = () => {
-		setTimeout(() => {
-			let timer = setInterval(() => {
+		clearInterval(this.state.intervalId); //TODO not sure if needed
+		if (!this.props.isIndefinite) {
+			setTimeout(() => {
+				let timer = setInterval(() => {
+					this.tick();
+				}, this.props.interval);
+
+				this.setState({
+					status: COUNTDOWN_STARTED,
+					intervalId: timer,
+				});
+
 				this.tick();
-			}, this.props.interval);
-
-			this.setState({
-				status: COUNTDOWN_STARTED,
-				intervalId: timer,
-			});
-
-			this.tick();
-		}, this.props.startDelay);
+			}, this.props.startDelay);
+		}
 	};
 
 	componentWillReceiveProps = newProps => {
@@ -82,8 +85,9 @@ export default class Countdown extends Component {
 	};
 
 	tick = () => {
+		console.log('Countdown.tick()');
 		if (this.state.status == COUNTDOWN_STARTED) {
-			//console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
+			console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
 			this.setState({
 				remainingTime: this.calculateRemainingTime(),
 			});
@@ -91,30 +95,34 @@ export default class Countdown extends Component {
 			if (this.state.remainingTime <= 0) {
 				//console.log('ending countdown');
 				this.endCountdown();
+				if (this.props.onFinished && !this.props.isSkippable) {
+					this.props.onFinished();
+				}
 			}
 		}
 	};
 
 	endCountdown = () => {
-		//console.log('Countdown.endCountdown()');
+		console.log('Countdown.endCountdown()');
 
 		this.setState({
 			status: COUNTDOWN_FINISHED,
 		});
-		if (this.props.onFinished) {
-			this.props.onFinished();
-		}
+
 		clearInterval(this.state.intervalId);
 	};
 
 	skipCountdown = () => {
-		//console.log('Countdown.skipCountdown()');
+		console.log('Countdown.skipCountdown()');
 		if (this.props.isSkippable) {
 			this.endCountdown();
+			if (this.props.onFinished) {
+				this.props.onFinished();
+			}
 		}
 	};
 
-	renderRemainingTime = () => {
+	render() {
 		let returnValue = [];
 		let { remainingTime } = this.state;
 
@@ -124,17 +132,6 @@ export default class Countdown extends Component {
 		let seconds = this.addLeadingZero(
 			moment.duration(remainingTime).get('seconds')
 		);
-
-		return (
-			<Text style={this.props.style}>
-				{minutes}:{seconds}
-				{this.props.isSkippable ? 's' : ''}
-				{this.props.isIndefinite ? 'i' : ''}
-			</Text>
-		);
-	};
-
-	render() {
 		//console.log('Countdown.render()');
 		return (
 			<TouchableHighlight
@@ -142,15 +139,11 @@ export default class Countdown extends Component {
 					this.skipCountdown();
 				}}
 			>
-				{this.state.status != COUNTDOWN_FINISHED ? (
-					this.renderRemainingTime()
-				) : (
-					<Text style={this.props.style}>
-						--:--
-						{this.props.isSkippable ? 's' : ''}
-						{this.props.isIndefinite ? 'i' : ''}
-					</Text>
-				)}
+				<Text style={this.props.style}>
+					{minutes}:{seconds}
+					{this.props.isSkippable ? 's' : ''}
+					{this.props.isIndefinite ? 'i' : ''}
+				</Text>
 			</TouchableHighlight>
 		);
 	}
