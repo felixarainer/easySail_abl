@@ -85,6 +85,7 @@ export default class Countdown extends Component {
 	};
 
 	tick = () => {
+		console.log('Countdown.tick()');
 		if (this.state.status == COUNTDOWN_STARTED) {
 			console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
 			this.setState({
@@ -99,7 +100,7 @@ export default class Countdown extends Component {
 	};
 
 	endCountdown = () => {
-		//console.log('Countdown.endCountdown()');
+		console.log('Countdown.endCountdown()');
 
 		this.setState({
 			status: COUNTDOWN_FINISHED,
@@ -111,13 +112,13 @@ export default class Countdown extends Component {
 	};
 
 	skipCountdown = () => {
-		//console.log('Countdown.skipCountdown()');
+		console.log('Countdown.skipCountdown()');
 		if (this.props.isSkippable) {
 			this.endCountdown();
 		}
 	};
 
-	renderRemainingTime = () => {
+	render() {
 		let returnValue = [];
 		let { remainingTime } = this.state;
 
@@ -127,17 +128,6 @@ export default class Countdown extends Component {
 		let seconds = this.addLeadingZero(
 			moment.duration(remainingTime).get('seconds')
 		);
-
-		return (
-			<Text style={this.props.style}>
-				{minutes}:{seconds}
-				{this.props.isSkippable ? 's' : ''}
-				{this.props.isIndefinite ? 'i' : ''}
-			</Text>
-		);
-	};
-
-	render() {
 		//console.log('Countdown.render()');
 		return (
 			<TouchableHighlight
@@ -145,15 +135,11 @@ export default class Countdown extends Component {
 					this.skipCountdown();
 				}}
 			>
-				{this.state.status != COUNTDOWN_FINISHED ? (
-					this.renderRemainingTime()
-				) : (
-					<Text style={this.props.style}>
-						--:--
-						{this.props.isSkippable ? 's' : ''}
-						{this.props.isIndefinite ? 'i' : ''}
-					</Text>
-				)}
+				<Text style={this.props.style}>
+					{minutes}:{seconds}
+					{this.props.isSkippable ? 's' : ''}
+					{this.props.isIndefinite ? 'i' : ''}
+				</Text>
 			</TouchableHighlight>
 		);
 	}
