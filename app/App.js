@@ -141,8 +141,8 @@ export default class App extends React.Component {
 		let ac = [];
 
 		args.forEach(start => {
-			// starttime = moment(start.time).subtract(6, 'minutes');
-			starttime = moment(start.time).subtract(2, 'minutes');
+			starttime = moment(start.time).subtract(6, 'minutes');
+			//starttime = moment(start.time).subtract(2, 'minutes');
 
 			//1ste aktion
 			if (start.badstart) {
@@ -175,11 +175,11 @@ export default class App extends React.Component {
 								flagPic: res.flags.l,
 							},
 						],
-						starttime,
+						moment().add(5, 's'),
 						false,
 						0,
-						true,
-						true
+						false,
+						false
 					)
 				);
 			}
@@ -300,8 +300,8 @@ export default class App extends React.Component {
 					[{}, {}, {}, {}],
 					[],
 					moment(starttime)
-					 	.add(6, 'm')
-					 	.add(10, 's'),
+						.add(6, 'm')
+						.add(10, 's'),
 					//moment(starttime).add(75, 's'),
 					true,
 					5,
@@ -315,8 +315,8 @@ export default class App extends React.Component {
 					[{}, {}, {}, {}],
 					[],
 					moment(starttime)
-					 	.add(6, 'm')
-					 	.add(11, 's'),
+						.add(6, 'm')
+						.add(11, 's'),
 					//moment(starttime).add(90, 's'),
 					false,
 					6,

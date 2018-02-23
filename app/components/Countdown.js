@@ -95,6 +95,9 @@ export default class Countdown extends Component {
 			if (this.state.remainingTime <= 0) {
 				//console.log('ending countdown');
 				this.endCountdown();
+				if (this.props.onFinished && !this.props.isSkippable) {
+					this.props.onFinished();
+				}
 			}
 		}
 	};
@@ -105,9 +108,7 @@ export default class Countdown extends Component {
 		this.setState({
 			status: COUNTDOWN_FINISHED,
 		});
-		if (this.props.onFinished) {
-			this.props.onFinished();
-		}
+
 		clearInterval(this.state.intervalId);
 	};
 
@@ -115,6 +116,9 @@ export default class Countdown extends Component {
 		console.log('Countdown.skipCountdown()');
 		if (this.props.isSkippable) {
 			this.endCountdown();
+			if (this.props.onFinished) {
+				this.props.onFinished();
+			}
 		}
 	};
 
