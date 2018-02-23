@@ -128,15 +128,9 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates([
 			{
-				//time: moment().add(3, 'minutes'),
-				time: moment().add(150, 's'), //2,5min
+				time: moment().add(10, 'minutes'),
+				//time: moment().add(150, 's'), //2,5min
 				condition: 'i',
-				badstart: false,
-			},
-			{
-				//time: moment().add(6, 'minutes'),
-				time: moment().add(300, 's'), //5min
-				condition: 'p',
 				badstart: false,
 			},
 		]);
@@ -207,8 +201,8 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						},
 					],
-					//moment(starttime).add(1, 'm'),
-					moment(starttime).add(15, 's'),
+					moment(starttime).add(1, 'm'),
+					//moment(starttime).add(15, 's'),
 					false,
 					1,
 					false,
@@ -236,8 +230,8 @@ export default class App extends React.Component {
 							flagPic: res.flags[start.condition],
 						},
 					],
-					//moment(starttime).add(2, 'm'),
-					moment(starttime).add(30, 's'),
+					moment(starttime).add(2, 'm'),
+					//moment(starttime).add(30, 's'),
 					false,
 					2,
 					false,
@@ -263,8 +257,8 @@ export default class App extends React.Component {
 							flagPic: res.flags[start.condition],
 						},
 					],
-					// moment(starttime).add(5, 'm'),
-					moment(starttime).add(45, 's'),
+					moment(starttime).add(5, 'm'),
+					//moment(starttime).add(45, 's'),
 					false,
 					3,
 					false,
@@ -290,8 +284,8 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						},
 					],
-					//moment(starttime).add(6, 'm'),
-					moment(starttime).add(60, 's'),
+					moment(starttime).add(6, 'm'),
+					//moment(starttime).add(60, 's'),
 					false,
 					4,
 					false,
@@ -305,10 +299,10 @@ export default class App extends React.Component {
 				new actState(
 					[{}, {}, {}, {}],
 					[],
-					// moment(starttime)
-					// 	.add(6, 'm')
-					// 	.add(10, 's'),
-					moment(starttime).add(75, 's'),
+					moment(starttime)
+					 	.add(6, 'm')
+					 	.add(10, 's'),
+					//moment(starttime).add(75, 's'),
 					true,
 					5,
 					false,
@@ -320,10 +314,10 @@ export default class App extends React.Component {
 				new actState(
 					[{}, {}, {}, {}],
 					[],
-					// moment(starttime)
-					// 	.add(6, 'm')
-					// 	.add(11, 's'),
-					moment(starttime).add(90, 's'),
+					moment(starttime)
+					 	.add(6, 'm')
+					 	.add(11, 's'),
+					//moment(starttime).add(90, 's'),
 					false,
 					6,
 					false,
