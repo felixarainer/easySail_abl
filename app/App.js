@@ -4,6 +4,8 @@
 // 	down to children as props i.e. sets next state for the whole app ('Regelsys-
 //	tem')
 
+        //Alert.alert('Alert Title','My Alert Msg',[],{ cancelable: true })
+
 import React from 'react';
 import {
 	StyleSheet,
@@ -13,6 +15,7 @@ import {
 	Button,
 	TouchableHighlight,
 	TouchableOpacity,
+  Alert,
 } from 'react-native';
 import ActionView from './components/ActionView';
 import FlagItem from './components/FlagItem';
@@ -20,11 +23,7 @@ import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
 import moment from 'moment';
 import Modal from 'react-native-modal';
-
-const PRE_RACE = 0;
-const PRE_START = 1;
-const START = 2;
-const RACING = 3;
+//import { CheckBox } from 'react-native-elements';
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
@@ -94,10 +93,10 @@ export default class App extends React.Component {
 			startFinished: false,
 			viewStartPicker: false,
 			isModalVisible: false,
-			phase: PRE_RACE,
 			specialDescription: '',
 			isSkippable: undefined,
 			isIndefinite: undefined,
+      postPoneBadStart: undefined,
 			specialChoice: undefined,
 			isSpecial: false,
 		};
@@ -182,7 +181,30 @@ export default class App extends React.Component {
 							0
 						)
 					);
-				}
+				}else{
+          ac.push(
+    				new actState(
+    					[res.flags.orange, {}, {}, {}],
+    					[
+    						{
+    							name: 'TestAction1',
+    							actionPic: res.actions.signal_1,
+    							flagPic: undefined,
+    						},
+    						{
+    							name: 'TestAction2',
+    							actionPic: res.actions.flag_up,
+    							flagPic: res.flags.klass,
+    						},
+    					],
+    					moment(starttime).add(1, 'm'),
+    					//moment(starttime).add(15, 's'),
+    					false,
+    					0
+    				)
+    			);
+        }
+
 			}
 
 			//2te aktion
@@ -375,25 +397,87 @@ export default class App extends React.Component {
 
 			//Komplette startwiederholung
 			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
-			bsacts = this.createStartStates(
+
+      //IMMER + 10 MIN WEIL 10 MIN ABGEZOGEN WERDEN
+
+      //TODO: moment abhängig machen ob postPoneBadStart
+
+
+      let mom = moment().add(12, 'm')
+      console.log(mom)
+
+      bsacts = this.createStartStates(
 				[
 					//TODO genaue zeit herausfinden WICHTIG NICHT IGNORIEREN
 					{
-						time: moment().add(10, 'm'),
+						time: mom,
 						condition: ARGcondition,
 						badstart: true,
 					},
 				],
 			);
 
-			//durch das Updateflags direkt unter dem Funktionskopf wird der step auf 6/13/20... gesetzt
-			//das entspricht der letzten aktion des vorherigen starts, also des deaktivieren der rückrufbuttons
-			//der neue start wird in die liste eingeschoben
-			this.actlist.splice(this.step + 2, 0, ...bsacts);
+
+      let rank = this.actlist[this.step].getRank();
+      let pos = undefined;
+
+      //Soll der Fehlstart gleich stattfinden oder nach der nächsten KLasse
+      if(this.state.postPoneBadStart){
+        console.log('BadStart() - postPoneBadStart')
+        this.setState({postPoneBadStart: false})
+
+        if(this.actlist[this.step].getRank()>4){
+          console.log('got 10s')
+
+          pos = this.step - rank + 14;
+
+          console.log(pos)
+
+          this.actlist.splice(pos, 0, ...bsacts)
+
+          //step ist immer 1 vor nächsten start
+          this.step += (6-rank);
+        }else{
+          console.log('missed 10s')
+          pos = this.step - rank + 7;
+
+          console.log(pos)
+
+          this.actlist.splice(pos, 0, ...bsacts);
+
+          //step ist immer 1 vor nächsten start
+          this.step -= (rank+1);
+        }
+      }else{
+        console.log('badstart() - now')
+        if(this.actlist[this.step].getRank()>4){
+          console.log('got 10s')
+
+          pos = this.step - rank + 7;
+
+          console.log(pos)
+
+          this.actlist.splice(pos, 0, ...bsacts)
+
+          //step ist immer 1 vor nächsten start
+          this.step += (6-rank);
 
 
-			this.updateFlags();
-			this.updateFlags();
+        }else{
+          console.log('missed 10s')
+
+          pos = this.step - rank;
+
+          console.log(pos)
+
+          this.actlist.splice(pos, 0, ...bsacts);
+
+          //step ist immer 1 vor nächsten start
+          this.step -= (rank+1);
+        }
+      }
+      this.updateFlags();
+
 		}
 	};
 
@@ -599,8 +683,8 @@ export default class App extends React.Component {
 					<TouchableHighlight
 						style={styles.spHighlight}
 						onPress={() => {
-							this.setState({ viewStartPicker: false });
-							this.setBadStart(false, 'i');
+
+              this.badStartCondition = 'i';
 						}}
 					>
 						<Image source={res.flags.i.pic} style={styles.spFlagImage} />
@@ -608,8 +692,8 @@ export default class App extends React.Component {
 					<TouchableHighlight
 						style={styles.spHighlight}
 						onPress={() => {
-							this.setState({ viewStartPicker: false });
-							this.setBadStart(false, 'z');
+
+              this.badStartCondition = 'z';
 						}}
 					>
 						<Image source={res.flags.z.pic} style={styles.spFlagImage} />
@@ -617,8 +701,8 @@ export default class App extends React.Component {
 					<TouchableHighlight
 						style={styles.spHighlight}
 						onPress={() => {
-							this.setState({ viewStartPicker: false });
-							this.setBadStart(false, 'black');
+
+              this.badStartCondition = 'black';
 						}}
 					>
 						<Image source={res.flags.black.pic} style={styles.spFlagImage} />
@@ -626,16 +710,37 @@ export default class App extends React.Component {
 					<TouchableHighlight
 						style={styles.spHighlight}
 						onPress={() => {
-							this.setState({ viewStartPicker: false });
-							this.setBadStart(false, 'p');
+
+              this.badStartCondition = 'p';
 						}}
 					>
 						<Image source={res.flags.p.pic} style={styles.spFlagImage} />
 					</TouchableHighlight>
+          <TouchableHighlight
+						style={styles.spHighlight}
+						onPress={() => {
+							this.setState({postPoneBadStart: true})
+						}}
+					>
+						<Image source={res.flags.p.pic} style={styles.spFlagImage} />
+					</TouchableHighlight>
+          <TouchableOpacity onPress={() => {
+						this.setState({ viewStartPicker: false });
+            this.setBadStart(false, this.badStartCondition);
+					}}>
+						<Text style={{ fontSize: 40 }}>Weiter!</Text>
+					</TouchableOpacity>
+
 				</View>
 			</View>
 		);
 	};
+
+//TODO:
+  // <CheckBox
+  //   title='Diese Klasse nachher starten'
+  //   checked={this.state.postPoneBadStart}
+  // />
 
 	renderBadStartBtns = () => {
 		return (
