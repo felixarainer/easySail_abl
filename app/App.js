@@ -51,7 +51,8 @@ class actState {
 					? moment().add(this.time, 'seconds')
 					: this.time,
 			viewBadStartBtns: this.isStart,
-
+			isIndefinite: this.isIndefinite,
+			isSkippable: this.isSkippable,
 		};
 	};
 
@@ -118,13 +119,11 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(4, 'minutes'),
-					//time: moment().add(150, 's'), //2,5min
+					time: moment().add(11, 'minutes'),
 					condition: 'i',
 					badstart: false,
 				},{
-					time: moment().add(14, 'minutes'),
-					//time: moment().add(150, 's'), //2,5min
+					time: moment().add(21, 'minutes'),
 					condition: 'p',
 					badstart: false,
 				},
@@ -138,11 +137,7 @@ export default class App extends React.Component {
 
 		args.forEach(start => {
 			starttime = moment(start.time).subtract(6, 'minutes');
-			//starttime = moment(start.time).subtract(2, 'minutes');
-
 			starttime = moment(start.time).subtract(10, 'minutes');
-			//starttime = moment(start.time).subtract(2, 'minutes');
-
 			//1ste aktion
 			if (start.badstart) {
 				ac.push(
@@ -178,7 +173,9 @@ export default class App extends React.Component {
 							],
 							starttime,
 							false,
-							0
+							0,
+              true,
+              true
 						)
 					);
 				}else{
@@ -198,9 +195,10 @@ export default class App extends React.Component {
     						},
     					],
     					moment(starttime).add(1, 'm'),
-    					//moment(starttime).add(15, 's'),
     					false,
-    					0
+    					0,
+              true,
+              true,
     				)
     			);
         }
@@ -225,7 +223,6 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(1, 'm'),
-					//moment(starttime).add(15, 's'),
 					false,
 					1,
 					false,
@@ -249,12 +246,10 @@ export default class App extends React.Component {
 						{
 							name: 'TestAction2',
 							actionPic: res.actions.flag_up,
-							//TODO damir fragen wegen res.flags.{start.condition}
 							flagPic: res.flags[start.condition],
 						},
 					],
 					moment(starttime).add(2, 'm'),
-					//moment(starttime).add(30, 's'),
 					false,
 					2,
 					false,
@@ -281,7 +276,6 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(5, 'm'),
-					//moment(starttime).add(45, 's'),
 					false,
 					3,
 					false,
@@ -308,7 +302,6 @@ export default class App extends React.Component {
 						},
 					],
 					moment(starttime).add(6, 'm'),
-					//moment(starttime).add(60, 's'),
 					false,
 					4,
 					false,
@@ -325,7 +318,6 @@ export default class App extends React.Component {
 					moment(starttime)
 						.add(6, 'm')
 						.add(10, 's'),
-					//moment(starttime).add(75, 's'),
 					true,
 					5,
 					false,
@@ -340,7 +332,6 @@ export default class App extends React.Component {
 					moment(starttime)
 						.add(6, 'm')
 						.add(11, 's'),
-					//moment(starttime).add(90, 's'),
 					false,
 					6,
 					false,
@@ -378,15 +369,15 @@ export default class App extends React.Component {
 					//TODO genaue Zeit herausfinden WICHTIG NICHT IGNORIEREN
 					moment().add(4, 'm'),
 					false,
-					undefined
+					undefined,
+          false,
+          false
 				)
 			);
 
 			this.actlist.splice(this.step+1, 0, ...bsacts)
 			this.updateFlags();
 			this.actlist.splice(this.step, 1)
-
-
 		} else {
 			this.setState({ viewStartPicker: false });
 
@@ -398,11 +389,9 @@ export default class App extends React.Component {
 			//Komplette startwiederholung
 			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
 
-      //IMMER + 10 MIN WEIL 10 MIN ABGEZOGEN WERDEN
-
       //TODO: moment abhängig machen ob postPoneBadStart
 
-
+			 //IMMER + 10 MIN WEIL 10 MIN ABGEZOGEN WERDEN
       let mom = moment().add(12, 'm')
       console.log(mom)
 
@@ -423,56 +412,24 @@ export default class App extends React.Component {
 
       //Soll der Fehlstart gleich stattfinden oder nach der nächsten KLasse
       if(this.state.postPoneBadStart){
-        console.log('BadStart() - postPoneBadStart')
         this.setState({postPoneBadStart: false})
-
         if(this.actlist[this.step].getRank()>4){
-          console.log('got 10s')
-
           pos = this.step - rank + 14;
-
-          console.log(pos)
-
           this.actlist.splice(pos, 0, ...bsacts)
-
-          //step ist immer 1 vor nächsten start
           this.step += (6-rank);
         }else{
-          console.log('missed 10s')
           pos = this.step - rank + 7;
-
-          console.log(pos)
-
-          this.actlist.splice(pos, 0, ...bsacts);
-
-          //step ist immer 1 vor nächsten start
+    			this.actlist.splice(pos, 0, ...bsacts);
           this.step -= (rank+1);
         }
       }else{
-        console.log('badstart() - now')
         if(this.actlist[this.step].getRank()>4){
-          console.log('got 10s')
-
           pos = this.step - rank + 7;
-
-          console.log(pos)
-
           this.actlist.splice(pos, 0, ...bsacts)
-
-          //step ist immer 1 vor nächsten start
           this.step += (6-rank);
-
-
         }else{
-          console.log('missed 10s')
-
           pos = this.step - rank;
-
-          console.log(pos)
-
           this.actlist.splice(pos, 0, ...bsacts);
-
-          //step ist immer 1 vor nächsten start
           this.step -= (rank+1);
         }
       }
@@ -521,6 +478,8 @@ export default class App extends React.Component {
 				],
 				oldTime,
 				oldStart,
+        false,
+        true
 			)
 		);
 
@@ -624,7 +583,10 @@ export default class App extends React.Component {
 				[res.flags.orange, res.flags.n, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false
+				false,
+        undefined,
+        false,
+        false,
 			)
 		);
 
@@ -644,7 +606,10 @@ export default class App extends React.Component {
 				[res.flags.orange, res.flags.noh, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false
+				false,
+        undefined,
+        false,
+        false,
 			)
 		);
 
@@ -664,7 +629,10 @@ export default class App extends React.Component {
 				[res.flags.orange, res.flags.noa, {}, {}],
 				[],
 				moment().add(5,'s'),
-				false
+				false,
+        undefined,
+        false,
+        false,
 			)
 		);
 
@@ -842,27 +810,10 @@ export default class App extends React.Component {
 
 	//Soll erst bei
 	updateRowSpecial = time => {
-		console.log('updateRowSpecial()');
-
 		this.setState({ specialChoice: undefined });
-
-		// console.log(this.step)
-		// console.log(this.actlist)
-		// console.log(this.actlist[this.step])
-		// console.log('isSkippable ' + this.state.isSkippable)
-		// console.log('isIndefinite ' + this.state.isIndefinite)
-
 		this.actlist.splice(this.step, 1);
-
-		// console.log(this.step)
-		// console.log(this.actlist)
-		// console.log(this.actlist[this.step])
-		// console.log('isSkippable ' + this.state.isSkippable)
-		// console.log('isIndefinite ' + this.state.isIndefinite)
-
 		this.setState({ isSkippable: this.actlist[this.step].isSkippable });
 		this.setState({ isIndefinite: this.actlist[this.step].isIndefinite });
-
 		this.step--;
 	};
 

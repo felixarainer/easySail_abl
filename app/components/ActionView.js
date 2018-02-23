@@ -37,7 +37,7 @@ export default class ActionView extends Component {
 					<Countdown
 						targetDate={this.props.countdownEndDate.toDate()}
 						isSkippable={this.props.isSkippable}
-						isIndefinite={this.props.isIndefinite}
+						isIndefinite={false}
 						onFinished={() => {
 							//console.log('AV.render.onFinished()');
 							this.props.onFinished();
