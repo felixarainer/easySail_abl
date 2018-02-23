@@ -128,7 +128,6 @@ export default class App extends React.Component {
 	componentWillMount() {
 		this.actlist = this.createStartStates([
 			{
-				time: moment().add(10, 'minutes'),
 				//time: moment().add(150, 's'), //2,5min
 				condition: 'i',
 				badstart: false,
