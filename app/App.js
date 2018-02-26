@@ -102,7 +102,7 @@ export default class App extends React.Component {
 			isSkippable: undefined,
 			isIndefinite: undefined,
       postPoneBadStart: undefined,
-			specialChoice: undefined,
+			specialChoice: 99,	//99 = orange flagge setzen beim start, wird normalerweise nur für die specialactions benutzt, ausnahme
 			isSpecial: false,
 		};
 		this.step = 0;
@@ -164,7 +164,6 @@ export default class App extends React.Component {
 				//worange flagge muss nur gesetzt werden, wenn startanfang
 				if(ac.length < 1){
 					ac.push(
-						//flagge l setzen und 6 min vor Start bergen
 						new actState(
 							[{},{}, {}, {}],
 							[
@@ -225,7 +224,7 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						},
 					],
-					moment(starttime).add(1, 'm'),
+					moment(starttime).add(5, 'm'),
 					false,
 					1,
 					false,
@@ -252,7 +251,7 @@ export default class App extends React.Component {
 							flagPic: res.flags[start.condition],
 						},
 					],
-					moment(starttime).add(2, 'm'),
+					moment(starttime).add(6, 'm'),
 					false,
 					2,
 					false,
@@ -278,7 +277,7 @@ export default class App extends React.Component {
 							flagPic: res.flags[start.condition],
 						},
 					],
-					moment(starttime).add(5, 'm'),
+					moment(starttime).add(9, 'm'),
 					false,
 					3,
 					false,
@@ -304,7 +303,7 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						},
 					],
-					moment(starttime).add(6, 'm'),
+					moment(starttime).add(10, 'm'),
 					false,
 					4,
 					false,
@@ -319,7 +318,7 @@ export default class App extends React.Component {
 					[res.flags.orange, {}, {}, {}],
 					[],
 					moment(starttime)
-						.add(6, 'm')
+						.add(10, 'm')
 						.add(10, 's'),
 					true,
 					5,
@@ -333,7 +332,7 @@ export default class App extends React.Component {
 					[res.flags.orange, {}, {}, {}],
 					[],
 					moment(starttime)
-						.add(6, 'm')
+						.add(10, 'm')
 						.add(11, 's'),
 					false,
 					6,
@@ -456,7 +455,7 @@ export default class App extends React.Component {
 
 		//Einfügen der veränderten Werte
 		//splice(startINDEX, deletions in front, new elements)
-		this.actlist.splice(startStep, 7, ...altered);
+		this.actlist.splice(startStep, altered.length, ...altered);
 	};
 
 	updateRowToTime = (time,unit,startStep) => {
@@ -556,7 +555,7 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				[res.flags.orange, res.flags.apoh, {}, {}],
+				[{}, res.flags.apoh, {}, {}],
 				[],
 				moment(),
 				false,
@@ -579,9 +578,9 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				[res.flags.orange, res.flags.apoa, {}, {}],
+				[{}, res.flags.apoa, {}, {}],
 				[],
-				moment().add(5, 's'),
+				moment(),
 				false,
 				undefined,
 				false,
@@ -603,11 +602,11 @@ export default class App extends React.Component {
 			new actState(
 				[res.flags.orange, res.flags.n, {}, {}],
 				[],
-				moment().add(5,'s'),
+				moment(),
 				false,
         undefined,
-        false,
-        false,
+        true,
+        true,
 			)
 		);
 
@@ -624,13 +623,13 @@ export default class App extends React.Component {
 
 		cancelActs.push(
 			new actState(
-				[res.flags.orange, res.flags.noh, {}, {}],
+				[{}, res.flags.noh, {}, {}],
 				[],
-				moment().add(5,'s'),
+				moment(),
 				false,
         undefined,
-        false,
-        false,
+        true,
+        true,
 			)
 		);
 
@@ -647,9 +646,9 @@ export default class App extends React.Component {
 
 		cancelActs.push(
 			new actState(
-				[res.flags.orange, res.flags.noa, {}, {}],
+				[{}, res.flags.noa, {}, {}],
 				[],
-				moment().add(5,'s'),
+				moment(),
 				false,
         undefined,
         false,
@@ -900,6 +899,9 @@ export default class App extends React.Component {
 									case 3:
 									case 4:
 										this.updateRowToTime(1,'m',this.step+1)
+										break;
+									case 99:
+										this.updateRowToTime(5,'m',this.step+1)
 										break;
 								}
 							}
