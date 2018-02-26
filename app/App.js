@@ -182,7 +182,7 @@ export default class App extends React.Component {
 							false,
 							0,
               true,
-              true
+              true,
 						)
 					);
 
@@ -205,8 +205,8 @@ export default class App extends React.Component {
     					starttime,
     					false,
     					0,
-              true,
-              true,
+              false,
+              false,
     				)
     			);
         }
@@ -400,34 +400,74 @@ export default class App extends React.Component {
 		console.log('massive bad start()')
 		this.setState({ viewStartPicker: false });
 		let mom = moment();
+		let toRank = this.step+7;
 
 		if(this.state.postPoneBadStart){
 
-			mom = this.actlist[this.step+6].getTime();
+			rank = this.actlist[this.step].getRank();
+			switch(rank){
+				case 6:
+					mom = this.actlist[this.step-2].getTime();
+					toRank += 1;
+					break;
+				case 5:
+					mom = this.actlist[this.step-1].getTime();
+					toRank += 2;
+					break;
+				case 4:
+					mom = this.actlist[this.step].getTime();
+					toRank += 3;
+					break;
+				case 3:
+					mom = this.actlist[this.step+1].getTime();
+					toRank += 4;
+					break;
+				case 0:
+					mom = this.actlist[this.step-3].getTime();
+					toRank += 0;
+					break;
+				case 1:
+					mom = this.actlist[this.step+4].getTime();
+					toRank -= 1;
+					break;
+			}
+
+			mom = mom.add(this.state.interval, 'minutes');
+
+			bsacts = this.createStartStates(
+				[
+					{
+						time: mom,
+						condition: ARGcondition,
+						badstart: false,
+					},
+				],
+			);
 
 		}else{
 			//SppecialChoice 98: 1fhs
 			this.setState({specialChoice: 98})
+
+			bsacts = this.createStartStates(
+				[
+					{
+						time: mom,
+						condition: ARGcondition,
+						badstart: true,
+					},
+				],
+			);
 		}
-
-    bsacts = this.createStartStates(
-			[
-				{
-					time: mom,
-					condition: ARGcondition,
-					badstart: true,
-				},
-			],
-		);
-
 
     let rank = this.actlist[this.step].getRank();
     let pos = undefined;
 
     //richtiges einfügen in die pipeline
-		//zeit updaten hier hinein.
     if(this.state.postPoneBadStart){
-      this.setState({postPoneBadStart: false})
+			//zeit updaten hier hinein.
+
+			updateRowByTime(interval,'minutes',toRank)
+
       if(this.actlist[this.step].getRank()>4){
         pos = this.step - rank + 14;
         this.actlist.splice(pos, 0, ...bsacts)
@@ -438,6 +478,7 @@ export default class App extends React.Component {
         this.step -= (rank+1);
       }
     }else{
+			//KEIN ZEITUPDATE BEI SOFORTIGEM NEUSTART; WIRD GEMACHT WENN COUNTDOWN überrsprungen wird
       if(this.actlist[this.step].getRank()>4){
         pos = this.step - rank + 7;
         this.actlist.splice(pos, 0, ...bsacts)
@@ -448,6 +489,8 @@ export default class App extends React.Component {
         this.step -= (rank+1);
       }
     }
+		this.setState({postPoneBadStart: false})
+		this.setState({specialChoice: undefined})
     this.updateFlags();
 	};
 
@@ -462,6 +505,8 @@ export default class App extends React.Component {
 		altered.forEach(elem => {
 			elem.addTime(time, unit);
 		});
+
+		this.setState({specialChoice: undefined});
 
 		//Einfügen der veränderten Werte
 		//splice(startINDEX, deletions in front, new elements)
