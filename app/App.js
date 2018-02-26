@@ -466,7 +466,7 @@ export default class App extends React.Component {
     if(this.state.postPoneBadStart){
 			//zeit updaten hier hinein.
 
-			updateRowByTime(interval,'minutes',toRank)
+			this.updateRowByTime(interval,'minutes',toRank)
 
       if(this.actlist[this.step].getRank()>4){
         pos = this.step - rank + 14;
@@ -825,7 +825,10 @@ export default class App extends React.Component {
 				break;
 			default:
 
-		this.setState({specialChoice: undefined})
+			//weis nicht warum notwendig, einfach if wegtun wenn interessiert.
+			if(this.step!==0){
+				this.setState({specialChoice: undefined})
+			}
 		}
 	};
 
