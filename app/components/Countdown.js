@@ -85,9 +85,9 @@ export default class Countdown extends Component {
 	};
 
 	tick = () => {
-		console.log('Countdown.tick()');
+		//console.log('Countdown.tick()');
 		if (this.state.status == COUNTDOWN_STARTED) {
-			console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
+			//console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
 			this.setState({
 				remainingTime: this.calculateRemainingTime(),
 			});

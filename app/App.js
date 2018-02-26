@@ -104,7 +104,7 @@ export default class App extends React.Component {
       postPoneBadStart: undefined,
 			specialChoice: 99,	//99 = orange flagge setzen beim start, wird normalerweise nur für die specialactions benutzt, ausnahme
 			isSpecial: false,
-			interval: 10,
+			interval: 5,
 
 		};
 		this.step = 0;
@@ -121,31 +121,46 @@ export default class App extends React.Component {
 		];
 	}
 
+	//componentwillmount wird NACH dem constructor aufgerufen...
 	componentWillMount() {
+		let start = 10;
+
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(1, 'minutes'),
+					time: moment().add(start,'minutes'),
 					condition: 'i',
 					badstart: false,
+					first: true,
 				},{
-					time: moment().add((1+this.state.interval), 'minutes'),
+					time: moment().add((start+this.state.interval),'minutes'),
 					condition: 'p',
 					badstart: false,
+					first: false,
 				},
 			],
 		);
+
+		console.log(this.actlist)
+
 		this.setInitialFlags();
 	}
 
-	//starttime ist immer absoluter start, -5min für startvorbereitungen jeglicher art.
-	createStartStates = args => {
+	//TODO: irgendwas stimmt hier ned....und i was ned wos...
+	createStartStates = (args) => {
 		let ac = [];
 
 		args.forEach(start => {
+
 			let starttime = moment(start.time).subtract(5, 'minutes');
+
+			console.log('starttime--------------')
+			console.log(starttime)
+			console.log(start.time)
+
 			//1ste aktion
 			if (start.badstart) {
+				console.log('baaaadstart')
 				ac.push(
 					new actState(
 						[res.flags.orange,res.flags.fhs, {}, {}],
@@ -165,7 +180,8 @@ export default class App extends React.Component {
 				);
 			} else {
 				//worange flagge muss nur gesetzt werden, wenn startanfang
-				if(ac.length < 1){
+				if(start.first){
+					console.log('fiiiirst')
 
 					ac.push(
 						new actState(
@@ -178,7 +194,7 @@ export default class App extends React.Component {
 								},
 							],
 							//effektiv 10 minuten vor tatsächlichem ersten start.
-							starttime.subtract(5,'minutes'),
+							moment(starttime).subtract(5,'minutes'),
 							false,
 							0,
               true,
@@ -187,6 +203,8 @@ export default class App extends React.Component {
 					);
 
 				}else{
+					console.log('noooot first')
+
           ac.push(
     				new actState(
     					[res.flags.orange, {}, {}, {}],
@@ -205,8 +223,10 @@ export default class App extends React.Component {
     					starttime,
     					false,
     					0,
-              false,
-              false,
+							true,
+							true,
+							// false,
+							// false
     				)
     			);
         }
@@ -233,8 +253,10 @@ export default class App extends React.Component {
 					starttime,
 					false,
 					1,
-					false,
-					false
+					true,
+					true,
+					// false,
+					// false
 				)
 			);
 
@@ -260,8 +282,10 @@ export default class App extends React.Component {
 					moment(starttime).add(1, 'm'),
 					false,
 					2,
-					false,
-					false
+					true,
+					true,
+					// false,
+					// false
 				)
 			);
 
@@ -286,8 +310,10 @@ export default class App extends React.Component {
 					moment(starttime).add(4, 'm'),
 					false,
 					3,
-					false,
-					false
+					true,
+					true,
+					// false,
+					// false
 				)
 			);
 
@@ -312,8 +338,10 @@ export default class App extends React.Component {
 					moment(starttime).add(5, 'm'),
 					false,
 					4,
-					false,
-					false
+					true,
+					true,
+					// false,
+					// false
 				)
 			);
 
@@ -328,8 +356,10 @@ export default class App extends React.Component {
 						.add(10, 's'),
 					true,
 					5,
-					false,
-					false
+					true,
+					true,
+					// false,
+					// false
 				)
 			);
 
@@ -342,10 +372,14 @@ export default class App extends React.Component {
 						.add(11, 's'),
 					false,
 					6,
-					false,
-					false
+					true,
+					true,
+					// false,
+					// false
 				)
 			);
+
+			console.log(ac)
 		});
 
 		return ac;
@@ -379,7 +413,7 @@ export default class App extends React.Component {
 				false,
 				undefined,
         false,
-        false
+        false,
 			)
 		);
 
@@ -388,17 +422,19 @@ export default class App extends React.Component {
 		this.actlist.splice(this.step, 1)
 	}
 
-	massiveBadStart = (single, ARGcondition) => {
+	massiveBadStart = (ARGcondition) => {
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
 		//rückrufbuttons deaktivieren
 		this.setState({ viewBadStartBtns: false });
 
+		this.setState({ viewStartPicker: false });
 		//neue actions
 		let bsacts = [];
+		let badstart = true;
 
 		console.log('massive bad start()')
-		this.setState({ viewStartPicker: false });
+
 		let mom = moment();
 		let toRank = this.step+7;
 
@@ -407,67 +443,57 @@ export default class App extends React.Component {
 			rank = this.actlist[this.step].getRank();
 			switch(rank){
 				case 6:
-					mom = this.actlist[this.step-2].getTime();
+					mom = moment(this.actlist[this.step-2].getTime());
 					toRank += 1;
 					break;
 				case 5:
-					mom = this.actlist[this.step-1].getTime();
+					mom = moment(this.actlist[this.step-1].getTime());
 					toRank += 2;
 					break;
 				case 4:
-					mom = this.actlist[this.step].getTime();
+					mom = moment(this.actlist[this.step].getTime());
 					toRank += 3;
 					break;
 				case 3:
-					mom = this.actlist[this.step+1].getTime();
+					mom = moment(this.actlist[this.step+1].getTime());
 					toRank += 4;
 					break;
 				case 0:
-					mom = this.actlist[this.step-3].getTime();
+					mom = moment(this.actlist[this.step-3].getTime());
 					toRank += 0;
 					break;
 				case 1:
-					mom = this.actlist[this.step+4].getTime();
+					mom = moment(this.actlist[this.step+4].getTime());
 					toRank -= 1;
 					break;
 			}
 
 			mom = mom.add(this.state.interval, 'minutes');
+			mom = mom.add(this.state.interval, 'minutes');
 
-			bsacts = this.createStartStates(
-				[
-					{
-						time: mom,
-						condition: ARGcondition,
-						badstart: false,
-					},
-				],
-			);
+			badstart = false;
 
 		}else{
 			//SppecialChoice 98: 1fhs
 			this.setState({specialChoice: 98})
-
-			bsacts = this.createStartStates(
-				[
-					{
-						time: mom,
-						condition: ARGcondition,
-						badstart: true,
-					},
-				],
-			);
 		}
+
+		bsacts = this.createStartStates(
+			[
+				{
+					time: mom,
+					condition: ARGcondition,
+					badstart: badstart,
+					first: false,
+				},
+			],
+		);
 
     let rank = this.actlist[this.step].getRank();
     let pos = undefined;
 
     //richtiges einfügen in die pipeline
-    if(this.state.postPoneBadStart){
-			//zeit updaten hier hinein.
-
-			this.updateRowByTime(interval,'minutes',toRank)
-
+    if(this.state.postPoneBadStart && ((this.actlist.length - this.step) > 5)){
       if(this.actlist[this.step].getRank()>4){
         pos = this.step - rank + 14;
         this.actlist.splice(pos, 0, ...bsacts)
@@ -515,11 +541,9 @@ export default class App extends React.Component {
 
 	updateRowToTime = (time,unit,startStep) => {
 		console.log('updateRowToTime()')
-
 		let newTime = moment().add(time,unit)
 		let oldTime = this.actlist[startStep].getTime();
 		let diff = newTime.diff(oldTime,'s');
-
 		this.updateRowByTime(diff,'s',startStep);
 	}
 
@@ -875,9 +899,6 @@ export default class App extends React.Component {
 		this.setState({ isModalVisible: !this.state.isModalVisible });
 
 	render = () => {
-		console.log('indef?' + this.state.isIndefinite);
-		console.log('skip?' + this.state.isSkippable);
-
 		return (
 			<View
 				style={{
