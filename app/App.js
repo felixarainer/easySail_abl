@@ -83,6 +83,10 @@ class actState {
 	getRank = () => {
 		return this.rank;
 	};
+
+	setTime = newTime => {
+		this.time = newTime;
+	}
 }
 
 export default class App extends React.Component {
@@ -119,7 +123,7 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(11, 'minutes'),
+					time: moment().add(10, 'minutes'),
 					condition: 'i',
 					badstart: false,
 				},{
@@ -136,7 +140,6 @@ export default class App extends React.Component {
 		let ac = [];
 
 		args.forEach(start => {
-			starttime = moment(start.time).subtract(6, 'minutes');
 			starttime = moment(start.time).subtract(10, 'minutes');
 			//1ste aktion
 			if (start.badstart) {
@@ -384,7 +387,8 @@ export default class App extends React.Component {
 			//[*]Alle folgenden rennen um ARG verzögern
 			//Es werden die startzeiten der nachfolgenden starts nicht automatisch nach hinten verschoben!!
 			//Daher braucht es eine Funktion die das erledigt
-			this.updateRow(10);
+			//TODO: schauen ob das hier her gehört
+			this.updateRow(10,this.step+2);
 
 			//Komplette startwiederholung
 			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
@@ -438,21 +442,38 @@ export default class App extends React.Component {
 		}
 	};
 
-	updateRow = time => {
+	//Alles um X minuten verschieben
+	updateRowByTime = (time,unit,startStep) => {
 		//Siehe 10 Zeilen oben [*]
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
 		//+2 weil im Moment des Funktionsaufrufs der stepcounter bei 5 ist
-		let altered = this.actlist.slice(this.step + 2, this.actlist.length);
+		let altered = this.actlist.slice(startStep, this.actlist.length);
 
 		//Es muss beim constructor der actstates eine Funktion sein, die Moment-Elemente um X minuten nach hinten schiebt.
 		altered.forEach(elem => {
-			elem.addTime(time, 'm');
+			elem.addTime(time, unit);
 		});
 
 		//Einfügen der veränderten Werte
 		//splice(startINDEX, deletions in front, new elements)
-		this.actlist.splice(this.step + 2, 7, ...altered);
+		this.actlist.splice(startStep, 7, ...altered);
 	};
+
+	updateRowToTime = (time,unit,startStep) => {
+		console.log('updateRowToTime()')
+		console.log(startStep);
+
+		let newTime = moment().add(time,unit)
+		console.log(newTime)
+
+		let oldTime = this.actlist[startStep].getTime();
+		console.log(oldTime)
+
+		let diff = newTime.diff(oldTime,'s');
+		console.log(diff)
+
+		this.updateRowByTime(diff,'s',startStep);
+	}
 
 	componentDidMount = () => {
 		//ggf zu lockTolandscapeLeft() aendern
@@ -514,7 +535,7 @@ export default class App extends React.Component {
 			new actState(
 				[res.flags.orange,res.flags.ap, {}, {}],
 				[],
-				moment().add(30, 's'),
+				moment(),
 				false,
 				undefined,
 				true,
@@ -537,7 +558,7 @@ export default class App extends React.Component {
 			new actState(
 				[res.flags.orange, res.flags.apoh, {}, {}],
 				[],
-				moment().add(5, 's'),
+				moment(),
 				false,
 				undefined,
 				true,
@@ -704,12 +725,6 @@ export default class App extends React.Component {
 		);
 	};
 
-//TODO:
-  // <CheckBox
-  //   title='Diese Klasse nachher starten'
-  //   checked={this.state.postPoneBadStart}
-  // />
-
 	renderBadStartBtns = () => {
 		return (
 			<View style={{ flexDirection: 'row', backgroundColor: 'red' }}>
@@ -808,15 +823,6 @@ export default class App extends React.Component {
 	toggleModal = () =>
 		this.setState({ isModalVisible: !this.state.isModalVisible });
 
-	//Soll erst bei
-	updateRowSpecial = time => {
-		this.setState({ specialChoice: undefined });
-		this.actlist.splice(this.step, 1);
-		this.setState({ isSkippable: this.actlist[this.step].isSkippable });
-		this.setState({ isIndefinite: this.actlist[this.step].isIndefinite });
-		this.step--;
-	};
-
 	render = () => {
 		console.log('indef?' + this.state.isIndefinite);
 		console.log('skip?' + this.state.isSkippable);
@@ -893,7 +899,7 @@ export default class App extends React.Component {
 									case 1:
 									case 3:
 									case 4:
-										this.updateRowSpecific(1);
+										this.updateRowToTime(1,'m',this.step+1)
 										break;
 								}
 							}
