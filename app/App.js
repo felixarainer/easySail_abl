@@ -104,6 +104,8 @@ export default class App extends React.Component {
       postPoneBadStart: undefined,
 			specialChoice: 99,	//99 = orange flagge setzen beim start, wird normalerweise nur für die specialactions benutzt, ausnahme
 			isSpecial: false,
+			interval: 10,
+
 		};
 		this.step = 0;
 
@@ -123,11 +125,11 @@ export default class App extends React.Component {
 		this.actlist = this.createStartStates(
 			[
 				{
-					time: moment().add(10, 'minutes'),
+					time: moment().add(1, 'minutes'),
 					condition: 'i',
 					badstart: false,
 				},{
-					time: moment().add(21, 'minutes'),
+					time: moment().add((1+this.state.interval), 'minutes'),
 					condition: 'p',
 					badstart: false,
 				},
@@ -156,8 +158,8 @@ export default class App extends React.Component {
 						starttime,
 						false,
 						0,
-						false,
-						false
+						true,
+						true
 					)
 				);
 			} else {
@@ -363,12 +365,13 @@ export default class App extends React.Component {
 			//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
 			//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
 
+			console.log('singlebadStart()')
 
 			bsacts.push(
 				new actState(
 					[res.flags.orange, res.flags.x,  {}, {}],
 					[],
-					//TODO genaue Zeit herausfinden WICHTIG NICHT IGNORIEREN
+					//4 minuten werden hier eingefügt, da nächstes ankündigungssignal noch nicht gegeben
 					moment().add(4, 'm'),
 					false,
 					undefined,
@@ -380,27 +383,27 @@ export default class App extends React.Component {
 			this.actlist.splice(this.step+1, 0, ...bsacts)
 			this.updateFlags();
 			this.actlist.splice(this.step, 1)
-		} else {
+
+
+
+		}
+		else {
+
+			console.log('massive bad start()')
 			this.setState({ viewStartPicker: false });
+			let mom = moment();
 
-			//[*]Alle folgenden rennen um ARG verzögern
-			//Es werden die startzeiten der nachfolgenden starts nicht automatisch nach hinten verschoben!!
-			//Daher braucht es eine Funktion die das erledigt
-			//TODO: schauen ob das hier her gehört
-			this.updateRow(10,this.step+2);
+			if(this.state.postPoneBadStart){
 
-			//Komplette startwiederholung
-			//Bei einer kompletten startwiederholung wird ein neustart eingeschoben, die restlichen Klassen haben zu warten. Die Reihenfolge wird nicht verändert.
+				mom = this.actlist[this.step+6].getTime();
 
-      //TODO: moment abhängig machen ob postPoneBadStart
-
-			 //IMMER + 10 MIN WEIL 10 MIN ABGEZOGEN WERDEN
-      let mom = moment().add(12, 'm')
-      console.log(mom)
+			}else{
+				//SppecialChoice 98: 1fhs
+				this.setState({specialChoice: 98})
+			}
 
       bsacts = this.createStartStates(
 				[
-					//TODO genaue zeit herausfinden WICHTIG NICHT IGNORIEREN
 					{
 						time: mom,
 						condition: ARGcondition,
@@ -413,7 +416,8 @@ export default class App extends React.Component {
       let rank = this.actlist[this.step].getRank();
       let pos = undefined;
 
-      //Soll der Fehlstart gleich stattfinden oder nach der nächsten KLasse
+      //richtiges einfügen in die pipeline
+			//zeit updaten hier hinein.
       if(this.state.postPoneBadStart){
         this.setState({postPoneBadStart: false})
         if(this.actlist[this.step].getRank()>4){
@@ -441,9 +445,9 @@ export default class App extends React.Component {
 		}
 	};
 
-	//Alles um X minuten verschieben
 	updateRowByTime = (time,unit,startStep) => {
-		//Siehe 10 Zeilen oben [*]
+		//Alles um <time> <unit> verschieben. Ab startstep in der pipeline
+
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
 		//+2 weil im Moment des Funktionsaufrufs der stepcounter bei 5 ist
 		let altered = this.actlist.slice(startStep, this.actlist.length);
@@ -460,16 +464,10 @@ export default class App extends React.Component {
 
 	updateRowToTime = (time,unit,startStep) => {
 		console.log('updateRowToTime()')
-		console.log(startStep);
 
 		let newTime = moment().add(time,unit)
-		console.log(newTime)
-
 		let oldTime = this.actlist[startStep].getTime();
-		console.log(oldTime)
-
 		let diff = newTime.diff(oldTime,'s');
-		console.log(diff)
 
 		this.updateRowByTime(diff,'s',startStep);
 	}
@@ -898,6 +896,7 @@ export default class App extends React.Component {
 									case 1:
 									case 3:
 									case 4:
+									case 98:
 										this.updateRowToTime(1,'m',this.step+1)
 										break;
 									case 99:
@@ -917,6 +916,9 @@ export default class App extends React.Component {
 		);
 	};
 }
+
+//isSkippable={this.state.isIndefinite}
+//isIndefinite={this.state.isSkippable}
 
 const styles = StyleSheet.create({
 	flagRow: {
