@@ -138,11 +138,12 @@ export default class App extends React.Component {
 		this.setInitialFlags();
 	}
 
+	//starttime ist immer absoluter start, -5min für startvorbereitungen jeglicher art.
 	createStartStates = args => {
 		let ac = [];
 
 		args.forEach(start => {
-			starttime = moment(start.time).subtract(10, 'minutes');
+			let starttime = moment(start.time).subtract(5, 'minutes');
 			//1ste aktion
 			if (start.badstart) {
 				ac.push(
@@ -165,6 +166,7 @@ export default class App extends React.Component {
 			} else {
 				//worange flagge muss nur gesetzt werden, wenn startanfang
 				if(ac.length < 1){
+
 					ac.push(
 						new actState(
 							[{},{}, {}, {}],
@@ -175,13 +177,15 @@ export default class App extends React.Component {
 									flagPic: res.flags.orange,
 								},
 							],
-							starttime,
+							//effektiv 10 minuten vor tatsächlichem ersten start.
+							starttime.subtract(5,'minutes'),
 							false,
 							0,
               true,
               true
 						)
 					);
+
 				}else{
           ac.push(
     				new actState(
@@ -198,7 +202,7 @@ export default class App extends React.Component {
     							flagPic: res.flags.klass,
     						},
     					],
-    					moment(starttime).add(1, 'm'),
+    					starttime,
     					false,
     					0,
               true,
@@ -226,7 +230,7 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						},
 					],
-					moment(starttime).add(5, 'm'),
+					starttime,
 					false,
 					1,
 					false,
@@ -253,7 +257,7 @@ export default class App extends React.Component {
 							flagPic: res.flags[start.condition],
 						},
 					],
-					moment(starttime).add(6, 'm'),
+					moment(starttime).add(1, 'm'),
 					false,
 					2,
 					false,
@@ -279,7 +283,7 @@ export default class App extends React.Component {
 							flagPic: res.flags[start.condition],
 						},
 					],
-					moment(starttime).add(9, 'm'),
+					moment(starttime).add(4, 'm'),
 					false,
 					3,
 					false,
@@ -305,7 +309,7 @@ export default class App extends React.Component {
 							flagPic: res.flags.klass,
 						},
 					],
-					moment(starttime).add(10, 'm'),
+					moment(starttime).add(5, 'm'),
 					false,
 					4,
 					false,
@@ -320,7 +324,7 @@ export default class App extends React.Component {
 					[res.flags.orange, {}, {}, {}],
 					[],
 					moment(starttime)
-						.add(10, 'm')
+						.add(5, 'm')
 						.add(10, 's'),
 					true,
 					5,
@@ -334,7 +338,7 @@ export default class App extends React.Component {
 					[res.flags.orange, {}, {}, {}],
 					[],
 					moment(starttime)
-						.add(10, 'm')
+						.add(5, 'm')
 						.add(11, 's'),
 					false,
 					6,
@@ -351,7 +355,13 @@ export default class App extends React.Component {
 		this.setState(this.actlist[0].getState());
 	};
 
-	setBadStart = (single, ARGcondition) => {
+	singleBadStart = () => {
+		//Einzelrückruf
+		//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
+		//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
+
+		console.log('singlebadStart()')
+
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
 		//rückrufbuttons deaktivieren
@@ -360,89 +370,85 @@ export default class App extends React.Component {
 		//neue actions
 		let bsacts = [];
 
-		if (single) {
-			//Einzelrückruf
-			//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
-			//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
+		bsacts.push(
+			new actState(
+				[res.flags.orange, res.flags.x,  {}, {}],
+				[],
+				//4 minuten werden hier eingefügt, da nächstes ankündigungssignal noch nicht gegeben
+				moment().add(4, 'm'),
+				false,
+				undefined,
+        false,
+        false
+			)
+		);
 
-			console.log('singlebadStart()')
+		this.actlist.splice(this.step+1, 0, ...bsacts)
+		this.updateFlags();
+		this.actlist.splice(this.step, 1)
+	}
 
-			bsacts.push(
-				new actState(
-					[res.flags.orange, res.flags.x,  {}, {}],
-					[],
-					//4 minuten werden hier eingefügt, da nächstes ankündigungssignal noch nicht gegeben
-					moment().add(4, 'm'),
-					false,
-					undefined,
-          false,
-          false
-				)
-			);
+	massiveBadStart = (single, ARGcondition) => {
+		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
+		this.setState({ startFinished: false });
+		//rückrufbuttons deaktivieren
+		this.setState({ viewBadStartBtns: false });
 
-			this.actlist.splice(this.step+1, 0, ...bsacts)
-			this.updateFlags();
-			this.actlist.splice(this.step, 1)
+		//neue actions
+		let bsacts = [];
 
+		console.log('massive bad start()')
+		this.setState({ viewStartPicker: false });
+		let mom = moment();
 
+		if(this.state.postPoneBadStart){
 
+			mom = this.actlist[this.step+6].getTime();
+
+		}else{
+			//SppecialChoice 98: 1fhs
+			this.setState({specialChoice: 98})
 		}
-		else {
 
-			console.log('massive bad start()')
-			this.setState({ viewStartPicker: false });
-			let mom = moment();
-
-			if(this.state.postPoneBadStart){
-
-				mom = this.actlist[this.step+6].getTime();
-
-			}else{
-				//SppecialChoice 98: 1fhs
-				this.setState({specialChoice: 98})
-			}
-
-      bsacts = this.createStartStates(
-				[
-					{
-						time: mom,
-						condition: ARGcondition,
-						badstart: true,
-					},
-				],
-			);
+    bsacts = this.createStartStates(
+			[
+				{
+					time: mom,
+					condition: ARGcondition,
+					badstart: true,
+				},
+			],
+		);
 
 
-      let rank = this.actlist[this.step].getRank();
-      let pos = undefined;
+    let rank = this.actlist[this.step].getRank();
+    let pos = undefined;
 
-      //richtiges einfügen in die pipeline
-			//zeit updaten hier hinein.
-      if(this.state.postPoneBadStart){
-        this.setState({postPoneBadStart: false})
-        if(this.actlist[this.step].getRank()>4){
-          pos = this.step - rank + 14;
-          this.actlist.splice(pos, 0, ...bsacts)
-          this.step += (6-rank);
-        }else{
-          pos = this.step - rank + 7;
-    			this.actlist.splice(pos, 0, ...bsacts);
-          this.step -= (rank+1);
-        }
+    //richtiges einfügen in die pipeline
+		//zeit updaten hier hinein.
+    if(this.state.postPoneBadStart){
+      this.setState({postPoneBadStart: false})
+      if(this.actlist[this.step].getRank()>4){
+        pos = this.step - rank + 14;
+        this.actlist.splice(pos, 0, ...bsacts)
+        this.step += (6-rank);
       }else{
-        if(this.actlist[this.step].getRank()>4){
-          pos = this.step - rank + 7;
-          this.actlist.splice(pos, 0, ...bsacts)
-          this.step += (6-rank);
-        }else{
-          pos = this.step - rank;
-          this.actlist.splice(pos, 0, ...bsacts);
-          this.step -= (rank+1);
-        }
+        pos = this.step - rank + 7;
+  			this.actlist.splice(pos, 0, ...bsacts);
+        this.step -= (rank+1);
       }
-      this.updateFlags();
-
-		}
+    }else{
+      if(this.actlist[this.step].getRank()>4){
+        pos = this.step - rank + 7;
+        this.actlist.splice(pos, 0, ...bsacts)
+        this.step += (6-rank);
+      }else{
+        pos = this.step - rank;
+        this.actlist.splice(pos, 0, ...bsacts);
+        this.step -= (rank+1);
+      }
+    }
+    this.updateFlags();
 	};
 
 	updateRowByTime = (time,unit,startStep) => {
@@ -712,7 +718,7 @@ export default class App extends React.Component {
 					</TouchableHighlight>
           <TouchableOpacity onPress={() => {
 						this.setState({ viewStartPicker: false });
-            this.setBadStart(false, this.badStartCondition);
+            this.massiveBadStart(this.badStartCondition);
 					}}>
 						<Text style={{ fontSize: 40 }}>Weiter!</Text>
 					</TouchableOpacity>
@@ -730,7 +736,7 @@ export default class App extends React.Component {
 					color="#841584"
 					onPress={() => {
 						this.setState({ viewBadStartBtns: false });
-						this.setBadStart(true);
+						this.singleBadStart();
 					}}
 					accessibilityLabel="Learn more about this purple button"
 				/>
