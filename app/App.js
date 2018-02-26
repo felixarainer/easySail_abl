@@ -1,6 +1,6 @@
 // App - main component
 //
-// Hosts FlagView and ActionView. Passes current Flags / Actions (TODO) / Count-
+// Hosts FlagView and ActionView. Passes current Flags / Actions () / Count-
 // 	down to children as props i.e. sets next state for the whole app ('Regelsys-
 //	tem')
 
@@ -104,7 +104,7 @@ export default class App extends React.Component {
       postPoneBadStart: undefined,
 			specialChoice: 99,	//99 = orange flagge setzen beim start, wird normalerweise nur für die specialactions benutzt, ausnahme
 			isSpecial: false,
-			interval: 5,
+			interval: 10,
 
 		};
 		this.step = 0;
@@ -123,6 +123,7 @@ export default class App extends React.Component {
 
 	//componentwillmount wird NACH dem constructor aufgerufen...
 	componentWillMount() {
+		console.log('componentWillMount();')
 		let start = 10;
 
 		this.actlist = this.createStartStates(
@@ -146,7 +147,6 @@ export default class App extends React.Component {
 		this.setInitialFlags();
 	}
 
-	//TODO: irgendwas stimmt hier ned....und i was ned wos...
 	createStartStates = (args) => {
 		let ac = [];
 
@@ -154,13 +154,9 @@ export default class App extends React.Component {
 
 			let starttime = moment(start.time).subtract(5, 'minutes');
 
-			console.log('starttime--------------')
-			console.log(starttime)
-			console.log(start.time)
-
 			//1ste aktion
 			if (start.badstart) {
-				console.log('baaaadstart')
+				console.log('createBadStart()')
 				ac.push(
 					new actState(
 						[res.flags.orange,res.flags.fhs, {}, {}],
@@ -181,7 +177,7 @@ export default class App extends React.Component {
 			} else {
 				//worange flagge muss nur gesetzt werden, wenn startanfang
 				if(start.first){
-					console.log('fiiiirst')
+					console.log('createFirstStart()')
 
 					ac.push(
 						new actState(
@@ -203,7 +199,7 @@ export default class App extends React.Component {
 					);
 
 				}else{
-					console.log('noooot first')
+					console.log('createStart()')
 
           ac.push(
     				new actState(
@@ -223,10 +219,8 @@ export default class App extends React.Component {
     					starttime,
     					false,
     					0,
-							true,
-							true,
-							// false,
-							// false
+							false,
+							false
     				)
     			);
         }
@@ -253,10 +247,8 @@ export default class App extends React.Component {
 					starttime,
 					false,
 					1,
-					true,
-					true,
-					// false,
-					// false
+					false,
+					false
 				)
 			);
 
@@ -282,10 +274,8 @@ export default class App extends React.Component {
 					moment(starttime).add(1, 'm'),
 					false,
 					2,
-					true,
-					true,
-					// false,
-					// false
+					false,
+					false
 				)
 			);
 
@@ -310,10 +300,8 @@ export default class App extends React.Component {
 					moment(starttime).add(4, 'm'),
 					false,
 					3,
-					true,
-					true,
-					// false,
-					// false
+					false,
+					false
 				)
 			);
 
@@ -338,10 +326,8 @@ export default class App extends React.Component {
 					moment(starttime).add(5, 'm'),
 					false,
 					4,
-					true,
-					true,
-					// false,
-					// false
+					false,
+					false
 				)
 			);
 
@@ -356,10 +342,8 @@ export default class App extends React.Component {
 						.add(10, 's'),
 					true,
 					5,
-					true,
-					true,
-					// false,
-					// false
+					false,
+					false
 				)
 			);
 
@@ -372,14 +356,10 @@ export default class App extends React.Component {
 						.add(11, 's'),
 					false,
 					6,
-					true,
-					true,
-					// false,
-					// false
+					false,
+					false
 				)
 			);
-
-			console.log(ac)
 		});
 
 		return ac;
@@ -521,6 +501,7 @@ export default class App extends React.Component {
 	};
 
 	updateRowByTime = (time,unit,startStep) => {
+		console.log('updateRowByTime()')
 		//Alles um <time> <unit> verschieben. Ab startstep in der pipeline
 
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
@@ -553,6 +534,7 @@ export default class App extends React.Component {
 	};
 
 	dropOrangeFlag = () => {
+		console.log('dropOrangeFlag()')
 		let swapStates = [];
 
 		let oldFlags = this.actlist[this.actlist.length -1].getFlags();
@@ -600,6 +582,7 @@ export default class App extends React.Component {
 	};
 
 	postponeAP = () => {
+		console.log('postPoneAP')
 		let postActs = [];
 		let newTime = 0;
 
@@ -735,6 +718,7 @@ export default class App extends React.Component {
 	}
 
 	renderStartPicker = () => {
+		console.log('renderStartPicker()')
 		return (
 			<View style={{ backgroundColor: 'red', opacity: 0.7 }}>
 				<Text style={{ fontSize: 40, fontWeight: 'bold' }}>
@@ -798,6 +782,7 @@ export default class App extends React.Component {
 	};
 
 	renderBadStartBtns = () => {
+		console.log('renderStartBtns()')
 		return (
 			<View style={{ flexDirection: 'row', backgroundColor: 'red' }}>
 				<Button
@@ -857,6 +842,7 @@ export default class App extends React.Component {
 	};
 
 	renderMenu = () => {
+		console.log('renderMenu();')
 		return (
 			<View
 				style={{
@@ -899,6 +885,7 @@ export default class App extends React.Component {
 		this.setState({ isModalVisible: !this.state.isModalVisible });
 
 	render = () => {
+		console.log('render();')
 		return (
 			<View
 				style={{
