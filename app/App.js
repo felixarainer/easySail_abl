@@ -105,6 +105,7 @@ export default class App extends React.Component {
 			specialChoice: 99,	//99 = orange flagge setzen beim start, wird normalerweise nur für die specialactions benutzt, ausnahme
 			isSpecial: false,
 			interval: 10,
+			specialPics: [],
 
 		};
 		this.step = 0;
@@ -112,14 +113,13 @@ export default class App extends React.Component {
 		this.flagSpot4 = {};
 
 		this.specialBtnsDescs = [
-			{choice: 0,button: 'Verschieben (kurz)',actionpic: res.actions.signal_2, flagactionpic: res.actions.flag_up, flagpic: res.flags.ap ,description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
-			{choice: 1,button: 'Verschieben (lang)',actionpic: res.actions.signal_2, flagactionpic: res.actions.flag_up, flagpic: res.flags.apoh ,description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
-			{choice: 2,button: 'Verschieben und abbrechen',actionpic: res.actions.signal_2, flagactionpic: res.actions.flag_up, flagpic: res.flags.apoa ,description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt.'},
-			{choice: 3,button: 'Abbrechen (rasche WH)',actionpic: res.actions.signal_3, flagactionpic: res.actions.flag_up, flagpic: res.flags.n ,description: 'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
-			{choice: 4,button: 'Abbrechen (spätere WH)',actionpic: res.actions.signal_3, flagactionpic: res.actions.flag_up, flagpic: res.flags.noh ,description: 'Alle bereits gestarteten Rennen werden abgebrochen \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
-			{choice: 5,button: 'Regatta Abbrechen',actionpic: res.actions.signal_3, flagactionpic: res.actions.flag_up, flagpic: res.flags.noa ,description: 'Alle bereits gestarteten Rennen werden abgebrochen \nHeute findet keine Wettfahrt mehr statt.'},
-			{choice: 6,button: 'Schwimmwesten anlegen (Aufruf)',actionpic: res.actions.signal_1, flagactionpic: res.actions.flag_up, flagpic: res.flags.y ,description: 'Setzen der Flagge "Y"'},
-
+			{choice: 0,button: 'Verschieben (kurz)',specialpics: [res.actions.signal_2, res.actions.flag_up,res.flags.ap] ,description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
+			{choice: 1,button: 'Verschieben (lang)',specialpics: [res.actions.signal_2, res.actions.flag_up, res.flags.apoh] ,description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
+			{choice: 2,button: 'Verschieben und abbrechen',specialpics: [res.actions.signal_2,res.actions.flag_up,  res.flags.apoa ],description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt.'},
+			{choice: 3,button: 'Abbrechen (rasche WH)',specialpics: [res.actions.signal_3,  res.actions.flag_up,  res.flags.n] ,description: 'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
+			{choice: 4,button: 'Abbrechen (spätere WH)',specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.noh] ,description: 'Alle bereits gestarteten Rennen werden abgebrochen \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
+			{choice: 5,button: 'Regatta Abbrechen',specialpics: [res.actions.signal_3,  res.actions.flag_up,  res.flags.noa ],description: 'Alle bereits gestarteten Rennen werden abgebrochen \nHeute findet keine Wettfahrt mehr statt.'},
+			{choice: 6,button: 'Schwimmwesten anlegen (Aufruf)',specialpics: [res.actions.signal_1,  res.actions.flag_up, res.flags.y] ,description: 'Setzen der Flagge "Y"'},
 		];
 	}
 
@@ -899,9 +899,7 @@ export default class App extends React.Component {
 								onPress={() => {
 									this.setState({ specialDescription: args.description });
 									this.setState({ specialChoice: args.choice });
-									this.setState({ specialFlagPic: args.flagpic });
-									this.setState({ specialFlagActionPic: args.flagactionpic });
-									this.setState({ specialActoinPic: args.actionpic })
+									this.setState({ specialPics: args.specialpics });
 								}}
 							>
 								<Text style={{ fontSize: 40 }}>{args.button}</Text>
@@ -925,19 +923,19 @@ export default class App extends React.Component {
 						<View style={{ flex: 1, backgroundColor: 'green' }}>
 							<Image
 								style={styles.spFlag}
-								source={this.state.specialFlagActionPic}
+								source={this.state.specialPics[2]}
 							/>
 						</View>
 						<View style={{ flex: 1, backgroundColor: 'blue' }}>
 							<Image
 								style={styles.spFlag}
-								source={this.state.specialFlagActionPic}
+								source={this.state.specialPics[0]}
 							/>
 						</View>
-						<View style={{ flex: 1, backgroundColor: 'yellow' }}>
+						<View style={{ flex: 1, backgroundColor: 'red' }}>
 							<Image
 								style={styles.spFlag}
-								source={this.state.specialActionPic}
+								source={this.state.specialPics[1]}
 							/>
 						</View>
 					</View>
@@ -1074,6 +1072,7 @@ const styles = StyleSheet.create({
 		//backgroundColor: 'red',
 	},
 	spFlag: {
-		flex: 1,
+		height: 150,
+		width: 150,
 	},
 });
