@@ -112,13 +112,13 @@ export default class App extends React.Component {
 		this.flagSpot4 = {};
 
 		this.specialBtnsDescs = [
-			{choice: 0, button: 'Verschieben (kurz)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
-			{choice: 1,button: 'Verschieben (lang)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "H". \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
-			{choice: 2,button: 'Verschieben und abbrechen', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP" über der Flagge "A".'},
-			{choice: 3,button: 'Abbrechen (rasche WH)', description: 'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nSofortiges setzen der Flagge "N". \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
-			{choice: 4,button: 'Abbrechen (spätere WH)', description: 'Alle bereits gestarteten Rennen werden abgebrochen \nSofortiges setzen der Flagge "N" über der Flagge "H". \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
-			{choice: 5,button: 'Regatta Abbrechen', description: 'Alle bereits gestarteten Rennen werden abgebrochen \nHeute findet keine Wettfahrt mehr statt\nSofortiges setzen der Flagge "N" über der Flagge "A"'},
-			{choice: 6,button: 'Schwimmwesten anlegen (Aufruf)', description: 'Setzen der Flagge "Y"'},
+			{choice: 0,button: 'Verschieben (kurz)',actionpic: res.actions.signal_2, flagactionpic: res.actions.flag_up, flagpic: res.flags.ap ,description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
+			{choice: 1,button: 'Verschieben (lang)',actionpic: res.actions.signal_2, flagactionpic: res.actions.flag_up, flagpic: res.flags.apoh ,description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
+			{choice: 2,button: 'Verschieben und abbrechen',actionpic: res.actions.signal_2, flagactionpic: res.actions.flag_up, flagpic: res.flags.apoa ,description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt.'},
+			{choice: 3,button: 'Abbrechen (rasche WH)',actionpic: res.actions.signal_3, flagactionpic: res.actions.flag_up, flagpic: res.flags.n ,description: 'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
+			{choice: 4,button: 'Abbrechen (spätere WH)',actionpic: res.actions.signal_3, flagactionpic: res.actions.flag_up, flagpic: res.flags.noh ,description: 'Alle bereits gestarteten Rennen werden abgebrochen \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
+			{choice: 5,button: 'Regatta Abbrechen',actionpic: res.actions.signal_3, flagactionpic: res.actions.flag_up, flagpic: res.flags.noa ,description: 'Alle bereits gestarteten Rennen werden abgebrochen \nHeute findet keine Wettfahrt mehr statt.'},
+			{choice: 6,button: 'Schwimmwesten anlegen (Aufruf)',actionpic: res.actions.signal_1, flagactionpic: res.actions.flag_up, flagpic: res.flags.y ,description: 'Setzen der Flagge "Y"'},
 
 		];
 	}
@@ -563,7 +563,7 @@ export default class App extends React.Component {
 				],
 				oldTime,
 				oldStart,
-        false,
+        true,
         true
 			)
 		);
@@ -892,13 +892,16 @@ export default class App extends React.Component {
 					flexDirection: 'row',
 				}}
 			>
-				<View style={{ flex: 2, backgroundColor: 'lightgreen' }}>
+				<View style={{ flex: 5, backgroundColor: 'lightgreen' }}>
 					{this.specialBtnsDescs.map(args => {
 						return (
 							<TouchableOpacity
 								onPress={() => {
 									this.setState({ specialDescription: args.description });
 									this.setState({ specialChoice: args.choice });
+									this.setState({ specialFlagPic: args.flagpic });
+									this.setState({ specialFlagActionPic: args.flagactionpic });
+									this.setState({ specialActoinPic: args.actionpic })
 								}}
 							>
 								<Text style={{ fontSize: 40 }}>{args.button}</Text>
@@ -914,8 +917,30 @@ export default class App extends React.Component {
 						<Text style={{ fontSize: 40 }}>Hide me!</Text>
 					</TouchableOpacity>
 				</View>
-				<View style={{ flex: 3, backgroundColor: 'lightblue' }}>
-					<Text style={{ fontSize: 40 }}>{this.state.specialDescription}</Text>
+				<View style={{ flex: 7, backgroundColor: 'lightblue' }}>
+					<View style={{ flex: 5, backgroundColor: 'lightblue' }}>
+						<Text style={{ fontSize: 40 }}>{this.state.specialDescription}</Text>
+					</View>
+					<View style={{ flex: 3, flexDirection: 'row', backgroundColor: 'red' }}>
+						<View style={{ flex: 1, backgroundColor: 'green' }}>
+							<Image
+								style={styles.spFlag}
+								source={this.state.specialFlagActionPic}
+							/>
+						</View>
+						<View style={{ flex: 1, backgroundColor: 'blue' }}>
+							<Image
+								style={styles.spFlag}
+								source={this.state.specialFlagActionPic}
+							/>
+						</View>
+						<View style={{ flex: 1, backgroundColor: 'yellow' }}>
+							<Image
+								style={styles.spFlag}
+								source={this.state.specialActionPic}
+							/>
+						</View>
+					</View>
 				</View>
 			</View>
 		);
@@ -1047,5 +1072,8 @@ const styles = StyleSheet.create({
 		width: 200,
 		// flex: 1,
 		//backgroundColor: 'red',
+	},
+	spFlag: {
+		flex: 1,
 	},
 });
