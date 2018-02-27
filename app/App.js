@@ -381,13 +381,23 @@ export default class App extends React.Component {
 		//rückrufbuttons deaktivieren
 		this.setState({ viewBadStartBtns: false });
 
+		//Die Teilnehmer haben 4 Minuten Zeit zurückzukehren, derweil wird das restliche Feld angehalten, damit keine Verwirrung entsteht.
+		//Das restliche Feld wird nur wenn nötig angehalten.
+		if(this.state.interval < 10){
+			this.setState({specialChoice: 97})
+		}
+
 		//neue actions
 		let bsacts = [];
 
 		bsacts.push(
 			new actState(
 				[res.flags.orange, res.flags.x,  {}, {}],
-				[],
+				[{
+					name: 'TestAction2',
+					actionPic: res.actions.flag_down,
+					flagPic: res.flags.x,
+				}],
 				//4 minuten werden hier eingefügt, da nächstes ankündigungssignal noch nicht gegeben
 				moment().add(4, 'm'),
 				false,
@@ -434,16 +444,12 @@ export default class App extends React.Component {
 					mom = moment(this.actlist[this.step].getTime());
 					toRank += 3;
 					break;
-				case 3:
-					mom = moment(this.actlist[this.step+1].getTime());
-					toRank += 4;
-					break;
 				case 0:
 					mom = moment(this.actlist[this.step-3].getTime());
 					toRank += 0;
 					break;
 				case 1:
-					mom = moment(this.actlist[this.step+4].getTime());
+					mom = moment(this.actlist[this.step-4].getTime());
 					toRank -= 1;
 					break;
 			}
@@ -958,6 +964,7 @@ export default class App extends React.Component {
 									case 1:
 									case 3:
 									case 4:
+									case 97:
 									case 98:
 										this.updateRowToTime(1,'m',this.step+1)
 										break;
