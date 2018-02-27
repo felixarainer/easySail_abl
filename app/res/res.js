@@ -86,6 +86,11 @@ export const flags = {
 		pic: require('./pics/flags/orange.png'),
 		ratio: 1,
 	},
+	y: {
+		name: 'y',
+		pic: require('./pics/flags/y.png'),
+		ratio: 1,
+	},
 
 };
 

@@ -105,10 +105,11 @@ export default class App extends React.Component {
 			specialChoice: 99,	//99 = orange flagge setzen beim start, wird normalerweise nur für die specialactions benutzt, ausnahme
 			isSpecial: false,
 			interval: 10,
-			flagSpot4: res.flags.black,
 
 		};
 		this.step = 0;
+
+		this.flagSpot4 = {};
 
 		this.specialBtnsDescs = [
 			{choice: 0, button: 'Verschieben (kurz)', description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nSofortiges setzen der Flagge "AP". \nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
@@ -160,7 +161,7 @@ export default class App extends React.Component {
 				console.log('createBadStart()')
 				ac.push(
 					new actState(
-						[res.flags.orange,res.flags.fhs, {}, this.state.flagSpot4],
+						[res.flags.orange,res.flags.fhs, {}, this.flagSpot4],
 						[
 							{
 								name: 'TestAction2',
@@ -182,7 +183,7 @@ export default class App extends React.Component {
 
 					ac.push(
 						new actState(
-							[{},{}, {}, this.state.flagSpot4],
+							[{},{}, {}, this.flagSpot4],
 							[
 								{
 									name: 'TestAction2',
@@ -204,7 +205,7 @@ export default class App extends React.Component {
 
           ac.push(
     				new actState(
-    					[res.flags.orange, {}, {}, this.state.flagSpot4],
+    					[res.flags.orange, {}, {}, this.flagSpot4],
     					[
     						{
     							name: 'TestAction1',
@@ -232,7 +233,7 @@ export default class App extends React.Component {
 			//l ist geborgen und in einer minute ankündigungssignal + Klassenflagge
 			ac.push(
 				new actState(
-					[res.flags.orange, {}, {}, this.state.flagSpot4],
+					[res.flags.orange, {}, {}, this.flagSpot4],
 					[
 						{
 							name: 'TestAction1',
@@ -259,7 +260,7 @@ export default class App extends React.Component {
 				//Klassenflagge gesetzt
 				//in einer minute Vorbereitungssignal und Startmethode
 				new actState(
-					[res.flags.orange, res.flags.klass, {}, this.state.flagSpot4],
+					[res.flags.orange, res.flags.klass, {}, this.flagSpot4],
 					[
 						{
 							name: 'TestAction1',
@@ -285,7 +286,7 @@ export default class App extends React.Component {
 				//Condition Flagge gesetzt
 				//3 minuten bis zum 1 min signal
 				new actState(
-				 [res.flags.orange, res.flags.klass, res.flags[start.condition], this.state.flagSpot4],
+				 [res.flags.orange, res.flags.klass, res.flags[start.condition], this.flagSpot4],
 					[
 						{
 							name: 'TestAction1',
@@ -311,7 +312,7 @@ export default class App extends React.Component {
 				//1 minuten signal geschossen, condition flagge geborgen
 				//1 minute bis start
 				new actState(
-					[res.flags.orange, res.flags.klass, {}, this.state.flagSpot4],
+					[res.flags.orange, res.flags.klass, {}, this.flagSpot4],
 					[
 						{
 							name: 'TestAction1',
@@ -336,7 +337,7 @@ export default class App extends React.Component {
 			//kein button press keine nächsten aktionen
 			ac.push(
 				new actState(
-					[res.flags.orange, {}, {}, this.state.flagSpot4],
+					[res.flags.orange, {}, {}, this.flagSpot4],
 					[],
 					moment(starttime)
 						.add(5, 'm')
@@ -350,7 +351,7 @@ export default class App extends React.Component {
 
 			ac.push(
 				new actState(
-					[res.flags.orange, {}, {}, this.state.flagSpot4],
+					[res.flags.orange, {}, {}, this.flagSpot4],
 					[],
 					moment(starttime)
 						.add(5, 'm')
@@ -393,7 +394,7 @@ export default class App extends React.Component {
 
 		bsacts.push(
 			new actState(
-				[res.flags.orange, res.flags.x,  {}, this.state.flagSpot4],
+				[res.flags.orange, res.flags.x,  {}, this.flagSpot4],
 				[{
 					name: 'TestAction2',
 					actionPic: res.actions.flag_down,
@@ -597,7 +598,7 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				[res.flags.orange,res.flags.ap, {}, this.state.flagSpot4],
+				[res.flags.orange,res.flags.ap, {}, this.flagSpot4],
 				[],
 				moment(),
 				false,
@@ -620,7 +621,7 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				[{}, res.flags.apoh, {}, this.state.flagSpot4],
+				[{}, res.flags.apoh, {}, this.flagSpot4],
 				[],
 				moment(),
 				false,
@@ -643,7 +644,7 @@ export default class App extends React.Component {
 
 		postActs.push(
 			new actState(
-				[{}, res.flags.apoa, {}, this.state.flagSpot4],
+				[{}, res.flags.apoa, {}, this.flagSpot4],
 				[],
 				moment(),
 				false,
@@ -665,7 +666,7 @@ export default class App extends React.Component {
 
 		cancelActs.push(
 			new actState(
-				[res.flags.orange, res.flags.n, {}, this.state.flagSpot4],
+				[res.flags.orange, res.flags.n, {}, this.flagSpot4],
 				[],
 				moment(),
 				false,
@@ -688,7 +689,7 @@ export default class App extends React.Component {
 
 		cancelActs.push(
 			new actState(
-				[{}, res.flags.noh, {}, this.state.flagSpot4],
+				[{}, res.flags.noh, {}, this.flagSpot4],
 				[],
 				moment(),
 				false,
@@ -711,7 +712,7 @@ export default class App extends React.Component {
 
 		cancelActs.push(
 			new actState(
-				[{}, res.flags.noa, {}, this.state.flagSpot4],
+				[{}, res.flags.noa, {}, this.flagSpot4],
 				[],
 				moment(),
 				false,
@@ -729,20 +730,28 @@ export default class App extends React.Component {
 	handleFlagY = () => {
 		console.log('handleFlagY()')
 
-		if(this.state.flagSpot4 === {}){
-			console.log('===')
-			this.setState({flagSpot4: 'hi'});
-			this.specialBtnsDescs[6] = {choice: undefined,button: 'Schwimmwesten ablegen', description: 'Bergen der Flagge "Y"'};
+		let newFlag = undefined;
+
+		if(this.flagSpot4 !== res.flags.y){
+			console.log('!== Y')
+			newFlag = res.flags.y;
+			this.specialBtnsDescs[6] = {choice: 6,button: 'Schwimmwesten ablegen', description: 'Bergen der Flagge "Y"'};
 		}else{
-			console.log('!==')
-			this.setState({flagSpot4: 'hallo'});
-			this.specialBtnsDescs[6] = {choice: undefined,button: 'Schwimmwesten anlegen (Aufruf)', description: 'Setzen der Flagge "Y"'}
+			console.log('=== Y')
+			newFlag = {};
+			this.specialBtnsDescs[6] = {choice: 6,button: 'Schwimmwesten anlegen (Aufruf)', description: 'Setzen der Flagge "Y"'};
 		}
+
+		this.flagSpot4 = newFlag;
+
+		this.actlist.forEach(elem => {
+			let flags = elem.getFlags();
+			flags[3] = newFlag;
+			elem.setFlags(flags);
+		})
 
 		this.step--;
 		this.updateFlags();
-
-		debugger
 	}
 
 	renderStartPicker = () => {
