@@ -124,7 +124,7 @@ export default class App extends React.Component {
 	//componentwillmount wird NACH dem constructor aufgerufen...
 	componentWillMount() {
 		console.log('componentWillMount();')
-		let start = 10;
+		let start = 11;
 
 		this.actlist = this.createStartStates(
 			[
@@ -428,7 +428,8 @@ export default class App extends React.Component {
 		let mom = moment();
 		let toRank = this.step+7;
 
-		if(this.state.postPoneBadStart){
+		//postponebadstart wird nur ausgeführt wenn danach noch ein start kommt
+		if(this.state.postPoneBadStart && ((this.actlist.length - this.step) > 5)){
 
 			rank = this.actlist[this.step].getRank();
 			switch(rank){
@@ -479,6 +480,7 @@ export default class App extends React.Component {
     let pos = undefined;
 
     //richtiges einfügen in die pipeline
+		//postponebadstart wird nur ausgeführt, wenn danach noch ein start kommt.
     if(this.state.postPoneBadStart && ((this.actlist.length - this.step) > 5)){
       if(this.actlist[this.step].getRank()>4){
         pos = this.step - rank + 14;
