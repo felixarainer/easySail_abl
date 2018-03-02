@@ -4,7 +4,7 @@
 // 	down to children as props i.e. sets next state for the whole app ('Regelsys-
 //	tem')
 
-        //Alert.alert('Alert Title','My Alert Msg',[],{ cancelable: true })
+//Alert.alert('Alert Title','My Alert Msg',[],{ cancelable: true })
 
 import React from 'react';
 import {
@@ -15,7 +15,7 @@ import {
 	Button,
 	TouchableHighlight,
 	TouchableOpacity,
-  Alert,
+	Alert,
 } from 'react-native';
 import ActionView from './components/ActionView';
 import FlagItem from './components/FlagItem';
@@ -58,7 +58,7 @@ class actState {
 
 	wasStart = () => {
 		return this.isStart;
-	}
+	};
 
 	getFlags = () => {
 		return this.flags;
@@ -86,7 +86,7 @@ class actState {
 
 	setTime = newTime => {
 		this.time = newTime;
-	}
+	};
 }
 
 export default class App extends React.Component {
@@ -96,72 +96,118 @@ export default class App extends React.Component {
 			curFlags: {},
 			viewBadStartBtns: false,
 			startFinished: false,
-			viewStartPicker: false,
-			isModalVisible: false,
+			isStartPickerVisible: false,
+			isActionsMenuVisible: false,
 			specialDescription: '',
 			isSkippable: undefined,
 			isIndefinite: undefined,
-      postPoneBadStart: undefined,
-			specialChoice: 99,	//99 = orange flagge setzen beim start, wird normalerweise nur für die specialactions benutzt, ausnahme
+			postPoneBadStart: undefined,
+			specialChoice: 99, //99 = orange flagge setzen beim start, wird normalerweise nur für die specialactions benutzt, ausnahme
 			isSpecial: false,
 			interval: 10,
 			specialPics: [],
-
 		};
 		this.step = 0;
 
 		this.flagSpot4 = {};
 
 		this.specialBtnsDescs = [
-			{choice: 0,button: 'Verschieben (kurz)',specialpics: [res.actions.signal_2, res.actions.flag_up,res.flags.ap] ,description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
-			{choice: 1,button: 'Verschieben (lang)',specialpics: [res.actions.signal_2, res.actions.flag_up, res.flags.apoh] ,description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown'},
-			{choice: 2,button: 'Verschieben und abbrechen',specialpics: [res.actions.signal_2,res.actions.flag_up,  res.flags.apoa ],description: 'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt.'},
-			{choice: 3,button: 'Abbrechen (rasche WH)',specialpics: [res.actions.signal_3,  res.actions.flag_up,  res.flags.n] ,description: 'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
-			{choice: 4,button: 'Abbrechen (spätere WH)',specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.noh] ,description: 'Alle bereits gestarteten Rennen werden abgebrochen \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown'},
-			{choice: 5,button: 'Regatta Abbrechen',specialpics: [res.actions.signal_3,  res.actions.flag_up,  res.flags.noa ],description: 'Alle bereits gestarteten Rennen werden abgebrochen \nHeute findet keine Wettfahrt mehr statt.'},
-			{choice: 6,button: 'Schwimmwesten anlegen (Aufruf)',specialpics: [res.actions.signal_1,  res.actions.flag_up, res.flags.y] ,description: 'Setzen der Flagge "Y"'},
+			{
+				choice: 0,
+				button: 'Verschieben (kurz)',
+				specialpics: [res.actions.signal_2, res.actions.flag_up, res.flags.ap],
+				description:
+					'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown',
+			},
+			{
+				choice: 1,
+				button: 'Verschieben (lang)',
+				specialpics: [
+					res.actions.signal_2,
+					res.actions.flag_up,
+					res.flags.apoh,
+				],
+				description:
+					'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown',
+			},
+			{
+				choice: 2,
+				button: 'Verschieben und abbrechen',
+				specialpics: [
+					res.actions.signal_2,
+					res.actions.flag_up,
+					res.flags.apoa,
+				],
+				description:
+					'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt.',
+			},
+			{
+				choice: 3,
+				button: 'Abbrechen (rasche WH)',
+				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.n],
+				description:
+					'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown',
+			},
+			{
+				choice: 4,
+				button: 'Abbrechen (spätere WH)',
+				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.noh],
+				description:
+					'Alle bereits gestarteten Rennen werden abgebrochen \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown',
+			},
+			{
+				choice: 5,
+				button: 'Regatta Abbrechen',
+				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.noa],
+				description:
+					'Alle bereits gestarteten Rennen werden abgebrochen \nHeute findet keine Wettfahrt mehr statt.',
+			},
+			{
+				choice: 6,
+				button: 'Schwimmwesten anlegen (Aufruf)',
+				specialpics: [res.actions.signal_1, res.actions.flag_up, res.flags.y],
+				description: 'Setzen der Flagge "Y"',
+			},
 		];
 	}
 
 	//componentwillmount wird NACH dem constructor aufgerufen...
 	componentWillMount() {
-		console.log('componentWillMount();')
+		console.log('componentWillMount();');
 		let start = 11;
 
-		this.actlist = this.createStartStates(
-			[
-				{
-					time: moment().add(start,'minutes'),
-					condition: 'i',
-					badstart: false,
-					first: true,
-				},{
-					time: moment().add((start+this.state.interval),'minutes'),
-					condition: 'p',
-					badstart: false,
-					first: false,
-				},
-			],
-		);
+		this.actlist = this.createStartStates([
+			{
+				time: moment().add(start, 'minutes'),
+				condition: 'i',
+				badstart: false,
+				first: true,
+			},
+			{
+				time: moment().add(start + this.state.interval, 'minutes'),
+				condition: 'p',
+				badstart: false,
+				first: false,
+			},
+		]);
 
-		console.log(this.actlist)
+		console.log(this.actlist);
 
 		this.setInitialFlags();
 	}
 
-	createStartStates = (args) => {
+	createStartStates = args => {
 		let ac = [];
 
 		args.forEach(start => {
-
 			let starttime = moment(start.time).subtract(5, 'minutes');
 
 			//1ste aktion
 			if (start.badstart) {
-				console.log('createBadStart()')
+				console.log('createBadStart()');
 				ac.push(
 					new actState(
-						[res.flags.orange,res.flags.fhs, {}, this.flagSpot4],
+						[res.flags.orange, res.flags.fhs, {}, this.flagSpot4],
 						[
 							{
 								name: 'TestAction2',
@@ -178,12 +224,12 @@ export default class App extends React.Component {
 				);
 			} else {
 				//worange flagge muss nur gesetzt werden, wenn startanfang
-				if(start.first){
-					console.log('createFirstStart()')
+				if (start.first) {
+					console.log('createFirstStart()');
 
 					ac.push(
 						new actState(
-							[{},{}, {}, this.flagSpot4],
+							[{}, {}, {}, this.flagSpot4],
 							[
 								{
 									name: 'TestAction2',
@@ -192,41 +238,39 @@ export default class App extends React.Component {
 								},
 							],
 							//effektiv 10 minuten vor tatsächlichem ersten start.
-							moment(starttime).subtract(5,'minutes'),
+							moment(starttime).subtract(5, 'minutes'),
 							false,
 							0,
-              true,
-              true,
+							true,
+							true
 						)
 					);
+				} else {
+					console.log('createStart()');
 
-				}else{
-					console.log('createStart()')
-
-          ac.push(
-    				new actState(
-    					[res.flags.orange, {}, {}, this.flagSpot4],
-    					[
-    						{
-    							name: 'TestAction1',
-    							actionPic: res.actions.signal_1,
-    							flagPic: undefined,
-    						},
-    						{
-    							name: 'TestAction2',
-    							actionPic: res.actions.flag_up,
-    							flagPic: res.flags.klass,
-    						},
-    					],
-    					starttime,
-    					false,
-    					0,
+					ac.push(
+						new actState(
+							[res.flags.orange, {}, {}, this.flagSpot4],
+							[
+								{
+									name: 'TestAction1',
+									actionPic: res.actions.signal_1,
+									flagPic: undefined,
+								},
+								{
+									name: 'TestAction2',
+									actionPic: res.actions.flag_up,
+									flagPic: res.flags.klass,
+								},
+							],
+							starttime,
+							false,
+							0,
 							false,
 							false
-    				)
-    			);
-        }
-
+						)
+					);
+				}
 			}
 
 			//2te aktion
@@ -286,7 +330,12 @@ export default class App extends React.Component {
 				//Condition Flagge gesetzt
 				//3 minuten bis zum 1 min signal
 				new actState(
-				 [res.flags.orange, res.flags.klass, res.flags[start.condition], this.flagSpot4],
+					[
+						res.flags.orange,
+						res.flags.klass,
+						res.flags[start.condition],
+						this.flagSpot4,
+					],
 					[
 						{
 							name: 'TestAction1',
@@ -376,7 +425,7 @@ export default class App extends React.Component {
 		//bei einem Einzelrückruf wird die Flagge x gesetzt, bis die einzelrückrufer ihrer erneuten startpflicht nachgekommen sind
 		//Sind die Teilnehmer ihrer pflicht nachgekommen wird ein button zur bestätigung gedrückt.
 
-		console.log('singlebadStart()')
+		console.log('singlebadStart()');
 
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
@@ -385,8 +434,8 @@ export default class App extends React.Component {
 
 		//Die Teilnehmer haben 4 Minuten Zeit zurückzukehren, derweil wird das restliche Feld angehalten, damit keine Verwirrung entsteht.
 		//Das restliche Feld wird nur wenn nötig angehalten.
-		if(this.state.interval < 10){
-			this.setState({specialChoice: 97})
+		if (this.state.interval < 10) {
+			this.setState({ specialChoice: 97 });
 		}
 
 		//neue actions
@@ -394,53 +443,54 @@ export default class App extends React.Component {
 
 		bsacts.push(
 			new actState(
-				[res.flags.orange, res.flags.x,  {}, this.flagSpot4],
-				[{
-					name: 'TestAction2',
-					actionPic: res.actions.flag_down,
-					flagPic: res.flags.x,
-				}],
+				[res.flags.orange, res.flags.x, {}, this.flagSpot4],
+				[
+					{
+						name: 'TestAction2',
+						actionPic: res.actions.flag_down,
+						flagPic: res.flags.x,
+					},
+				],
 				//4 minuten werden hier eingefügt, da nächstes ankündigungssignal noch nicht gegeben
 				moment().add(4, 'm'),
 				false,
 				undefined,
-        false,
-        false,
+				false,
+				false
 			)
 		);
 
-		this.actlist.splice(this.step+1, 0, ...bsacts)
+		this.actlist.splice(this.step + 1, 0, ...bsacts);
 		this.updateFlags();
-		this.actlist.splice(this.step, 1)
-	}
+		this.actlist.splice(this.step, 1);
+	};
 
-	massiveBadStart = (ARGcondition) => {
+	massiveBadStart = ARGcondition => {
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
 		//rückrufbuttons deaktivieren
 		this.setState({ viewBadStartBtns: false });
 
-		this.setState({ viewStartPicker: false });
+		this.setState({ isStartPickerVisible: false });
 		//neue actions
 		let bsacts = [];
 		let badstart = true;
 
-		console.log('massive bad start()')
+		console.log('massive bad start()');
 
 		let mom = moment();
-		let toRank = this.step+7;
+		let toRank = this.step + 7;
 
 		//postponebadstart wird nur ausgeführt wenn danach noch ein start kommt
-		if(this.state.postPoneBadStart && ((this.actlist.length - this.step) > 5)){
-
+		if (this.state.postPoneBadStart && this.actlist.length - this.step > 5) {
 			rank = this.actlist[this.step].getRank();
-			switch(rank){
+			switch (rank) {
 				case 6:
-					mom = moment(this.actlist[this.step-2].getTime());
+					mom = moment(this.actlist[this.step - 2].getTime());
 					toRank += 1;
 					break;
 				case 5:
-					mom = moment(this.actlist[this.step-1].getTime());
+					mom = moment(this.actlist[this.step - 1].getTime());
 					toRank += 2;
 					break;
 				case 4:
@@ -448,11 +498,11 @@ export default class App extends React.Component {
 					toRank += 3;
 					break;
 				case 0:
-					mom = moment(this.actlist[this.step-3].getTime());
+					mom = moment(this.actlist[this.step - 3].getTime());
 					toRank += 0;
 					break;
 				case 1:
-					mom = moment(this.actlist[this.step-4].getTime());
+					mom = moment(this.actlist[this.step - 4].getTime());
 					toRank -= 1;
 					break;
 			}
@@ -461,57 +511,54 @@ export default class App extends React.Component {
 			mom = mom.add(this.state.interval, 'minutes');
 
 			badstart = false;
-
-		}else{
+		} else {
 			//SppecialChoice 98: 1fhs
-			this.setState({specialChoice: 98})
+			this.setState({ specialChoice: 98 });
 		}
 
-		bsacts = this.createStartStates(
-			[
-				{
-					time: mom,
-					condition: ARGcondition,
-					badstart: badstart,
-					first: false,
-				},
-			],
-		);
+		bsacts = this.createStartStates([
+			{
+				time: mom,
+				condition: ARGcondition,
+				badstart: badstart,
+				first: false,
+			},
+		]);
 
-    let rank = this.actlist[this.step].getRank();
-    let pos = undefined;
+		let rank = this.actlist[this.step].getRank();
+		let pos = undefined;
 
-    //richtiges einfügen in die pipeline
+		//richtiges einfügen in die pipeline
 		//postponebadstart wird nur ausgeführt, wenn danach noch ein start kommt.
-    if(this.state.postPoneBadStart && ((this.actlist.length - this.step) > 5)){
-      if(this.actlist[this.step].getRank()>4){
-        pos = this.step - rank + 14;
-        this.actlist.splice(pos, 0, ...bsacts)
-        this.step += (6-rank);
-      }else{
-        pos = this.step - rank + 7;
-  			this.actlist.splice(pos, 0, ...bsacts);
-        this.step -= (rank+1);
-      }
-    }else{
+		if (this.state.postPoneBadStart && this.actlist.length - this.step > 5) {
+			if (this.actlist[this.step].getRank() > 4) {
+				pos = this.step - rank + 14;
+				this.actlist.splice(pos, 0, ...bsacts);
+				this.step += 6 - rank;
+			} else {
+				pos = this.step - rank + 7;
+				this.actlist.splice(pos, 0, ...bsacts);
+				this.step -= rank + 1;
+			}
+		} else {
 			//KEIN ZEITUPDATE BEI SOFORTIGEM NEUSTART; WIRD GEMACHT WENN COUNTDOWN überrsprungen wird
-      if(this.actlist[this.step].getRank()>4){
-        pos = this.step - rank + 7;
-        this.actlist.splice(pos, 0, ...bsacts)
-        this.step += (6-rank);
-      }else{
-        pos = this.step - rank;
-        this.actlist.splice(pos, 0, ...bsacts);
-        this.step -= (rank+1);
-      }
-    }
-		this.setState({postPoneBadStart: false})
-		this.setState({specialChoice: undefined})
-    this.updateFlags();
+			if (this.actlist[this.step].getRank() > 4) {
+				pos = this.step - rank + 7;
+				this.actlist.splice(pos, 0, ...bsacts);
+				this.step += 6 - rank;
+			} else {
+				pos = this.step - rank;
+				this.actlist.splice(pos, 0, ...bsacts);
+				this.step -= rank + 1;
+			}
+		}
+		this.setState({ postPoneBadStart: false });
+		this.setState({ specialChoice: undefined });
+		this.updateFlags();
 	};
 
-	updateRowByTime = (time,unit,startStep) => {
-		console.log('updateRowByTime()')
+	updateRowByTime = (time, unit, startStep) => {
+		console.log('updateRowByTime()');
 		//Alles um <time> <unit> verschieben. Ab startstep in der pipeline
 
 		//Slice liefert nur den gewünschten Teil des arrays zurück.
@@ -523,20 +570,20 @@ export default class App extends React.Component {
 			elem.addTime(time, unit);
 		});
 
-		this.setState({specialChoice: undefined});
+		this.setState({ specialChoice: undefined });
 
 		//Einfügen der veränderten Werte
 		//splice(startINDEX, deletions in front, new elements)
 		this.actlist.splice(startStep, altered.length, ...altered);
 	};
 
-	updateRowToTime = (time,unit,startStep) => {
-		console.log('updateRowToTime()')
-		let newTime = moment().add(time,unit)
+	updateRowToTime = (time, unit, startStep) => {
+		console.log('updateRowToTime()');
+		let newTime = moment().add(time, unit);
 		let oldTime = this.actlist[startStep].getTime();
-		let diff = newTime.diff(oldTime,'s');
-		this.updateRowByTime(diff,'s',startStep);
-	}
+		let diff = newTime.diff(oldTime, 's');
+		this.updateRowByTime(diff, 's', startStep);
+	};
 
 	componentDidMount = () => {
 		//ggf zu lockTolandscapeLeft() aendern
@@ -544,12 +591,12 @@ export default class App extends React.Component {
 	};
 
 	dropOrangeFlag = () => {
-		console.log('dropOrangeFlag()')
+		console.log('dropOrangeFlag()');
 		let swapStates = [];
 
-		let oldFlags = this.actlist[this.actlist.length -1].getFlags();
-		let oldTime = this.actlist[this.actlist.length -1].getTime();
-		let oldStart = this.actlist[this.actlist.length -1].wasStart();
+		let oldFlags = this.actlist[this.actlist.length - 1].getFlags();
+		let oldTime = this.actlist[this.actlist.length - 1].getTime();
+		let oldStart = this.actlist[this.actlist.length - 1].wasStart();
 
 		swapStates.push(
 			new actState(
@@ -563,27 +610,27 @@ export default class App extends React.Component {
 				],
 				oldTime,
 				oldStart,
-        true,
-        true
+				true,
+				true
 			)
 		);
 
-		this.actlist.splice(this.actlist.length-1, 1, ...swapStates);
-	}
+		this.actlist.splice(this.actlist.length - 1, 1, ...swapStates);
+	};
 
 	updateFlags = () => {
 		//Auffhören mit updaten wenn liste abgearbeitet
 		if (this.step < this.actlist.length - 1) {
 			this.setState({ startFinished: false });
 			this.step++;
-			console.log('updateFlags-beforeSetState')
+			console.log('updateFlags-beforeSetState');
 			console.log(this.step);
 			console.log(this.actlist.length);
 			console.log(this.actlist);
-			console.log(this.actlist[this.step].getState())
+			console.log(this.actlist[this.step].getState());
 			this.setState(this.actlist[this.step].getState());
-			console.log('updateFlags-afterSetState')
-			if(this.step === this.actlist.length - 3){
+			console.log('updateFlags-afterSetState');
+			if (this.step === this.actlist.length - 3) {
 				this.dropOrangeFlag();
 			}
 		} else {
@@ -592,13 +639,13 @@ export default class App extends React.Component {
 	};
 
 	postponeAP = () => {
-		console.log('postPoneAP')
+		console.log('postPoneAP');
 		let postActs = [];
 		let newTime = 0;
 
 		postActs.push(
 			new actState(
-				[res.flags.orange,res.flags.ap, {}, this.flagSpot4],
+				[res.flags.orange, res.flags.ap, {}, this.flagSpot4],
 				[],
 				moment(),
 				false,
@@ -660,7 +707,7 @@ export default class App extends React.Component {
 	};
 
 	cancelN = () => {
-		console.log('cancel_N')
+		console.log('cancel_N');
 		let cancelActs = [];
 		let newTime = 0;
 
@@ -670,20 +717,19 @@ export default class App extends React.Component {
 				[],
 				moment(),
 				false,
-        undefined,
-        true,
-        true,
+				undefined,
+				true,
+				true
 			)
 		);
 
-
-		this.actlist.splice(0, 0, ...cancelActs)
+		this.actlist.splice(0, 0, ...cancelActs);
 		this.step = -1;
 		this.updateFlags();
-	}
+	};
 
 	cancelNH = () => {
-		console.log('cancel_NOH')
+		console.log('cancel_NOH');
 		let cancelActs = [];
 		let newTime = 0;
 
@@ -693,20 +739,19 @@ export default class App extends React.Component {
 				[],
 				moment(),
 				false,
-        undefined,
-        true,
-        true,
+				undefined,
+				true,
+				true
 			)
 		);
 
-
-		this.actlist.splice(0, 0, ...cancelActs)
+		this.actlist.splice(0, 0, ...cancelActs);
 		this.step = -1;
 		this.updateFlags();
-	}
+	};
 
 	cancelNA = () => {
-		console.log('cancel_NOA()')
+		console.log('cancel_NOA()');
 		let cancelActs = [];
 		let newTime = 0;
 
@@ -716,30 +761,38 @@ export default class App extends React.Component {
 				[],
 				moment(),
 				false,
-        undefined,
-        false,
-        false,
+				undefined,
+				false,
+				false
 			)
 		);
 
 		this.actlist = cancelActs;
 		this.step = -1;
 		this.updateFlags();
-	}
+	};
 
 	handleFlagY = () => {
-		console.log('handleFlagY()')
+		console.log('handleFlagY()');
 
 		let newFlag = undefined;
 
-		if(this.flagSpot4 !== res.flags.y){
-			console.log('!== Y')
+		if (this.flagSpot4 !== res.flags.y) {
+			console.log('!== Y');
 			newFlag = res.flags.y;
-			this.specialBtnsDescs[6] = {choice: 6,button: 'Schwimmwesten ablegen', description: 'Bergen der Flagge "Y"'};
-		}else{
-			console.log('=== Y')
+			this.specialBtnsDescs[6] = {
+				choice: 6,
+				button: 'Schwimmwesten ablegen',
+				description: 'Bergen der Flagge "Y"',
+			};
+		} else {
+			console.log('=== Y');
 			newFlag = {};
-			this.specialBtnsDescs[6] = {choice: 6,button: 'Schwimmwesten anlegen (Aufruf)', description: 'Setzen der Flagge "Y"'};
+			this.specialBtnsDescs[6] = {
+				choice: 6,
+				button: 'Schwimmwesten anlegen (Aufruf)',
+				description: 'Setzen der Flagge "Y"',
+			};
 		}
 
 		this.flagSpot4 = newFlag;
@@ -748,14 +801,14 @@ export default class App extends React.Component {
 			let flags = elem.getFlags();
 			flags[3] = newFlag;
 			elem.setFlags(flags);
-		})
+		});
 
 		this.step--;
 		this.updateFlags();
-	}
+	};
 
 	renderStartPicker = () => {
-		console.log('renderStartPicker()')
+		console.log('renderStartPicker()');
 		return (
 			<View style={{ backgroundColor: 'red', opacity: 0.7 }}>
 				<Text style={{ fontSize: 40, fontWeight: 'bold' }}>
@@ -765,8 +818,7 @@ export default class App extends React.Component {
 					<TouchableHighlight
 						style={styles.spHighlight}
 						onPress={() => {
-
-              this.badStartCondition = 'i';
+							this.badStartCondition = 'i';
 						}}
 					>
 						<Image source={res.flags.i.pic} style={styles.spFlagImage} />
@@ -774,8 +826,7 @@ export default class App extends React.Component {
 					<TouchableHighlight
 						style={styles.spHighlight}
 						onPress={() => {
-
-              this.badStartCondition = 'z';
+							this.badStartCondition = 'z';
 						}}
 					>
 						<Image source={res.flags.z.pic} style={styles.spFlagImage} />
@@ -783,8 +834,7 @@ export default class App extends React.Component {
 					<TouchableHighlight
 						style={styles.spHighlight}
 						onPress={() => {
-
-              this.badStartCondition = 'black';
+							this.badStartCondition = 'black';
 						}}
 					>
 						<Image source={res.flags.black.pic} style={styles.spFlagImage} />
@@ -792,34 +842,34 @@ export default class App extends React.Component {
 					<TouchableHighlight
 						style={styles.spHighlight}
 						onPress={() => {
-
-              this.badStartCondition = 'p';
+							this.badStartCondition = 'p';
 						}}
 					>
 						<Image source={res.flags.p.pic} style={styles.spFlagImage} />
 					</TouchableHighlight>
-          <TouchableHighlight
+					<TouchableHighlight
 						style={styles.spHighlight}
 						onPress={() => {
-							this.setState({postPoneBadStart: true})
+							this.setState({ postPoneBadStart: true });
 						}}
 					>
 						<Image source={res.flags.p.pic} style={styles.spFlagImage} />
 					</TouchableHighlight>
-          <TouchableOpacity onPress={() => {
-						this.setState({ viewStartPicker: false });
-            this.massiveBadStart(this.badStartCondition);
-					}}>
+					<TouchableOpacity
+						onPress={() => {
+							this.setState({ isStartPickerVisible: false });
+							this.massiveBadStart(this.badStartCondition);
+						}}
+					>
 						<Text style={{ fontSize: 40 }}>Weiter!</Text>
 					</TouchableOpacity>
-
 				</View>
 			</View>
 		);
 	};
 
 	renderBadStartBtns = () => {
-		console.log('renderStartBtns()')
+		console.log('renderStartBtns()');
 		return (
 			<View style={{ flexDirection: 'row', backgroundColor: 'red' }}>
 				<Button
@@ -836,7 +886,7 @@ export default class App extends React.Component {
 					color="#841520"
 					onPress={() => {
 						this.setState({ viewBadStartBtns: false });
-						this.setState({ viewStartPicker: true });
+						this.setState({ isStartPickerVisible: true });
 					}}
 					accessibilityLabel="Learn more about this purple button"
 				/>
@@ -873,16 +923,15 @@ export default class App extends React.Component {
 				this.handleFlagY();
 				break;
 			default:
-
-			//weis nicht warum notwendig, einfach if wegtun wenn interessiert.
-			if(this.step!==0){
-				this.setState({specialChoice: undefined})
-			}
+				//weis nicht warum notwendig, einfach if wegtun wenn interessiert.
+				if (this.step !== 0) {
+					this.setState({ specialChoice: undefined });
+				}
 		}
 	};
 
 	renderMenu = () => {
-		console.log('renderMenu();')
+		console.log('renderMenu();');
 		return (
 			<View
 				style={{
@@ -917,26 +966,24 @@ export default class App extends React.Component {
 				</View>
 				<View style={{ flex: 7, backgroundColor: 'lightblue' }}>
 					<View style={{ flex: 5, backgroundColor: 'lightblue' }}>
-						<Text style={{ fontSize: 40 }}>{this.state.specialDescription}</Text>
+						<Text style={{ fontSize: 40 }}>
+							{this.state.specialDescription}
+						</Text>
 					</View>
-					<View style={{ flex: 3, flexDirection: 'row', backgroundColor: 'red' }}>
+					<View
+						style={{ flex: 3, flexDirection: 'row', backgroundColor: 'red' }}
+					>
 						<View style={{ flex: 1, backgroundColor: 'green' }}>
 							<Image
 								style={styles.spFlag}
-								source={this.state.specialPics[2]}
+								source={this.state.specialPics[2].pic}
 							/>
 						</View>
 						<View style={{ flex: 1, backgroundColor: 'blue' }}>
-							<Image
-								style={styles.spFlag}
-								source={this.state.specialPics[0]}
-							/>
+							<Image style={styles.spFlag} source={this.state.specialPics[0]} />
 						</View>
 						<View style={{ flex: 1, backgroundColor: 'red' }}>
-							<Image
-								style={styles.spFlag}
-								source={this.state.specialPics[1]}
-							/>
+							<Image style={styles.spFlag} source={this.state.specialPics[1]} />
 						</View>
 					</View>
 				</View>
@@ -945,10 +992,10 @@ export default class App extends React.Component {
 	};
 
 	toggleModal = () =>
-		this.setState({ isModalVisible: !this.state.isModalVisible });
+		this.setState({ isActionsMenuVisible: !this.state.isActionsMenuVisible });
 
 	render = () => {
-		console.log('render();')
+		console.log('render();');
 		return (
 			<View
 				style={{
@@ -999,10 +1046,10 @@ export default class App extends React.Component {
 								accessibilityLabel="Learn more about this purple button"
 							/>
 							{this.state.viewBadStartBtns && this.renderBadStartBtns()}
-							<Modal isVisible={this.state.isModalVisible}>
+							<Modal isVisible={this.state.isActionsMenuVisible}>
 								{this.renderMenu()}
 							</Modal>
-							<Modal isVisible={this.state.viewStartPicker}>
+							<Modal isVisible={this.state.isStartPickerVisible}>
 								{this.renderStartPicker()}
 							</Modal>
 						</View>
@@ -1023,10 +1070,10 @@ export default class App extends React.Component {
 									case 4:
 									case 97:
 									case 98:
-										this.updateRowToTime(1,'m',this.step+1)
+										this.updateRowToTime(1, 'm', this.step + 1);
 										break;
 									case 99:
-										this.updateRowToTime(5,'m',this.step+1)
+										this.updateRowToTime(5, 'm', this.step + 1);
 										break;
 								}
 							}
@@ -1037,7 +1084,7 @@ export default class App extends React.Component {
 					isSkippable={this.state.isIndefinite}
 					isIndefinite={this.state.isSkippable}
 				/>
-				{/* {this.state.viewStartPicker && this.renderStartPicker()} */}
+				{/* {this.state.isStartPickerVisible && this.renderStartPicker()} */}
 			</View>
 		);
 	};
