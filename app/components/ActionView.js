@@ -30,7 +30,13 @@ export default class ActionView extends Component {
 				<View style={[{ flex: 3 }]}>
 					<Text style={styles.title}>Nächste Aktionen:</Text>
 					{this.props.actions.map(action => {
-						return <ActionItem key={action.name} item={action} />;
+						return (
+							<ActionItem
+								style={globalstyles.actionViewItem}
+								key={action.name}
+								item={action}
+							/>
+						);
 					})}
 				</View>
 				<View style={[{ flex: 1 }]}>

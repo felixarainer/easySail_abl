@@ -10,7 +10,7 @@ import * as res from '../res/res.js';
 export default class ActionItem extends Component {
 	render() {
 		return (
-			<View style={styles.container}>
+			<View style={this.props.style}>
 				{this.props.item.flagPic === undefined ? (
 					<Image
 						source={this.props.item.actionPic}
@@ -37,21 +37,9 @@ export default class ActionItem extends Component {
 						/>
 					</View>
 				)}
-				{/* <Text
-					style={{ fontWeight: 'bold', fontSize: 18, justifyContent: 'center' }}
-				>
-					{this.props.item.name}
-				</Text> */}
 			</View>
 		);
 	}
 }
-
-const styles = StyleSheet.create({
-	container: {
-		height: 170,
-		marginVertical: 8,
-	},
-});
 
 AppRegistry.registerComponent('ActionItem', () => ActionItem);

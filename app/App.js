@@ -18,6 +18,7 @@ import {
 	Alert,
 } from 'react-native';
 import ActionView from './components/ActionView';
+import ActionItem from './components/ActionItem';
 import FlagItem from './components/FlagItem';
 import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
@@ -116,11 +117,7 @@ export default class App extends React.Component {
 			{
 				key: 0,
 				button: 'Verschieben (kurz)',
-				specialpics: [
-					res.actions.signal_2,
-					res.actions.flag_up,
-					res.flags.ap.pic,
-				],
+				specialpics: [res.actions.signal_2, res.actions.flag_up, res.flags.ap],
 				description:
 					'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown',
 			},
@@ -130,7 +127,7 @@ export default class App extends React.Component {
 				specialpics: [
 					res.actions.signal_2,
 					res.actions.flag_up,
-					res.flags.apoh.pic,
+					res.flags.apoh,
 				],
 				description:
 					'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown',
@@ -141,7 +138,7 @@ export default class App extends React.Component {
 				specialpics: [
 					res.actions.signal_2,
 					res.actions.flag_up,
-					res.flags.apoa.pic,
+					res.flags.apoa,
 				],
 				description:
 					'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt.',
@@ -149,44 +146,28 @@ export default class App extends React.Component {
 			{
 				key: 3,
 				button: 'Abbrechen (rasche WH)',
-				specialpics: [
-					res.actions.signal_3,
-					res.actions.flag_up,
-					res.flags.n.pic,
-				],
+				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.n],
 				description:
 					'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown',
 			},
 			{
 				key: 4,
 				button: 'Abbrechen (spätere WH)',
-				specialpics: [
-					res.actions.signal_3,
-					res.actions.flag_up,
-					res.flags.noh.pic,
-				],
+				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.noh],
 				description:
 					'Alle bereits gestarteten Rennen werden abgebrochen \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown',
 			},
 			{
 				key: 5,
 				button: 'Regatta Abbrechen',
-				specialpics: [
-					res.actions.signal_3,
-					res.actions.flag_up,
-					res.flags.noa.pic,
-				],
+				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.noa],
 				description:
 					'Alle bereits gestarteten Rennen werden abgebrochen \nHeute findet keine Wettfahrt mehr statt.',
 			},
 			{
 				key: 6,
 				button: 'Schwimmwesten anlegen (Aufruf)',
-				specialpics: [
-					res.actions.signal_1,
-					res.actions.flag_up,
-					res.flags.y.pic,
-				],
+				specialpics: [res.actions.signal_1, res.actions.flag_up, res.flags.y],
 				description: 'Setzen der Flagge "Y"',
 			},
 		];
@@ -968,18 +949,18 @@ export default class App extends React.Component {
 							{this.state.specialDescription}
 						</Text>
 					</View>
-					<View
-						style={{ flex: 2, flexDirection: 'row', backgroundColor: 'red' }}
-					>
-						<View style={{ flex: 1, backgroundColor: 'green' }}>
-							<Image style={styles.spFlag} source={this.state.specialPics[2]} />
-						</View>
-						<View style={{ flex: 1, backgroundColor: 'blue' }}>
-							<Image style={styles.spFlag} source={this.state.specialPics[0]} />
-						</View>
-						<View style={{ flex: 1, backgroundColor: 'red' }}>
-							<Image style={styles.spFlag} source={this.state.specialPics[1]} />
-						</View>
+					<View style={{ flex: 2.2, flexDirection: 'row' }}>
+						<ActionItem
+							style={styles.actionMenuItem}
+							item={{ actionPic: this.state.specialPics[0] }}
+						/>
+						<ActionItem
+							style={styles.actionMenuItem}
+							item={{
+								actionPic: this.state.specialPics[1],
+								flagPic: this.state.specialPics[2],
+							}}
+						/>
 					</View>
 					<View style={{ flex: 1, flexDirection: 'row' }}>
 						<TouchableHighlight
@@ -1025,10 +1006,8 @@ export default class App extends React.Component {
 				style={{
 					flex: 1,
 					flexDirection: 'row',
-					backgroundColor: '#fff',
 				}}
 			>
-				{/* <FlagView flags={this.state.curFlags} /> */}
 				<View style={{ flex: 3, flexDirection: 'column' }}>
 					{/* <Image
 						source={require('./res/pics/ship.png')}
