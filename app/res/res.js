@@ -99,6 +99,7 @@ export const actions = {
 	flag_down: require('./pics/actions/flag_down.png'),
 	signal_1: require('./pics/actions/signal_1.png'),
 	signal_2: require('./pics/actions/signal_2.png'),
+	signal_3: require('./pics/actions/signal_3.png'),
 	skip_klass: {
 		name: 'skip_klass',
 		pic: require('./pics/actions/skip_klass.png'),
