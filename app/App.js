@@ -21,7 +21,7 @@ import ActionView from './components/ActionView';
 import FlagItem from './components/FlagItem';
 import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
-import globalstyles from './styles.js';
+import styles from './styles.js';
 import moment from 'moment';
 import Modal from 'react-native-modal';
 //import { CheckBox } from 'react-native-elements';
@@ -51,7 +51,7 @@ class actState {
 				typeof this.time === 'number'
 					? moment().add(this.time, 'seconds')
 					: this.time,
-			viewBadStartBtns: this.isStart,
+			enableBadStartBtns: this.isStart,
 			isIndefinite: this.isIndefinite,
 			isSkippable: this.isSkippable,
 		};
@@ -95,7 +95,7 @@ export default class App extends React.Component {
 		super();
 		this.state = {
 			curFlags: {},
-			viewBadStartBtns: false,
+			enableBadStartBtns: false,
 			startFinished: false,
 			isStartPickerVisible: false,
 			isActionsMenuVisible: false,
@@ -451,7 +451,7 @@ export default class App extends React.Component {
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
 		//rückrufbuttons deaktivieren
-		this.setState({ viewBadStartBtns: false });
+		this.setState({ enableBadStartBtns: false });
 
 		//Die Teilnehmer haben 4 Minuten Zeit zurückzukehren, derweil wird das restliche Feld angehalten, damit keine Verwirrung entsteht.
 		//Das restliche Feld wird nur wenn nötig angehalten.
@@ -490,7 +490,7 @@ export default class App extends React.Component {
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
 		//rückrufbuttons deaktivieren
-		this.setState({ viewBadStartBtns: false });
+		this.setState({ enableBadStartBtns: false });
 
 		this.setState({ isStartPickerVisible: false });
 		//neue actions
@@ -940,10 +940,9 @@ export default class App extends React.Component {
 							<TouchableHighlight
 								key={args.key}
 								style={[
-									globalstyles.listEntryHighlight,
-									this.state.specialKey === args.key && {
-										backgroundColor: '#20bf6b',
-									},
+									styles.listEntryHighlight,
+									this.state.specialKey === args.key &&
+										styles.listEntrySelected,
 								]}
 								onPress={() => {
 									this.setState({ specialDescription: args.description });
@@ -951,7 +950,7 @@ export default class App extends React.Component {
 									this.setState({ specialPics: args.specialpics });
 								}}
 							>
-								<Text style={globalstyles.listEntryText}>{args.button}</Text>
+								<Text style={styles.listEntryText}>{args.button}</Text>
 							</TouchableHighlight>
 						);
 					})}
@@ -996,7 +995,7 @@ export default class App extends React.Component {
 	};
 
 	toggleStartButtons = () => {
-		this.setState({ viewBadStartBtns: !this.state.viewBadStartBtns });
+		this.setState({ enableBadStartBtns: !this.state.enableBadStartBtns });
 	};
 
 	render = () => {
@@ -1047,50 +1046,47 @@ export default class App extends React.Component {
 					</View>
 					<View style={{ flex: 1, flexDirection: 'row' }}>
 						<TouchableHighlight
-							style={[
-								globalstyles.buttonHighlight,
-								{ backgroundColor: '#a55eea' },
-							]}
+							style={[styles.buttonHighlight, { backgroundColor: '#a55eea' }]}
 							underlayColor={'#8854d0'}
 							onPress={() => this.toggleModal()}
 						>
-							<Text style={globalstyles.buttonLabel}>Aktion initiieren</Text>
+							<Text style={styles.buttonLabel}>Aktion initiieren</Text>
 						</TouchableHighlight>
 						<TouchableHighlight
 							style={[
-								globalstyles.buttonHighlight,
-								this.state.viewBadStartBtns
+								styles.buttonHighlight,
+								this.state.enableBadStartBtns
 									? { backgroundColor: '#45aaf2' }
-									: globalstyles.buttonDisabled,
+									: styles.buttonDisabled,
 							]}
 							underlayColor={'#3867d6'}
 							onPress={() => {
-								if (this.state.viewBadStartBtns) {
+								if (this.state.enableBadStartBtns) {
 									this.toggleStartButtons();
 									this.singleBadStart();
 								}
 							}}
 						>
-							<Text style={globalstyles.buttonLabel}>Einzelrückruf</Text>
+							<Text style={styles.buttonLabel}>Einzelrückruf</Text>
 						</TouchableHighlight>
 						<TouchableHighlight
 							style={[
-								globalstyles.buttonHighlight,
-								this.state.viewBadStartBtns
+								styles.buttonHighlight,
+								this.state.enableBadStartBtns
 									? { backgroundColor: '#4b7bec' }
-									: globalstyles.buttonDisabled,
+									: styles.buttonDisabled,
 							]}
 							underlayColor={'#3867d6'}
 							onPress={() => {
-								if (this.state.viewBadStartBtns) {
+								if (this.state.enableBadStartBtns) {
 									this.toggleStartButtons();
 									this.toggleStartPicker();
 								}
 							}}
 						>
-							<Text style={globalstyles.buttonLabel}>Allgemeiner Rückruf</Text>
+							<Text style={styles.buttonLabel}>Allgemeiner Rückruf</Text>
 						</TouchableHighlight>
-						{/* {this.state.viewBadStartBtns && this.renderBadStartBtns()} */}
+						{/* {this.state.enableBadStartBtns && this.renderBadStartBtns()} */}
 						<Modal isVisible={this.state.isActionsMenuVisible}>
 							{this.renderMenu()}
 						</Modal>
@@ -1136,34 +1132,3 @@ export default class App extends React.Component {
 
 //isSkippable={this.state.isIndefinite}
 //isIndefinite={this.state.isSkippable}
-
-const styles = StyleSheet.create({
-	// flagRow: {
-	// 	flex: 0.25,
-	// 	flexDirection: 'row',
-	// 	justifyContent: 'space-between',
-	// },
-	// backgroundImage: {
-	// 	flex: 3,
-	// 	height: undefined,
-	// 	width: undefined,
-	// 	resizeMode: 'cover',
-	// },
-	spFlagImage: {
-		flex: 1,
-		alignSelf: 'stretch',
-		height: undefined,
-		width: undefined,
-		resizeMode: 'contain',
-	},
-	spHighlight: {
-		height: 200,
-		width: 200,
-		// flex: 1,
-		//backgroundColor: 'red',
-	},
-	spFlag: {
-		height: 150,
-		width: 150,
-	},
-});

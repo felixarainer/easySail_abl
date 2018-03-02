@@ -14,7 +14,28 @@ module.exports = StyleSheet.create({
 		borderWidth: 1,
 		backgroundColor: '#26de81',
 	},
+	listEntrySelected: {
+		backgroundColor: '#20bf6b',
+	},
 	listEntryText: { fontSize: 30, textAlign: 'center' },
 
 	//actionsBackground: {}
+
+	spFlagImage: {
+		flex: 1,
+		alignSelf: 'stretch',
+		height: undefined,
+		width: undefined,
+		resizeMode: 'contain',
+	},
+	spHighlight: {
+		height: 200,
+		width: 200,
+		// flex: 1,
+		//backgroundColor: 'red',
+	},
+	spFlag: {
+		height: 150,
+		width: 150,
+	},
 });
