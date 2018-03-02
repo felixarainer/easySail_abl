@@ -21,6 +21,7 @@ import ActionView from './components/ActionView';
 import FlagItem from './components/FlagItem';
 import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
+import globalstyles from './styles.js';
 import moment from 'moment';
 import Modal from 'react-native-modal';
 //import { CheckBox } from 'react-native-elements';
@@ -1003,7 +1004,7 @@ export default class App extends React.Component {
 			>
 				{/* <FlagView flags={this.state.curFlags} /> */}
 				<View style={{ flex: 3, flexDirection: 'column' }}>
-					<Image
+					{/* <Image
 						source={require('./res/pics/ship.png')}
 						style={styles.backgroundImage}
 					>
@@ -1033,17 +1034,39 @@ export default class App extends React.Component {
 							<FlagItem flag={this.state.curFlags.flag3} />
 							<FlagItem flag={this.state.curFlags.flag4} />
 						</View>
-					</Image>
+					</Image> */}
+					<View style={{ flex: 3 }}>
+						<Text>Test</Text>
+					</View>
 					<View style={{ flex: 1, flexDirection: 'row' }}>
-						{/* <TouchableHighlight style={{ flex: 1, borderWidth: '1px' }}>
-							<Text>Special Actions</Text>
-						</TouchableHighlight> */}
-						{/* <TouchableHighlight style={{ flex: 1, borderWidth: '1px' }}>
-							<Text>Special Actions</Text>
+						<TouchableHighlight
+							style={[
+								globalstyles.buttonHighlight,
+								{ backgroundColor: '#a55eea' },
+							]}
+							underlayColor={'#8854d0'}
+							onPress={() => this.toggleModal()}
+						>
+							<Text style={globalstyles.buttonLabel}>Special Actions</Text>
 						</TouchableHighlight>
-						<TouchableHighlight style={{ flex: 1, borderWidth: '1px' }}>
-							<Text>Special Actions</Text>
-						</TouchableHighlight> */}
+						<TouchableHighlight
+							style={[
+								globalstyles.buttonHighlight,
+								{ backgroundColor: '#45aaf2' },
+							]}
+							underlayColor={'#2d98da'}
+						>
+							<Text style={globalstyles.buttonLabel}>Einzelrückruf</Text>
+						</TouchableHighlight>
+						<TouchableHighlight
+							style={[
+								globalstyles.buttonHighlight,
+								{ backgroundColor: '#4b7bec' },
+							]}
+							underlayColor={'#3867d6'}
+						>
+							<Text style={globalstyles.buttonLabel}>Allgemeiner Rückruf</Text>
+						</TouchableHighlight>
 						{/* <Button
 							title="Special Actions"
 							color="#845084"
@@ -1101,17 +1124,17 @@ export default class App extends React.Component {
 //isIndefinite={this.state.isSkippable}
 
 const styles = StyleSheet.create({
-	flagRow: {
-		flex: 0.25,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-	},
-	backgroundImage: {
-		flex: 3,
-		height: undefined,
-		width: undefined,
-		resizeMode: 'cover',
-	},
+	// flagRow: {
+	// 	flex: 0.25,
+	// 	flexDirection: 'row',
+	// 	justifyContent: 'space-between',
+	// },
+	// backgroundImage: {
+	// 	flex: 3,
+	// 	height: undefined,
+	// 	width: undefined,
+	// 	resizeMode: 'cover',
+	// },
 	spFlagImage: {
 		flex: 1,
 		alignSelf: 'stretch',
