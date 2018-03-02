@@ -114,14 +114,14 @@ export default class App extends React.Component {
 
 		this.specialBtnsDescs = [
 			{
-				choice: 0,
+				key: 0,
 				button: 'Verschieben (kurz)',
 				specialpics: [res.actions.signal_2, res.actions.flag_up, res.flags.ap],
 				description:
 					'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown',
 			},
 			{
-				choice: 1,
+				key: 1,
 				button: 'Verschieben (lang)',
 				specialpics: [
 					res.actions.signal_2,
@@ -132,7 +132,7 @@ export default class App extends React.Component {
 					'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown',
 			},
 			{
-				choice: 2,
+				key: 2,
 				button: 'Verschieben und abbrechen',
 				specialpics: [
 					res.actions.signal_2,
@@ -143,28 +143,28 @@ export default class App extends React.Component {
 					'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt.',
 			},
 			{
-				choice: 3,
+				key: 3,
 				button: 'Abbrechen (rasche WH)',
 				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.n],
 				description:
 					'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown',
 			},
 			{
-				choice: 4,
+				key: 4,
 				button: 'Abbrechen (spätere WH)',
 				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.noh],
 				description:
 					'Alle bereits gestarteten Rennen werden abgebrochen \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown',
 			},
 			{
-				choice: 5,
+				key: 5,
 				button: 'Regatta Abbrechen',
 				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.noa],
 				description:
 					'Alle bereits gestarteten Rennen werden abgebrochen \nHeute findet keine Wettfahrt mehr statt.',
 			},
 			{
-				choice: 6,
+				key: 6,
 				button: 'Schwimmwesten anlegen (Aufruf)',
 				specialpics: [res.actions.signal_1, res.actions.flag_up, res.flags.y],
 				description: 'Setzen der Flagge "Y"',
@@ -782,7 +782,7 @@ export default class App extends React.Component {
 			console.log('!== Y');
 			newFlag = res.flags.y;
 			this.specialBtnsDescs[6] = {
-				choice: 6,
+				key: 6,
 				button: 'Schwimmwesten ablegen',
 				description: 'Bergen der Flagge "Y"',
 			};
@@ -790,7 +790,7 @@ export default class App extends React.Component {
 			console.log('=== Y');
 			newFlag = {};
 			this.specialBtnsDescs[6] = {
-				choice: 6,
+				key: 6,
 				button: 'Schwimmwesten anlegen (Aufruf)',
 				description: 'Setzen der Flagge "Y"',
 			};
@@ -869,32 +869,6 @@ export default class App extends React.Component {
 		);
 	};
 
-	renderBadStartBtns = () => {
-		console.log('renderStartBtns()');
-		return (
-			<View style={{ flexDirection: 'row', backgroundColor: 'red' }}>
-				<Button
-					title="Single bad Start"
-					color="#841584"
-					onPress={() => {
-						this.setState({ viewBadStartBtns: false });
-						this.singleBadStart();
-					}}
-					accessibilityLabel="Learn more about this purple button"
-				/>
-				<Button
-					title="Massive Bad Start"
-					color="#841520"
-					onPress={() => {
-						this.setState({ viewBadStartBtns: false });
-						this.setState({ isStartPickerVisible: true });
-					}}
-					accessibilityLabel="Learn more about this purple button"
-				/>
-			</View>
-		);
-	};
-
 	setDescription = text => {
 		this.specialDescription = text;
 	};
@@ -937,23 +911,28 @@ export default class App extends React.Component {
 			<View
 				style={{
 					flex: 1,
-					backgroundColor: 'white',
-					opacity: 0.7,
 					flexDirection: 'row',
 				}}
 			>
-				<View style={{ flex: 5, backgroundColor: 'lightgreen' }}>
+				<View style={{ flex: 1 }}>
 					{this.specialBtnsDescs.map(args => {
 						return (
-							<TouchableOpacity
+							<TouchableHighlight
+								key={args.key}
+								style={[
+									globalstyles.listEntryHighlight,
+									this.state.specialKey === args.key && {
+										backgroundColor: '#20bf6b',
+									},
+								]}
 								onPress={() => {
 									this.setState({ specialDescription: args.description });
-									this.setState({ specialChoice: args.choice });
+									this.setState({ specialKey: args.key });
 									this.setState({ specialPics: args.specialpics });
 								}}
 							>
-								<Text style={{ fontSize: 40 }}>{args.button}</Text>
-							</TouchableOpacity>
+								<Text style={globalstyles.listEntryText}>{args.button}</Text>
+							</TouchableHighlight>
 						);
 					})}
 					<TouchableOpacity
@@ -965,14 +944,14 @@ export default class App extends React.Component {
 						<Text style={{ fontSize: 40 }}>Hide me!</Text>
 					</TouchableOpacity>
 				</View>
-				<View style={{ flex: 7, backgroundColor: 'lightblue' }}>
-					<View style={{ flex: 5, backgroundColor: 'lightblue' }}>
+				<View style={{ flex: 3, backgroundColor: 'lightblue' }}>
+					<View style={{ flex: 3, backgroundColor: 'lightblue' }}>
 						<Text style={{ fontSize: 40 }}>
 							{this.state.specialDescription}
 						</Text>
 					</View>
 					<View
-						style={{ flex: 3, flexDirection: 'row', backgroundColor: 'red' }}
+						style={{ flex: 1, flexDirection: 'row', backgroundColor: 'red' }}
 					>
 						<View style={{ flex: 1, backgroundColor: 'green' }}>
 							<Image style={styles.spFlag} source={this.state.specialPics[2]} />

@@ -27,18 +27,13 @@ export default class ActionView extends Component {
 		//console.log('AV.render()');
 		return (
 			<View style={styles.containerAV}>
-				<View
-					style={[
-						styles.actionContainer,
-						{ flex: 3, backgroundColor: '#d1d8e0' },
-					]}
-				>
+				<View style={[{ flex: 3, backgroundColor: '#d1d8e0' }]}>
 					<Text style={styles.title}>next Actions:</Text>
 					{this.props.actions.map(action => {
 						return <ActionItem key={action.name} item={action} />;
 					})}
 				</View>
-				<View style={[styles.actionContainer, { flex: 1 }]}>
+				<View style={[{ flex: 1 }]}>
 					{/* <Text style={styles.title}>remaining time:</Text> */}
 					<Countdown
 						targetDate={this.props.countdownEndDate.toDate()}
@@ -65,14 +60,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignSelf: 'stretch',
 		flexDirection: 'column',
-	},
-	actionContainer: {
-		//padding: '5%',
-		//borderWidth: 1,
-		//backgroundColor: 'lightgreen',
-		alignSelf: 'stretch',
-		//alignItems: 'center',
-		//justifyContent: 'space-between',
 	},
 	title: { fontSize: 30, fontWeight: 'bold' },
 });
