@@ -16,6 +16,7 @@ import ActionItem from './ActionItem';
 import Countdown from './Countdown';
 import moment from 'moment';
 import * as res from '../res/res.js';
+import globalstyles from '../styles.js';
 
 export default class ActionView extends Component {
 	constructor() {
@@ -47,7 +48,8 @@ export default class ActionView extends Component {
 							//console.log('AV.render.onFinished()');
 							this.props.onFinished();
 						}}
-						//textStyle={styles.countdownText}
+						textStyle={globalstyles.countdownText}
+						highlightStyle={globalstyles.buttonHighlight}
 					/>
 					{/* <Text style={{ fontSize: 20 }}>
 						countdown end date: {this.props.countdownEndDate.format('LLL')}
@@ -73,5 +75,4 @@ const styles = StyleSheet.create({
 		//justifyContent: 'space-between',
 	},
 	title: { fontSize: 30, fontWeight: 'bold' },
-	countdownText: { fontSize: 64, fontWeight: 'bold' },
 });

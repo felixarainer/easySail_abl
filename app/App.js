@@ -1047,7 +1047,7 @@ export default class App extends React.Component {
 							underlayColor={'#8854d0'}
 							onPress={() => this.toggleModal()}
 						>
-							<Text style={globalstyles.buttonLabel}>Special Actions</Text>
+							<Text style={globalstyles.buttonLabel}>Aktion initiieren</Text>
 						</TouchableHighlight>
 						<TouchableHighlight
 							style={[
