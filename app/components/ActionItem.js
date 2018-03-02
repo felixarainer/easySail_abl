@@ -37,11 +37,11 @@ export default class ActionItem extends Component {
 						/>
 					</View>
 				)}
-				<Text
+				{/* <Text
 					style={{ fontWeight: 'bold', fontSize: 18, justifyContent: 'center' }}
 				>
 					{this.props.item.name}
-				</Text>
+				</Text> */}
 			</View>
 		);
 	}
@@ -49,7 +49,6 @@ export default class ActionItem extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: 'lightgrey', // TODO remove
 		height: 170,
 		marginVertical: 8,
 	},

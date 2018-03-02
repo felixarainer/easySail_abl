@@ -91,7 +91,6 @@ export const flags = {
 		pic: require('./pics/flags/y.png'),
 		ratio: 1,
 	},
-
 };
 
 export const actions = {

@@ -944,6 +944,7 @@ export default class App extends React.Component {
 									this.state.specialKey === args.key &&
 										styles.listEntrySelected,
 								]}
+								underlayColor="#20bf6b"
 								onPress={() => {
 									this.setState({ specialDescription: args.description });
 									this.setState({ specialKey: args.key });
@@ -954,23 +955,21 @@ export default class App extends React.Component {
 							</TouchableHighlight>
 						);
 					})}
-					<TouchableOpacity
-						onPress={() => {
-							this.toggleModal();
-							this.makeSpecialDecision();
-						}}
-					>
-						<Text style={{ fontSize: 40 }}>Hide me!</Text>
-					</TouchableOpacity>
 				</View>
-				<View style={{ flex: 3, backgroundColor: 'lightblue' }}>
+				<View
+					style={{
+						flex: 3,
+						flexDirection: 'column',
+						backgroundColor: 'lightblue',
+					}}
+				>
 					<View style={{ flex: 3, backgroundColor: 'lightblue' }}>
-						<Text style={{ fontSize: 40 }}>
+						<Text style={{ fontSize: 35 }}>
 							{this.state.specialDescription}
 						</Text>
 					</View>
 					<View
-						style={{ flex: 1, flexDirection: 'row', backgroundColor: 'red' }}
+						style={{ flex: 2, flexDirection: 'row', backgroundColor: 'red' }}
 					>
 						<View style={{ flex: 1, backgroundColor: 'green' }}>
 							<Image style={styles.spFlag} source={this.state.specialPics[2]} />
@@ -981,6 +980,27 @@ export default class App extends React.Component {
 						<View style={{ flex: 1, backgroundColor: 'red' }}>
 							<Image style={styles.spFlag} source={this.state.specialPics[1]} />
 						</View>
+					</View>
+					<View style={{ flex: 1, flexDirection: 'row' }}>
+						<TouchableHighlight
+							style={[styles.buttonHighlight, styles.cancelButton]}
+							underlayColor="red"
+							onPress={() => {
+								this.toggleModal();
+							}}
+						>
+							<Text style={styles.buttonLabel}>Abbrechen</Text>
+						</TouchableHighlight>
+						<TouchableHighlight
+							style={[styles.buttonHighlight, styles.okButton]}
+							underlayColor="green"
+							onPress={() => {
+								this.toggleModal();
+								this.makeSpecialDecision();
+							}}
+						>
+							<Text style={styles.buttonLabel}>Bestätigen</Text>
+						</TouchableHighlight>
 					</View>
 				</View>
 			</View>
@@ -1041,7 +1061,7 @@ export default class App extends React.Component {
 							<FlagItem flag={this.state.curFlags.flag4} />
 						</View>
 					</Image> */}
-					<View style={{ flex: 3 }}>
+					<View style={{ flex: 3, backgroundColor: '#d1d8e0' }}>
 						<Text>Test</Text>
 					</View>
 					<View style={{ flex: 1, flexDirection: 'row' }}>

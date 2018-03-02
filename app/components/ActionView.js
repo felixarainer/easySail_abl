@@ -27,14 +27,13 @@ export default class ActionView extends Component {
 		//console.log('AV.render()');
 		return (
 			<View style={styles.containerAV}>
-				<View style={[{ flex: 3, backgroundColor: '#d1d8e0' }]}>
-					<Text style={styles.title}>next Actions:</Text>
+				<View style={[{ flex: 3 }]}>
+					<Text style={styles.title}>Nächste Aktionen:</Text>
 					{this.props.actions.map(action => {
 						return <ActionItem key={action.name} item={action} />;
 					})}
 				</View>
 				<View style={[{ flex: 1 }]}>
-					{/* <Text style={styles.title}>remaining time:</Text> */}
 					<Countdown
 						targetDate={this.props.countdownEndDate.toDate()}
 						isSkippable={this.props.isSkippable}
@@ -60,6 +59,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignSelf: 'stretch',
 		flexDirection: 'column',
+		backgroundColor: '#a5b1c2',
 	},
 	title: { fontSize: 30, fontWeight: 'bold' },
 });

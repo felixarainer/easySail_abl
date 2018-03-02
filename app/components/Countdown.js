@@ -140,9 +140,9 @@ export default class Countdown extends Component {
 					this.props.highlightStyle,
 					this.props.isSkippable
 						? { backgroundColor: '#26de81' }
-						: { backgroundColor: '#d1d8e0' },
+						: { backgroundColor: 'transparent' },
 				]}
-				underlayColor={this.props.isSkippable ? '#20bf6b' : '#778ca3'}
+				underlayColor={this.props.isSkippable ? '#20bf6b' : 'transparent'}
 				onPress={() => this.skipCountdown()}
 			>
 				<Text style={this.props.textStyle}>
