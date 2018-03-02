@@ -162,7 +162,7 @@ Countdown.propTypes = {
 Countdown.defaultProps = {
 	interval: 1000,
 	startDelay: 0,
-	style: { fontSize: 56, fontWeight: 'bold' },
+	style: { fontSize: 64, fontWeight: 'bold' },
 	isSkippable: false,
 	isIndefinite: false,
 };

@@ -974,10 +974,7 @@ export default class App extends React.Component {
 						style={{ flex: 3, flexDirection: 'row', backgroundColor: 'red' }}
 					>
 						<View style={{ flex: 1, backgroundColor: 'green' }}>
-							<Image
-								style={styles.spFlag}
-								source={this.state.specialPics[2].pic}
-							/>
+							<Image style={styles.spFlag} source={this.state.specialPics[2]} />
 						</View>
 						<View style={{ flex: 1, backgroundColor: 'blue' }}>
 							<Image style={styles.spFlag} source={this.state.specialPics[0]} />
@@ -1005,7 +1002,7 @@ export default class App extends React.Component {
 				}}
 			>
 				{/* <FlagView flags={this.state.curFlags} /> */}
-				<View style={{ flex: 3 }}>
+				<View style={{ flex: 3, flexDirection: 'column' }}>
 					<Image
 						source={require('./res/pics/ship.png')}
 						style={styles.backgroundImage}
@@ -1036,24 +1033,34 @@ export default class App extends React.Component {
 							<FlagItem flag={this.state.curFlags.flag3} />
 							<FlagItem flag={this.state.curFlags.flag4} />
 						</View>
-						<View>
-							<Button
-								title="Special Actions"
-								color="#845084"
-								onPress={() => {
-									this.toggleModal();
-								}}
-								accessibilityLabel="Learn more about this purple button"
-							/>
-							{this.state.viewBadStartBtns && this.renderBadStartBtns()}
-							<Modal isVisible={this.state.isActionsMenuVisible}>
-								{this.renderMenu()}
-							</Modal>
-							<Modal isVisible={this.state.isStartPickerVisible}>
-								{this.renderStartPicker()}
-							</Modal>
-						</View>
 					</Image>
+					<View style={{ flex: 1, flexDirection: 'row' }}>
+						{/* <TouchableHighlight style={{ flex: 1, borderWidth: '1px' }}>
+							<Text>Special Actions</Text>
+						</TouchableHighlight> */}
+						{/* <TouchableHighlight style={{ flex: 1, borderWidth: '1px' }}>
+							<Text>Special Actions</Text>
+						</TouchableHighlight>
+						<TouchableHighlight style={{ flex: 1, borderWidth: '1px' }}>
+							<Text>Special Actions</Text>
+						</TouchableHighlight> */}
+						{/* <Button
+							title="Special Actions"
+							color="#845084"
+							onPress={() => {
+								this.toggleModal();
+							}}
+							accessibilityLabel="Learn more about this purple button"
+						/>
+
+						{this.state.viewBadStartBtns && this.renderBadStartBtns()} */}
+						<Modal isVisible={this.state.isActionsMenuVisible}>
+							{this.renderMenu()}
+						</Modal>
+						<Modal isVisible={this.state.isStartPickerVisible}>
+							{this.renderStartPicker()}
+						</Modal>
+					</View>
 				</View>
 
 				<ActionView
@@ -1100,7 +1107,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 	},
 	backgroundImage: {
-		flex: 1,
+		flex: 3,
 		height: undefined,
 		width: undefined,
 		resizeMode: 'cover',

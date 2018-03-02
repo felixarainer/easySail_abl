@@ -26,13 +26,13 @@ export default class ActionView extends Component {
 		//console.log('AV.render()');
 		return (
 			<View style={styles.containerAV}>
-				<View style={styles.actionContainer}>
+				<View style={[styles.actionContainer, { flex: 3 }]}>
 					<Text style={styles.title}>next Actions:</Text>
 					{this.props.actions.map(action => {
 						return <ActionItem key={action.name} item={action} />;
 					})}
 				</View>
-				<View style={styles.actionContainer}>
+				<View style={[styles.actionContainer, { flex: 1 }]}>
 					<Text style={styles.title}>remaining time:</Text>
 					<Countdown
 						targetDate={this.props.countdownEndDate.toDate()}
@@ -56,15 +56,10 @@ export default class ActionView extends Component {
 const styles = StyleSheet.create({
 	containerAV: {
 		flex: 1,
-		backgroundColor: 'lightblue',
 		alignSelf: 'stretch',
 		flexDirection: 'column',
-		//justifyContent: 'center',
-		alignItems: 'flex-start',
 	},
 	actionContainer: {
-		margin: '5%',
-		marginBottom: 0,
 		padding: '5%',
 		borderWidth: 1,
 		backgroundColor: 'lightgreen',
@@ -73,5 +68,5 @@ const styles = StyleSheet.create({
 		//justifyContent: 'space-between',
 	},
 	title: { fontSize: 30, fontWeight: 'bold' },
-	countdownText: { fontSize: 56, fontWeight: 'bold' },
+	countdownText: { fontSize: 64, fontWeight: 'bold' },
 });
