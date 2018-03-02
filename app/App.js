@@ -812,7 +812,7 @@ export default class App extends React.Component {
 	renderStartPicker = () => {
 		console.log('renderStartPicker()');
 		return (
-			<View style={{ backgroundColor: 'red', opacity: 0.7 }}>
+			<View style={{ backgroundColor: 'red' }}>
 				<Text style={{ fontSize: 40, fontWeight: 'bold' }}>
 					Choose the starting Flag:
 				</Text>
@@ -945,22 +945,32 @@ export default class App extends React.Component {
 					}}
 				>
 					<View style={{ flex: 3, backgroundColor: 'lightblue' }}>
-						<Text style={{ fontSize: 35 }}>
+						<Text style={styles.descriptionText}>
+							<Text style={{ fontWeight: 'bold' }}>{'Beschreibung: '}</Text>
 							{this.state.specialDescription}
 						</Text>
 					</View>
 					<View style={{ flex: 2.2, flexDirection: 'row' }}>
-						<ActionItem
-							style={styles.actionMenuItem}
-							item={{ actionPic: this.state.specialPics[0] }}
-						/>
-						<ActionItem
-							style={styles.actionMenuItem}
-							item={{
-								actionPic: this.state.specialPics[1],
-								flagPic: this.state.specialPics[2],
-							}}
-						/>
+						<View style={{ flex: 0.5 }}>
+							<Text style={[styles.descriptionText, { fontWeight: 'bold' }]}>
+								Nächste Aktionen:
+							</Text>
+						</View>
+						<View style={{ flex: 1 }}>
+							<ActionItem
+								style={styles.actionMenuItem}
+								item={{ actionPic: this.state.specialPics[0] }}
+							/>
+						</View>
+						<View style={{ flex: 1 }}>
+							<ActionItem
+								style={styles.actionMenuItem}
+								item={{
+									actionPic: this.state.specialPics[1],
+									flagPic: this.state.specialPics[2],
+								}}
+							/>
+						</View>
 					</View>
 					<View style={{ flex: 1, flexDirection: 'row' }}>
 						<TouchableHighlight

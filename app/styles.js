@@ -37,6 +37,8 @@ module.exports = StyleSheet.create({
 	cancelButton: { backgroundColor: 'red' },
 	okButton: { backgroundColor: 'green' },
 
+	descriptionText: { fontSize: 35, padding: 5 },
+
 	actionMenuItem: {
 		height: 180,
 		width: 270,
