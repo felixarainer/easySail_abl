@@ -992,6 +992,14 @@ export default class App extends React.Component {
 	toggleModal = () =>
 		this.setState({ isActionsMenuVisible: !this.state.isActionsMenuVisible });
 
+	toggleStartPicker = () => {
+		this.setState({ isStartPickerVisible: !this.state.isStartPickerVisible });
+	};
+
+	toggleStartButtons = () => {
+		this.setState({ viewBadStartBtns: !this.state.viewBadStartBtns });
+	};
+
 	render = () => {
 		console.log('render();');
 		return (
@@ -1052,31 +1060,38 @@ export default class App extends React.Component {
 						<TouchableHighlight
 							style={[
 								globalstyles.buttonHighlight,
-								{ backgroundColor: '#45aaf2' },
+								this.state.viewBadStartBtns
+									? { backgroundColor: '#45aaf2' }
+									: globalstyles.buttonDisabled,
 							]}
-							underlayColor={'#2d98da'}
+							underlayColor={'#3867d6'}
+							onPress={() => {
+								if (this.state.viewBadStartBtns) {
+									this.toggleStartButtons();
+									this.singleBadStart();
+								}
+							}}
 						>
 							<Text style={globalstyles.buttonLabel}>Einzelrückruf</Text>
 						</TouchableHighlight>
 						<TouchableHighlight
 							style={[
 								globalstyles.buttonHighlight,
-								{ backgroundColor: '#4b7bec' },
+								this.state.viewBadStartBtns
+									? { backgroundColor: '#4b7bec' }
+									: globalstyles.buttonDisabled,
 							]}
 							underlayColor={'#3867d6'}
+							onPress={() => {
+								if (this.state.viewBadStartBtns) {
+									this.toggleStartButtons();
+									this.toggleStartPicker();
+								}
+							}}
 						>
 							<Text style={globalstyles.buttonLabel}>Allgemeiner Rückruf</Text>
 						</TouchableHighlight>
-						{/* <Button
-							title="Special Actions"
-							color="#845084"
-							onPress={() => {
-								this.toggleModal();
-							}}
-							accessibilityLabel="Learn more about this purple button"
-						/>
-
-						{this.state.viewBadStartBtns && this.renderBadStartBtns()} */}
+						{/* {this.state.viewBadStartBtns && this.renderBadStartBtns()} */}
 						<Modal isVisible={this.state.isActionsMenuVisible}>
 							{this.renderMenu()}
 						</Modal>
