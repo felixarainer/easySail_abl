@@ -19,7 +19,7 @@ module.exports = StyleSheet.create({
 		height: 160,
 		width: 240,
 		alignSelf: 'center',
-		marginTop: 10,
+		marginBottom: 10,
 	},
 
 	//special actions menu
@@ -27,7 +27,7 @@ module.exports = StyleSheet.create({
 		justifyContent: 'center',
 		flex: 1,
 		padding: 5,
-		borderWidth: 1,
+		borderBottomWidth: 1,
 		backgroundColor: '#26de81',
 	},
 	listEntrySelected: {

@@ -148,14 +148,14 @@ export default class App extends React.Component {
 				button: 'Abbrechen (rasche WH)',
 				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.n],
 				description:
-					'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown',
+					'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nWenn Sie die Wettfahrt(en) erneut starten möchten, klicken Sie auf den Countdown',
 			},
 			{
 				key: 4,
 				button: 'Abbrechen (spätere WH)',
 				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.noh],
 				description:
-					'Alle bereits gestarteten Rennen werden abgebrochen \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown',
+					'Alle bereits gestarteten Rennen werden abgebrochen \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten, klicken Sie auf den Countdown',
 			},
 			{
 				key: 5,
@@ -1070,10 +1070,11 @@ export default class App extends React.Component {
 							]}
 							underlayColor={'#3867d6'}
 							onPress={() => {
-								if (this.state.enableBadStartBtns) {
-									this.toggleStartButtons();
-									this.singleBadStart();
-								}
+								this.toggleStartButtons();
+								// if (this.state.enableBadStartBtns) {
+								// 	this.toggleStartButtons();
+								// 	this.singleBadStart();
+								// }
 							}}
 						>
 							<Text style={styles.buttonLabel}>Einzelrückruf</Text>
@@ -1095,7 +1096,6 @@ export default class App extends React.Component {
 						>
 							<Text style={styles.buttonLabel}>Allgemeiner Rückruf</Text>
 						</TouchableHighlight>
-						{/* {this.state.enableBadStartBtns && this.renderBadStartBtns()} */}
 						<Modal isVisible={this.state.isActionsMenuVisible}>
 							{this.renderMenu()}
 						</Modal>
@@ -1133,11 +1133,7 @@ export default class App extends React.Component {
 					isSkippable={this.state.isIndefinite}
 					isIndefinite={this.state.isSkippable}
 				/>
-				{/* {this.state.isStartPickerVisible && this.renderStartPicker()} */}
 			</View>
 		);
 	};
 }
-
-//isSkippable={this.state.isIndefinite}
-//isIndefinite={this.state.isSkippable}

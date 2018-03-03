@@ -28,7 +28,9 @@ export default class ActionView extends Component {
 		return (
 			<View style={styles.containerAV}>
 				<View style={[{ flex: 3 }]}>
-					<Text style={styles.title}>Nächste Aktionen:</Text>
+					<Text style={{ fontWeight: 'bold', fontSize: 35 }}>
+						Nächste Aktionen:
+					</Text>
 					{this.props.actions.map(action => {
 						return (
 							<ActionItem
@@ -67,5 +69,4 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		backgroundColor: '#a5b1c2',
 	},
-	title: { fontSize: 30, fontWeight: 'bold' },
 });
