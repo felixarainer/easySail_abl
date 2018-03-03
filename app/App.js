@@ -1059,6 +1059,14 @@ export default class App extends React.Component {
 				}}
 			>
 				<View style={{ flex: 3, flexDirection: 'column' }}>
+					<View style={{ flex: 1 }}>
+						<FlagItem flag={this.state.curFlags.flag1} />
+						<FlagItem flag={this.state.curFlags.flag2} />
+					</View>
+					<View style={{ flex: 1 }}>
+						<FlagItem flag={this.state.curFlags.flag3} />
+						<FlagItem flag={this.state.curFlags.flag4} />
+					</View>
 					{/* <Image
 						source={require('./res/pics/ship.png')}
 						style={styles.backgroundImage}
