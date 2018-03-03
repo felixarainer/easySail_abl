@@ -10,11 +10,13 @@ export const flags = {
 		name: 'black',
 		pic: require('./pics/flags/black.png'),
 		ratio: 1,
+		description: 'Das ist die Jolly Roger du landratte',
 	},
 	i: {
 		name: 'i',
 		pic: require('./pics/flags/i.png'),
 		ratio: 1,
+		description: 'Das ist die Flagge i minJong',
 	},
 	l: {
 		name: 'l',
@@ -25,6 +27,7 @@ export const flags = {
 		name: 'p',
 		pic: require('./pics/flags/p.png'),
 		ratio: 1,
+		description: 'Das ist die Flagge p minJong',
 	},
 	x: {
 		name: 'x',
@@ -35,6 +38,7 @@ export const flags = {
 		name: 'z',
 		pic: require('./pics/flags/z.png'),
 		ratio: 1,
+		description: 'Das ist die Flagge z min Jong',
 	},
 	klass: {
 		name: 'klass',
@@ -91,7 +95,6 @@ export const flags = {
 		pic: require('./pics/flags/y.png'),
 		ratio: 1,
 	},
-
 };
 
 export const actions = {

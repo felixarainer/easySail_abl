@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import globalstyles from '../styles.js';
 
 const COUNTDOWN_NOT_STARTED = 1;
 const COUNTDOWN_STARTED = 2;
@@ -135,14 +136,19 @@ export default class Countdown extends Component {
 		//console.log('Countdown.render()');
 		return (
 			<TouchableHighlight
-				onPress={() => {
-					this.skipCountdown();
-				}}
+				style={[
+					this.props.highlightStyle,
+					this.props.isSkippable
+						? { backgroundColor: '#26de81' }
+						: { backgroundColor: 'transparent' },
+				]}
+				underlayColor={this.props.isSkippable ? '#20bf6b' : 'transparent'}
+				onPress={() => this.skipCountdown()}
 			>
-				<Text style={this.props.style}>
+				<Text style={this.props.textStyle}>
 					{minutes}:{seconds}
-					{this.props.isSkippable ? 's' : ''}
-					{this.props.isIndefinite ? 'i' : ''}
+					{/* {this.props.isSkippable ? 's' : ''}
+					{this.props.isIndefinite ? 'i' : ''} */}
 				</Text>
 			</TouchableHighlight>
 		);
@@ -162,7 +168,6 @@ Countdown.propTypes = {
 Countdown.defaultProps = {
 	interval: 1000,
 	startDelay: 0,
-	style: { fontSize: 56, fontWeight: 'bold' },
 	isSkippable: false,
 	isIndefinite: false,
 };

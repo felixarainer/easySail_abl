@@ -18,9 +18,11 @@ import {
 	Alert,
 } from 'react-native';
 import ActionView from './components/ActionView';
+import ActionItem from './components/ActionItem';
 import FlagItem from './components/FlagItem';
 import Orientation from 'react-native-orientation-locker';
 import * as res from './res/res.js';
+import styles from './styles.js';
 import moment from 'moment';
 import Modal from 'react-native-modal';
 //import { CheckBox } from 'react-native-elements';
@@ -50,7 +52,7 @@ class actState {
 				typeof this.time === 'number'
 					? moment().add(this.time, 'seconds')
 					: this.time,
-			viewBadStartBtns: this.isStart,
+			enableBadStartBtns: this.isStart,
 			isIndefinite: this.isIndefinite,
 			isSkippable: this.isSkippable,
 		};
@@ -94,7 +96,7 @@ export default class App extends React.Component {
 		super();
 		this.state = {
 			curFlags: {},
-			viewBadStartBtns: false,
+			enableBadStartBtns: false,
 			startFinished: false,
 			isStartPickerVisible: false,
 			isActionsMenuVisible: false,
@@ -113,14 +115,14 @@ export default class App extends React.Component {
 
 		this.specialBtnsDescs = [
 			{
-				choice: 0,
+				key: 0,
 				button: 'Verschieben (kurz)',
 				specialpics: [res.actions.signal_2, res.actions.flag_up, res.flags.ap],
 				description:
 					'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown',
 			},
 			{
-				choice: 1,
+				key: 1,
 				button: 'Verschieben (lang)',
 				specialpics: [
 					res.actions.signal_2,
@@ -131,7 +133,7 @@ export default class App extends React.Component {
 					'Alle noch nicht gestarteten Rennen werden verschoben. \nBereits gestartete Rennen werden weiter gesegelt. \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) fortführen möchten klicken Sie auf den Countdown',
 			},
 			{
-				choice: 2,
+				key: 2,
 				button: 'Verschieben und abbrechen',
 				specialpics: [
 					res.actions.signal_2,
@@ -142,28 +144,28 @@ export default class App extends React.Component {
 					'Alle noch nicht gestarteten Rennen werden verschoben. \nHeute findet keine Wettfahrt mehr statt. Bereits gestartete Rennen werden weiter gesegelt.',
 			},
 			{
-				choice: 3,
+				key: 3,
 				button: 'Abbrechen (rasche WH)',
 				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.n],
 				description:
-					'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown',
+					'Alle bereits gestarteten Rennen werden abgebrochen \nAlle Boote kehren zum Startgebiet zurück \nWenn Sie die Wettfahrt(en) erneut starten möchten, klicken Sie auf den Countdown',
 			},
 			{
-				choice: 4,
+				key: 4,
 				button: 'Abbrechen (spätere WH)',
 				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.noh],
 				description:
-					'Alle bereits gestarteten Rennen werden abgebrochen \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten klicken Sie auf den Countdown',
+					'Alle bereits gestarteten Rennen werden abgebrochen \nWeitere Signale an Land geben.\nWenn Sie die Wettfahrt(en) erneut starten möchten, klicken Sie auf den Countdown',
 			},
 			{
-				choice: 5,
+				key: 5,
 				button: 'Regatta Abbrechen',
 				specialpics: [res.actions.signal_3, res.actions.flag_up, res.flags.noa],
 				description:
 					'Alle bereits gestarteten Rennen werden abgebrochen \nHeute findet keine Wettfahrt mehr statt.',
 			},
 			{
-				choice: 6,
+				key: 6,
 				button: 'Schwimmwesten anlegen (Aufruf)',
 				specialpics: [res.actions.signal_1, res.actions.flag_up, res.flags.y],
 				description: 'Setzen der Flagge "Y"',
@@ -430,7 +432,7 @@ export default class App extends React.Component {
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
 		//rückrufbuttons deaktivieren
-		this.setState({ viewBadStartBtns: false });
+		this.setState({ enableBadStartBtns: false });
 
 		//Die Teilnehmer haben 4 Minuten Zeit zurückzukehren, derweil wird das restliche Feld angehalten, damit keine Verwirrung entsteht.
 		//Das restliche Feld wird nur wenn nötig angehalten.
@@ -469,7 +471,7 @@ export default class App extends React.Component {
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.setState({ startFinished: false });
 		//rückrufbuttons deaktivieren
-		this.setState({ viewBadStartBtns: false });
+		this.setState({ enableBadStartBtns: false });
 
 		this.setState({ isStartPickerVisible: false });
 		//neue actions
@@ -781,7 +783,7 @@ export default class App extends React.Component {
 			console.log('!== Y');
 			newFlag = res.flags.y;
 			this.specialBtnsDescs[6] = {
-				choice: 6,
+				key: 6,
 				button: 'Schwimmwesten ablegen',
 				description: 'Bergen der Flagge "Y"',
 			};
@@ -789,7 +791,7 @@ export default class App extends React.Component {
 			console.log('=== Y');
 			newFlag = {};
 			this.specialBtnsDescs[6] = {
-				choice: 6,
+				key: 6,
 				button: 'Schwimmwesten anlegen (Aufruf)',
 				description: 'Setzen der Flagge "Y"',
 			};
@@ -809,87 +811,93 @@ export default class App extends React.Component {
 
 	renderStartPicker = () => {
 		console.log('renderStartPicker()');
+		let startFlags = [res.flags.i, res.flags.z, res.flags.black, res.flags.p];
 		return (
-			<View style={{ backgroundColor: 'red', opacity: 0.7 }}>
-				<Text style={{ fontSize: 40, fontWeight: 'bold' }}>
-					Choose the starting Flag:
-				</Text>
-				<View style={{ flexDirection: 'row' }}>
-					<TouchableHighlight
-						style={styles.spHighlight}
-						onPress={() => {
-							this.badStartCondition = 'i';
-						}}
+			<View
+				style={[{ flex: 1, flexDirection: 'column' }, styles.menuBackground]}
+			>
+				<View
+					style={{
+						flexDirection: 'row',
+						flex: 2,
+						margin: 10,
+						marginBottom: 0,
+					}}
+				>
+					<Text
+						style={[
+							styles.descriptionText,
+							{ flex: 1, fontWeight: 'bold', fontSize: 40 },
+						]}
 					>
-						<Image source={res.flags.i.pic} style={styles.spFlagImage} />
-					</TouchableHighlight>
-					<TouchableHighlight
-						style={styles.spHighlight}
-						onPress={() => {
-							this.badStartCondition = 'z';
-						}}
-					>
-						<Image source={res.flags.z.pic} style={styles.spFlagImage} />
-					</TouchableHighlight>
-					<TouchableHighlight
-						style={styles.spHighlight}
-						onPress={() => {
-							this.badStartCondition = 'black';
-						}}
-					>
-						<Image source={res.flags.black.pic} style={styles.spFlagImage} />
-					</TouchableHighlight>
-					<TouchableHighlight
-						style={styles.spHighlight}
-						onPress={() => {
-							this.badStartCondition = 'p';
-						}}
-					>
-						<Image source={res.flags.p.pic} style={styles.spFlagImage} />
-					</TouchableHighlight>
-					<TouchableHighlight
-						style={styles.spHighlight}
-						onPress={() => {
-							this.setState({ postPoneBadStart: true });
-						}}
-					>
-						<Image source={res.flags.p.pic} style={styles.spFlagImage} />
-					</TouchableHighlight>
-					<TouchableOpacity
-						onPress={() => {
-							this.setState({ isStartPickerVisible: false });
-							this.massiveBadStart(this.badStartCondition);
-						}}
-					>
-						<Text style={{ fontSize: 40 }}>Weiter!</Text>
-					</TouchableOpacity>
+						Wählen sie eine Flagge aus:{' '}
+					</Text>
+					{startFlags.map(flag => {
+						return (
+							<TouchableHighlight
+								key={flag.name}
+								style={[
+									styles.spHighlight,
+									this.state.badStartCondition === flag.name &&
+										styles.toggleButton,
+								]}
+								onPress={() => {
+									this.setState({
+										badStartCondition: flag.name,
+										flagDescription: flag.description,
+									});
+								}}
+							>
+								<Image source={flag.pic} style={styles.spFlagImage} />
+							</TouchableHighlight>
+						);
+					})}
 				</View>
-			</View>
-		);
-	};
-
-	renderBadStartBtns = () => {
-		console.log('renderStartBtns()');
-		return (
-			<View style={{ flexDirection: 'row', backgroundColor: 'red' }}>
-				<Button
-					title="Single bad Start"
-					color="#841584"
-					onPress={() => {
-						this.setState({ viewBadStartBtns: false });
-						this.singleBadStart();
-					}}
-					accessibilityLabel="Learn more about this purple button"
-				/>
-				<Button
-					title="Massive Bad Start"
-					color="#841520"
-					onPress={() => {
-						this.setState({ viewBadStartBtns: false });
-						this.setState({ isStartPickerVisible: true });
-					}}
-					accessibilityLabel="Learn more about this purple button"
-				/>
+				<View style={{ flex: 3, paddingHorizontal: 10 }}>
+					<Text style={styles.descriptionText}>
+						<Text style={{ fontWeight: 'bold' }}>{'Beschreibung: '}</Text>
+						{this.state.flagDescription}
+					</Text>
+				</View>
+				<View style={{ flex: 1, flexDirection: 'row' }}>
+					<TouchableHighlight
+						style={[styles.buttonHighlight, styles.cancelButton]}
+						underlayColor="#fc5c65"
+						onPress={() => {
+							this.toggleStartPicker();
+						}}
+					>
+						<Text style={styles.buttonLabel}>Abbrechen</Text>
+					</TouchableHighlight>
+					<TouchableHighlight
+						style={[
+							styles.buttonHighlight,
+							{ flex: 1.5 },
+							this.state.postPoneBadStart
+								? styles.toggleButton
+								: styles.buttonDisabled,
+						]}
+						//underlayColor="blue"
+						onPress={() => {
+							this.togglePostPone();
+						}}
+					>
+						<Text style={styles.buttonLabel}>
+							Fehlstart verschieben:{' '}
+							{this.state.postPoneBadStart ? 'aktiviert' : 'deaktiviert'}
+						</Text>
+					</TouchableHighlight>
+					<TouchableHighlight
+						style={[styles.buttonHighlight, styles.okButton]}
+						underlayColor="#26de81"
+						onPress={() => {
+							this.toggleStartPicker();
+							this.massiveBadStart(this.state.badStartCondition);
+						}}
+					>
+						<Text style={styles.buttonLabel}>Bestätigen</Text>
+					</TouchableHighlight>
+				</View>
 			</View>
 		);
 	};
@@ -934,57 +942,92 @@ export default class App extends React.Component {
 		console.log('renderMenu();');
 		return (
 			<View
-				style={{
-					flex: 1,
-					backgroundColor: 'white',
-					opacity: 0.7,
-					flexDirection: 'row',
-				}}
+				style={[
+					{
+						flex: 1,
+						flexDirection: 'row',
+					},
+					styles.menuBackground,
+				]}
 			>
-				<View style={{ flex: 5, backgroundColor: 'lightgreen' }}>
+				<View style={{ flex: 1 }}>
 					{this.specialBtnsDescs.map(args => {
 						return (
-							<TouchableOpacity
+							<TouchableHighlight
+								key={args.key}
+								style={[
+									styles.listEntryHighlight,
+									this.state.specialKey === args.key &&
+										styles.listEntrySelected,
+								]}
+								underlayColor="#20bf6b"
 								onPress={() => {
 									this.setState({ specialDescription: args.description });
-									this.setState({ specialChoice: args.choice });
+									this.setState({ specialKey: args.key });
 									this.setState({ specialPics: args.specialpics });
 								}}
 							>
-								<Text style={{ fontSize: 40 }}>{args.button}</Text>
-							</TouchableOpacity>
+								<Text style={styles.listEntryText}>{args.button}</Text>
+							</TouchableHighlight>
 						);
 					})}
-					<TouchableOpacity
-						onPress={() => {
-							this.toggleModal();
-							this.makeSpecialDecision();
-						}}
-					>
-						<Text style={{ fontSize: 40 }}>Hide me!</Text>
-					</TouchableOpacity>
 				</View>
-				<View style={{ flex: 7, backgroundColor: 'lightblue' }}>
-					<View style={{ flex: 5, backgroundColor: 'lightblue' }}>
-						<Text style={{ fontSize: 40 }}>
+				<View
+					style={[
+						{
+							flex: 3,
+							flexDirection: 'column',
+						},
+					]}
+				>
+					<View style={{ flex: 3 }}>
+						<Text style={styles.descriptionText}>
+							<Text style={{ fontWeight: 'bold' }}>{'Beschreibung: '}</Text>
 							{this.state.specialDescription}
 						</Text>
 					</View>
-					<View
-						style={{ flex: 3, flexDirection: 'row', backgroundColor: 'red' }}
-					>
-						<View style={{ flex: 1, backgroundColor: 'green' }}>
-							<Image
-								style={styles.spFlag}
-								source={this.state.specialPics[2].pic}
+					<View style={{ flex: 2.2, flexDirection: 'row' }}>
+						<View style={{ flex: 0.5 }}>
+							<Text style={[styles.descriptionText, { fontWeight: 'bold' }]}>
+								Nächste Aktionen:
+							</Text>
+						</View>
+						<View style={{ flex: 1 }}>
+							<ActionItem
+								style={styles.actionMenuItem}
+								item={{ actionPic: this.state.specialPics[0] }}
 							/>
 						</View>
-						<View style={{ flex: 1, backgroundColor: 'blue' }}>
-							<Image style={styles.spFlag} source={this.state.specialPics[0]} />
+						<View style={{ flex: 1 }}>
+							<ActionItem
+								style={styles.actionMenuItem}
+								item={{
+									actionPic: this.state.specialPics[1],
+									flagPic: this.state.specialPics[2],
+								}}
+							/>
 						</View>
-						<View style={{ flex: 1, backgroundColor: 'red' }}>
-							<Image style={styles.spFlag} source={this.state.specialPics[1]} />
-						</View>
+					</View>
+					<View style={{ flex: 1, flexDirection: 'row' }}>
+						<TouchableHighlight
+							style={[styles.buttonHighlight, styles.cancelButton]}
+							underlayColor="red"
+							onPress={() => {
+								this.toggleModal();
+							}}
+						>
+							<Text style={styles.buttonLabel}>Abbrechen</Text>
+						</TouchableHighlight>
+						<TouchableHighlight
+							style={[styles.buttonHighlight, styles.okButton]}
+							underlayColor="green"
+							onPress={() => {
+								this.toggleModal();
+								this.makeSpecialDecision();
+							}}
+						>
+							<Text style={styles.buttonLabel}>Bestätigen</Text>
+						</TouchableHighlight>
 					</View>
 				</View>
 			</View>
@@ -994,6 +1037,18 @@ export default class App extends React.Component {
 	toggleModal = () =>
 		this.setState({ isActionsMenuVisible: !this.state.isActionsMenuVisible });
 
+	toggleStartPicker = () => {
+		this.setState({ isStartPickerVisible: !this.state.isStartPickerVisible });
+	};
+
+	toggleStartButtons = () => {
+		this.setState({ enableBadStartBtns: !this.state.enableBadStartBtns });
+	};
+
+	togglePostPone = () => {
+		this.setState({ postPoneBadStart: !this.state.postPoneBadStart });
+	};
+
 	render = () => {
 		console.log('render();');
 		return (
@@ -1001,12 +1056,10 @@ export default class App extends React.Component {
 				style={{
 					flex: 1,
 					flexDirection: 'row',
-					backgroundColor: '#fff',
 				}}
 			>
-				{/* <FlagView flags={this.state.curFlags} /> */}
-				<View style={{ flex: 3 }}>
-					<Image
+				<View style={{ flex: 3, flexDirection: 'column' }}>
+					{/* <Image
 						source={require('./res/pics/ship.png')}
 						style={styles.backgroundImage}
 					>
@@ -1036,24 +1089,95 @@ export default class App extends React.Component {
 							<FlagItem flag={this.state.curFlags.flag3} />
 							<FlagItem flag={this.state.curFlags.flag4} />
 						</View>
-						<View>
-							<Button
-								title="Special Actions"
-								color="#845084"
-								onPress={() => {
-									this.toggleModal();
-								}}
-								accessibilityLabel="Learn more about this purple button"
-							/>
-							{this.state.viewBadStartBtns && this.renderBadStartBtns()}
-							<Modal isVisible={this.state.isActionsMenuVisible}>
-								{this.renderMenu()}
-							</Modal>
-							<Modal isVisible={this.state.isStartPickerVisible}>
-								{this.renderStartPicker()}
-							</Modal>
+					</Image> */}
+					<View
+						style={{
+							flex: 3,
+							backgroundColor: '#d1d8e0',
+							padding: 20,
+							paddingBottom: 0,
+							flexDirection: 'column',
+						}}
+					>
+						<View style={styles.flagRow}>
+							<View style={styles.flagContainer}>
+								<Image
+									style={styles.flagImage}
+									source={this.state.curFlags.flag1.pic}
+								/>
+							</View>
+							<View style={styles.flagContainer}>
+								<Image
+									style={styles.flagImage}
+									source={this.state.curFlags.flag2.pic}
+								/>
+							</View>
 						</View>
-					</Image>
+						<View style={styles.flagRow}>
+							<View style={styles.flagContainer}>
+								<Image
+									style={styles.flagImage}
+									source={this.state.curFlags.flag3.pic}
+								/>
+							</View>
+							<View style={styles.flagContainer}>
+								<Image
+									style={styles.flagImage}
+									source={this.state.curFlags.flag4.pic}
+								/>
+							</View>
+						</View>
+					</View>
+					<View style={{ flex: 1, flexDirection: 'row' }}>
+						<TouchableHighlight
+							style={[styles.buttonHighlight, { backgroundColor: '#4b7bec' }]}
+							underlayColor={'#3867d6'}
+							onPress={() => this.toggleModal()}
+						>
+							<Text style={styles.buttonLabel}>Aktion initiieren</Text>
+						</TouchableHighlight>
+						<TouchableHighlight
+							style={[
+								styles.buttonHighlight,
+								this.state.enableBadStartBtns
+									? { backgroundColor: '#45aaf2' }
+									: styles.buttonDisabled,
+							]}
+							underlayColor={'#2d98da'}
+							onPress={() => {
+								this.toggleStartButtons();
+								// if (this.state.enableBadStartBtns) {
+								// 	this.toggleStartButtons();
+								// 	this.singleBadStart();
+								// } //TODO change back
+							}}
+						>
+							<Text style={styles.buttonLabel}>Einzelrückruf</Text>
+						</TouchableHighlight>
+						<TouchableHighlight
+							style={[
+								styles.buttonHighlight,
+								this.state.enableBadStartBtns
+									? { backgroundColor: '#2bcbba' }
+									: styles.buttonDisabled,
+							]}
+							underlayColor={'#0fb9b1'}
+							onPress={() => {
+								if (this.state.enableBadStartBtns) {
+									this.toggleStartButtons();
+									this.toggleStartPicker();
+								}
+							}}
+						>
+							<Text style={styles.buttonLabel}>Allgemeiner Rückruf</Text>
+						</TouchableHighlight>
+						<Modal isVisible={this.state.isActionsMenuVisible}>
+							{this.renderMenu()}
+						</Modal>
+						<Modal isVisible={this.state.isStartPickerVisible}>
+							{this.renderStartPicker()}
+						</Modal>
+					</View>
 				</View>
 
 				<ActionView
@@ -1084,42 +1208,7 @@ export default class App extends React.Component {
 					isSkippable={this.state.isIndefinite}
 					isIndefinite={this.state.isSkippable}
 				/>
-				{/* {this.state.isStartPickerVisible && this.renderStartPicker()} */}
 			</View>
 		);
 	};
 }
-
-//isSkippable={this.state.isIndefinite}
-//isIndefinite={this.state.isSkippable}
-
-const styles = StyleSheet.create({
-	flagRow: {
-		flex: 0.25,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-	},
-	backgroundImage: {
-		flex: 1,
-		height: undefined,
-		width: undefined,
-		resizeMode: 'cover',
-	},
-	spFlagImage: {
-		flex: 1,
-		alignSelf: 'stretch',
-		height: undefined,
-		width: undefined,
-		resizeMode: 'contain',
-	},
-	spHighlight: {
-		height: 200,
-		width: 200,
-		// flex: 1,
-		//backgroundColor: 'red',
-	},
-	spFlag: {
-		height: 150,
-		width: 150,
-	},
-});
