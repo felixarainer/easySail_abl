@@ -44,4 +44,24 @@ module.exports = StyleSheet.create({
 		width: 270,
 		alignSelf: 'center',
 	},
+
+	//startpicker
+
+	spFlagImage: {
+		flex: 1,
+		alignSelf: 'stretch',
+		height: undefined,
+		width: undefined,
+		resizeMode: 'contain',
+	},
+	spHighlight: {
+		height: 200,
+		width: 200,
+		// flex: 1,
+		//backgroundColor: 'red',
+	},
+	spFlag: {
+		height: 150,
+		width: 150,
+	},
 });

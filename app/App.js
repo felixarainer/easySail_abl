@@ -811,60 +811,67 @@ export default class App extends React.Component {
 
 	renderStartPicker = () => {
 		console.log('renderStartPicker()');
+		let startFlags = [res.flags.i, res.flags.z, res.flags.black, res.flags.p];
 		return (
-			<View style={{ backgroundColor: 'red' }}>
-				<Text style={{ fontSize: 40, fontWeight: 'bold' }}>
-					Choose the starting Flag:
-				</Text>
-				<View style={{ flexDirection: 'row' }}>
+			<View
+				style={{ flex: 1, backgroundColor: 'white', flexDirection: 'column' }}
+			>
+				<View style={{ flexDirection: 'row', flex: 2 }}>
+					{startFlags.map(flag => {
+						return (
+							<TouchableHighlight
+								key={flag.name}
+								style={styles.spHighlight}
+								onPress={() => {
+									this.badStartCondition = flag.name;
+								}}
+							>
+								<Image source={flag.pic} style={styles.spFlagImage} />
+							</TouchableHighlight>
+						);
+					})}
+				</View>
+				<View style={{ flex: 3 }}>
+					<Text style={styles.descriptionText}>Description</Text>
+				</View>
+				<View style={{ flex: 1, flexDirection: 'row' }}>
 					<TouchableHighlight
-						style={styles.spHighlight}
+						style={[styles.buttonHighlight, styles.cancelButton]}
+						underlayColor="red"
 						onPress={() => {
-							this.badStartCondition = 'i';
+							this.toggleStartPicker();
 						}}
 					>
-						<Image source={res.flags.i.pic} style={styles.spFlagImage} />
+						<Text style={styles.buttonLabel}>Abbrechen</Text>
 					</TouchableHighlight>
 					<TouchableHighlight
-						style={styles.spHighlight}
+						style={[
+							styles.buttonHighlight,
+							{ flex: 1.5 },
+							this.state.postPoneBadStart
+								? { backgroundColor: 'blue' }
+								: { backgroundColor: 'gray' },
+						]}
+						//underlayColor="blue"
 						onPress={() => {
-							this.badStartCondition = 'z';
+							this.togglePostPone();
 						}}
 					>
-						<Image source={res.flags.z.pic} style={styles.spFlagImage} />
+						<Text style={styles.buttonLabel}>
+							Fehlstart verschieben:{' '}
+							{this.state.postPoneBadStart ? 'aktiviert' : 'deaktiviert'}
+						</Text>
 					</TouchableHighlight>
 					<TouchableHighlight
-						style={styles.spHighlight}
+						style={[styles.buttonHighlight, styles.okButton]}
+						underlayColor="green"
 						onPress={() => {
-							this.badStartCondition = 'black';
-						}}
-					>
-						<Image source={res.flags.black.pic} style={styles.spFlagImage} />
-					</TouchableHighlight>
-					<TouchableHighlight
-						style={styles.spHighlight}
-						onPress={() => {
-							this.badStartCondition = 'p';
-						}}
-					>
-						<Image source={res.flags.p.pic} style={styles.spFlagImage} />
-					</TouchableHighlight>
-					<TouchableHighlight
-						style={styles.spHighlight}
-						onPress={() => {
-							this.setState({ postPoneBadStart: true });
-						}}
-					>
-						<Image source={res.flags.p.pic} style={styles.spFlagImage} />
-					</TouchableHighlight>
-					<TouchableOpacity
-						onPress={() => {
-							this.setState({ isStartPickerVisible: false });
+							this.toggleStartPicker();
 							this.massiveBadStart(this.badStartCondition);
 						}}
 					>
-						<Text style={{ fontSize: 40 }}>Weiter!</Text>
-					</TouchableOpacity>
+						<Text style={styles.buttonLabel}>Bestätigen</Text>
+					</TouchableHighlight>
 				</View>
 			</View>
 		);
@@ -1007,6 +1014,10 @@ export default class App extends React.Component {
 
 	toggleStartButtons = () => {
 		this.setState({ enableBadStartBtns: !this.state.enableBadStartBtns });
+	};
+
+	togglePostPone = () => {
+		this.setState({ postPoneBadStart: !this.state.postPoneBadStart });
 	};
 
 	render = () => {
