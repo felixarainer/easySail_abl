@@ -48,25 +48,42 @@ module.exports = StyleSheet.create({
 	},
 
 	//startpicker
-
 	spFlagImage: {
 		flex: 1,
 		alignSelf: 'stretch',
 		height: undefined,
 		width: undefined,
 		resizeMode: 'contain',
-
-		//backgroundColor: 'blue',
 	},
 	spHighlight: {
-		//height: 200,
-		//width: 200,
 		flex: 1,
-		//backgroundColor: 'blue',
 		paddingVertical: 10,
 	},
 	spFlag: {
 		height: 150,
 		width: 150,
+	},
+
+	//FlagView
+	flagRow: {
+		flex: 1,
+		flexDirection: 'row',
+		backgroundColor: 'lightblue',
+		marginBottom: 20,
+		//justifyContent: 'space-between',
+	},
+	flagImage: {
+		flex: 1,
+		height: undefined,
+		width: undefined,
+		resizeMode: 'contain',
+		backgroundColor: 'lightgreen',
+	},
+	flagContainer: { flex: 1 },
+	backgroundImage: {
+		flex: 1,
+		height: undefined,
+		width: undefined,
+		resizeMode: 'cover',
 	},
 });

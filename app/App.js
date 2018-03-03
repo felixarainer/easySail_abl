@@ -1059,14 +1059,6 @@ export default class App extends React.Component {
 				}}
 			>
 				<View style={{ flex: 3, flexDirection: 'column' }}>
-					<View style={{ flex: 1 }}>
-						<FlagItem flag={this.state.curFlags.flag1} />
-						<FlagItem flag={this.state.curFlags.flag2} />
-					</View>
-					<View style={{ flex: 1 }}>
-						<FlagItem flag={this.state.curFlags.flag3} />
-						<FlagItem flag={this.state.curFlags.flag4} />
-					</View>
 					{/* <Image
 						source={require('./res/pics/ship.png')}
 						style={styles.backgroundImage}
@@ -1098,8 +1090,43 @@ export default class App extends React.Component {
 							<FlagItem flag={this.state.curFlags.flag4} />
 						</View>
 					</Image> */}
-					<View style={{ flex: 3, backgroundColor: '#d1d8e0' }}>
-						<Text>Test</Text>
+					<View
+						style={{
+							flex: 3,
+							backgroundColor: '#d1d8e0',
+							padding: 20,
+							paddingBottom: 0,
+							flexDirection: 'column',
+						}}
+					>
+						<View style={styles.flagRow}>
+							<View style={styles.flagContainer}>
+								<Image
+									style={styles.flagImage}
+									source={this.state.curFlags.flag1.pic}
+								/>
+							</View>
+							<View style={styles.flagContainer}>
+								<Image
+									style={styles.flagImage}
+									source={this.state.curFlags.flag2.pic}
+								/>
+							</View>
+						</View>
+						<View style={styles.flagRow}>
+							<View style={styles.flagContainer}>
+								<Image
+									style={styles.flagImage}
+									source={this.state.curFlags.flag3.pic}
+								/>
+							</View>
+							<View style={styles.flagContainer}>
+								<Image
+									style={styles.flagImage}
+									source={this.state.curFlags.flag4.pic}
+								/>
+							</View>
+						</View>
 					</View>
 					<View style={{ flex: 1, flexDirection: 'row' }}>
 						<TouchableHighlight
