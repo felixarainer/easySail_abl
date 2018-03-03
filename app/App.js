@@ -814,16 +814,38 @@ export default class App extends React.Component {
 		let startFlags = [res.flags.i, res.flags.z, res.flags.black, res.flags.p];
 		return (
 			<View
-				style={{ flex: 1, backgroundColor: 'white', flexDirection: 'column' }}
+				style={[{ flex: 1, flexDirection: 'column' }, styles.menuBackground]}
 			>
-				<View style={{ flexDirection: 'row', flex: 2 }}>
+				<View
+					style={{
+						flexDirection: 'row',
+						flex: 2,
+						margin: 10,
+						marginBottom: 0,
+					}}
+				>
+					<Text
+						style={[
+							styles.descriptionText,
+							{ flex: 1, fontWeight: 'bold', fontSize: 40 },
+						]}
+					>
+						Wählen sie eine Flagge aus:{' '}
+					</Text>
 					{startFlags.map(flag => {
 						return (
 							<TouchableHighlight
 								key={flag.name}
-								style={styles.spHighlight}
+								style={[
+									styles.spHighlight,
+									this.state.badStartCondition === flag.name &&
+										styles.toggleButton,
+								]}
 								onPress={() => {
-									this.badStartCondition = flag.name;
+									this.setState({
+										badStartCondition: flag.name,
+										flagDescription: flag.description,
+									});
 								}}
 							>
 								<Image source={flag.pic} style={styles.spFlagImage} />
@@ -831,13 +853,16 @@ export default class App extends React.Component {
 						);
 					})}
 				</View>
-				<View style={{ flex: 3 }}>
-					<Text style={styles.descriptionText}>Description</Text>
+				<View style={{ flex: 3, paddingHorizontal: 10 }}>
+					<Text style={styles.descriptionText}>
+						<Text style={{ fontWeight: 'bold' }}>{'Beschreibung: '}</Text>
+						{this.state.flagDescription}
+					</Text>
 				</View>
 				<View style={{ flex: 1, flexDirection: 'row' }}>
 					<TouchableHighlight
 						style={[styles.buttonHighlight, styles.cancelButton]}
-						underlayColor="red"
+						underlayColor="#fc5c65"
 						onPress={() => {
 							this.toggleStartPicker();
 						}}
@@ -849,8 +874,8 @@ export default class App extends React.Component {
 							styles.buttonHighlight,
 							{ flex: 1.5 },
 							this.state.postPoneBadStart
-								? { backgroundColor: 'blue' }
-								: { backgroundColor: 'gray' },
+								? styles.toggleButton
+								: styles.buttonDisabled,
 						]}
 						//underlayColor="blue"
 						onPress={() => {
@@ -864,10 +889,10 @@ export default class App extends React.Component {
 					</TouchableHighlight>
 					<TouchableHighlight
 						style={[styles.buttonHighlight, styles.okButton]}
-						underlayColor="green"
+						underlayColor="#26de81"
 						onPress={() => {
 							this.toggleStartPicker();
-							this.massiveBadStart(this.badStartCondition);
+							this.massiveBadStart(this.state.badStartCondition);
 						}}
 					>
 						<Text style={styles.buttonLabel}>Bestätigen</Text>
@@ -917,10 +942,13 @@ export default class App extends React.Component {
 		console.log('renderMenu();');
 		return (
 			<View
-				style={{
-					flex: 1,
-					flexDirection: 'row',
-				}}
+				style={[
+					{
+						flex: 1,
+						flexDirection: 'row',
+					},
+					styles.menuBackground,
+				]}
 			>
 				<View style={{ flex: 1 }}>
 					{this.specialBtnsDescs.map(args => {
@@ -945,13 +973,14 @@ export default class App extends React.Component {
 					})}
 				</View>
 				<View
-					style={{
-						flex: 3,
-						flexDirection: 'column',
-						backgroundColor: 'lightblue',
-					}}
+					style={[
+						{
+							flex: 3,
+							flexDirection: 'column',
+						},
+					]}
 				>
-					<View style={{ flex: 3, backgroundColor: 'lightblue' }}>
+					<View style={{ flex: 3 }}>
 						<Text style={styles.descriptionText}>
 							<Text style={{ fontWeight: 'bold' }}>{'Beschreibung: '}</Text>
 							{this.state.specialDescription}
@@ -1066,8 +1095,8 @@ export default class App extends React.Component {
 					</View>
 					<View style={{ flex: 1, flexDirection: 'row' }}>
 						<TouchableHighlight
-							style={[styles.buttonHighlight, { backgroundColor: '#a55eea' }]}
-							underlayColor={'#8854d0'}
+							style={[styles.buttonHighlight, { backgroundColor: '#4b7bec' }]}
+							underlayColor={'#3867d6'}
 							onPress={() => this.toggleModal()}
 						>
 							<Text style={styles.buttonLabel}>Aktion initiieren</Text>
@@ -1079,13 +1108,13 @@ export default class App extends React.Component {
 									? { backgroundColor: '#45aaf2' }
 									: styles.buttonDisabled,
 							]}
-							underlayColor={'#3867d6'}
+							underlayColor={'#2d98da'}
 							onPress={() => {
 								this.toggleStartButtons();
 								// if (this.state.enableBadStartBtns) {
 								// 	this.toggleStartButtons();
 								// 	this.singleBadStart();
-								// }
+								// } //TODO change back
 							}}
 						>
 							<Text style={styles.buttonLabel}>Einzelrückruf</Text>
@@ -1094,10 +1123,10 @@ export default class App extends React.Component {
 							style={[
 								styles.buttonHighlight,
 								this.state.enableBadStartBtns
-									? { backgroundColor: '#4b7bec' }
+									? { backgroundColor: '#2bcbba' }
 									: styles.buttonDisabled,
 							]}
-							underlayColor={'#3867d6'}
+							underlayColor={'#0fb9b1'}
 							onPress={() => {
 								if (this.state.enableBadStartBtns) {
 									this.toggleStartButtons();

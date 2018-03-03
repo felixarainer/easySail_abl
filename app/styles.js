@@ -14,6 +14,7 @@ module.exports = StyleSheet.create({
 	buttonDisabled: { backgroundColor: '#778ca3' },
 	countdownText: { fontSize: 80, fontWeight: 'bold', textAlign: 'center' },
 
+	menuBackground: { backgroundColor: '#a5b1c2' },
 	//actionview
 	actionViewItem: {
 		height: 160,
@@ -28,14 +29,15 @@ module.exports = StyleSheet.create({
 		flex: 1,
 		padding: 5,
 		borderBottomWidth: 1,
-		backgroundColor: '#26de81',
+		backgroundColor: '#2bcbba',
 	},
 	listEntrySelected: {
-		backgroundColor: '#20bf6b',
+		backgroundColor: '#0fb9b1',
 	},
 	listEntryText: { fontSize: 30, textAlign: 'center' },
-	cancelButton: { backgroundColor: 'red' },
-	okButton: { backgroundColor: 'green' },
+	cancelButton: { backgroundColor: '#eb3b5a' },
+	okButton: { backgroundColor: '#20bf6b' },
+	toggleButton: { backgroundColor: '#4b7bec' },
 
 	descriptionText: { fontSize: 35, padding: 5 },
 
@@ -53,12 +55,15 @@ module.exports = StyleSheet.create({
 		height: undefined,
 		width: undefined,
 		resizeMode: 'contain',
+
+		//backgroundColor: 'blue',
 	},
 	spHighlight: {
-		height: 200,
-		width: 200,
-		// flex: 1,
-		//backgroundColor: 'red',
+		//height: 200,
+		//width: 200,
+		flex: 1,
+		//backgroundColor: 'blue',
+		paddingVertical: 10,
 	},
 	spFlag: {
 		height: 150,
