@@ -34,7 +34,7 @@ module.exports = StyleSheet.create({
 	listEntrySelected: {
 		backgroundColor: '#0fb9b1',
 	},
-	listEntryText: { fontSize: 30, textAlign: 'center' },
+	listEntryText: { fontSize: 30, fontWeight: 'bold', textAlign: 'center' },
 	cancelButton: { backgroundColor: '#eb3b5a' },
 	okButton: { backgroundColor: '#20bf6b' },
 	toggleButton: { backgroundColor: '#4b7bec' },
