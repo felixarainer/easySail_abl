@@ -960,7 +960,7 @@ export default class App extends React.Component {
 									this.state.specialKey === args.key &&
 										styles.listEntrySelected,
 								]}
-								underlayColor="#20bf6b"
+								underlayColor="#0fb9b1"
 								onPress={() => {
 									this.setState({ specialDescription: args.description });
 									this.setState({ specialKey: args.key });
@@ -1059,37 +1059,6 @@ export default class App extends React.Component {
 				}}
 			>
 				<View style={{ flex: 3, flexDirection: 'column' }}>
-					{/* <Image
-						source={require('./res/pics/ship.png')}
-						style={styles.backgroundImage}
-					>
-						<View
-							style={[
-								styles.flagRow,
-								{
-									marginTop: '13.1%',
-									marginLeft: '12.3%',
-									marginRight: '25.6%',
-								},
-							]}
-						>
-							<FlagItem flag={this.state.curFlags.flag1} />
-							<FlagItem flag={this.state.curFlags.flag2} />
-						</View>
-						<View
-							style={[
-								styles.flagRow,
-								{
-									marginTop: '7.7%',
-									marginLeft: '19.4%',
-									marginRight: '18.45%',
-								},
-							]}
-						>
-							<FlagItem flag={this.state.curFlags.flag3} />
-							<FlagItem flag={this.state.curFlags.flag4} />
-						</View>
-					</Image> */}
 					<View
 						style={{
 							flex: 3,
@@ -1145,11 +1114,10 @@ export default class App extends React.Component {
 							]}
 							underlayColor={'#2d98da'}
 							onPress={() => {
-								this.toggleStartButtons();
-								// if (this.state.enableBadStartBtns) {
-								// 	this.toggleStartButtons();
-								// 	this.singleBadStart();
-								// } //TODO change back
+								if (this.state.enableBadStartBtns) {
+									this.toggleStartButtons();
+									this.singleBadStart();
+								} //TODO change back
 							}}
 						>
 							<Text style={styles.buttonLabel}>Einzelrückruf</Text>
