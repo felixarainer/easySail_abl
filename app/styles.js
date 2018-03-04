@@ -29,6 +29,8 @@ module.exports = StyleSheet.create({
 		flex: 1,
 		padding: 5,
 		borderBottomWidth: 1,
+		borderTopWidth: 1,
+		borderColor: 'gray',
 		backgroundColor: '#2bcbba',
 	},
 	listEntrySelected: {
