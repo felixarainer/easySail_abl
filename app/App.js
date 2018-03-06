@@ -12,6 +12,7 @@ import BoatClassScreen from './components/BoatClassScreen';
 import HomeScreen from './components/HomeScreen';
 import SummaryScreen from './components/SummaryScreen';
 import RegattaStartScreen from './components/RegattaStartScreen';
+import TimingScreen from './components/TimingScreen';
 
 export const SimpleApp = StackNavigator(
 	{
@@ -19,6 +20,7 @@ export const SimpleApp = StackNavigator(
 		BoatClass: { screen: BoatClassScreen },
 		Summary: { screen: SummaryScreen },
 		Start: { screen: RegattaStartScreen },
+		Timing: { screen: TimingScreen },
 	},
 	{
 		transitionConfig: () => ({ screenInterpolator: () => null }),

@@ -40,6 +40,12 @@ export default class App extends Component {
     this.menuLogo = '>';
   }
 
+
+
+  static navigationOptions = {
+    header: null,
+  };
+
   sortArray = () => {
     this.items.map((klass) => {
       klass.sort((a,b) => {
@@ -112,7 +118,8 @@ export default class App extends Component {
       return(
         <TouchableOpacity
           onPress={() => {
-            console.log('return to old Screen');
+            const { state, navigate } = this.props.navigation;
+            navigate('Start')
           }}>
           <View style={styles.returnBtn}>
             <Text style={styles.itemCode}>B</Text>

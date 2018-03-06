@@ -234,7 +234,11 @@ export default class SummaryScreen extends React.Component {
         {/*RIGHT FLEX BOX - NEXT ACTIONS*/}
         <View style={{ flex: 1, alignItems: 'center' }}>
           <Button
-            /*onPress={() => navigate('Felx Teil')}*/ title="Speichern und starten"
+            onPress={() => {
+              this.saveData();
+              navigate('Start');
+            }}
+            title="Speichern und starten"
           />
           <Button
             onPress={() => {

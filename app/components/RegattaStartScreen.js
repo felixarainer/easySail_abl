@@ -25,6 +25,7 @@ import * as res from '../res/res.js';
 import styles from '../styles.js';
 import moment from 'moment';
 import Modal from 'react-native-modal';
+import { StackNavigator } from 'react-navigation';
 //import { CheckBox } from 'react-native-elements';
 
 class actState {
@@ -272,8 +273,10 @@ export default class App extends React.Component {
 							starttime,
 							false,
 							0,
-							false,
-							false
+							// false,
+							// false,
+							true,
+							true,
 						)
 					);
 				}
@@ -299,8 +302,10 @@ export default class App extends React.Component {
 					starttime,
 					false,
 					1,
-					false,
-					false
+					// false,
+					// false,
+					true,
+					true,
 				)
 			);
 
@@ -326,8 +331,10 @@ export default class App extends React.Component {
 					moment(starttime).add(1, 'm'),
 					false,
 					2,
-					false,
-					false
+					// false,
+					// false,
+					true,
+					true,
 				)
 			);
 
@@ -357,8 +364,10 @@ export default class App extends React.Component {
 					moment(starttime).add(4, 'm'),
 					false,
 					3,
-					false,
-					false
+					// false,
+					// false,
+					true,
+					true,
 				)
 			);
 
@@ -383,8 +392,10 @@ export default class App extends React.Component {
 					moment(starttime).add(5, 'm'),
 					false,
 					4,
-					false,
-					false
+					// false,
+					// false,
+					true,
+					true,
 				)
 			);
 
@@ -399,8 +410,10 @@ export default class App extends React.Component {
 						.add(10, 's'),
 					true,
 					5,
-					false,
-					false
+					// false,
+					// false,
+					true,
+					true,
 				)
 			);
 
@@ -413,8 +426,10 @@ export default class App extends React.Component {
 						.add(11, 's'),
 					false,
 					6,
-					false,
-					false
+					// false,
+					// false,
+					true,
+					true,
 				)
 			);
 		});
@@ -640,7 +655,9 @@ export default class App extends React.Component {
 				this.dropOrangeFlag();
 			}
 		} else {
-			this.setState({ startFinished: true });
+			const { state, navigate } = this.props.navigation;
+			this.setState({startFinished: true})
+			navigate('Timing');
 		}
 	};
 
