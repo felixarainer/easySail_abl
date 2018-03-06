@@ -105,16 +105,23 @@ export default class App extends React.Component {
 			isSkippable: undefined,
 			isIndefinite: undefined,
 			postPoneBadStart: undefined,
-			specialChoice: 99, //99 = orange flagge setzen beim start, wird normalerweise nur für die specialactions benutzt, ausnahme
+			specialKey: 99, //99 = orange flagge setzen beim start, wird normalerweise nur für die specialactions benutzt, ausnahme
 			isSpecial: false,
 			interval: 10,
 			specialPics: [],
+			shortenedMenu: false,
 		};
 		this.step = 0;
 
+		//Important für react navigation, nicht löschen!
+		//bei wiedereinstieg in diesen screen wird zweimal updateflags aufgerufen
+		//zweimal mit gleiche this.steps und gleiche actlist.length
+		//nicht unterscheidbar, deswegen counter, i was es is schiach!
+		this.var = 0;
+
 		this.flagSpot4 = {};
 
-		this.specialBtnsDescs = [
+		this.all_specialBtnsDescs = [
 			{
 				key: 0,
 				button: 'Verschieben (kurz)',
@@ -172,6 +179,25 @@ export default class App extends React.Component {
 				description: 'Setzen der Flagge "Y"',
 			},
 		];
+
+		this.specialBtnsDescs = this.all_specialBtnsDescs;
+
+		this.temp_starttime = 11
+
+		this.startStateArgs = [
+			{
+				time: moment().add(this.temp_starttime, 'minutes'),
+				condition: 'i',
+				badstart: false,
+				first: true,
+			},
+			{
+				time: moment().add(this.startStateArgs + this.state.interval, 'minutes'),
+				condition: 'p',
+				badstart: false,
+				first: false,
+			},
+		]
 	}
 
 	static navigationOptions = {
@@ -183,27 +209,16 @@ export default class App extends React.Component {
 		console.log('componentWillMount();');
 		let start = 11;
 
-		this.actlist = this.createStartStates([
-			{
-				time: moment().add(start, 'minutes'),
-				condition: 'i',
-				badstart: false,
-				first: true,
-			},
-			{
-				time: moment().add(start + this.state.interval, 'minutes'),
-				condition: 'p',
-				badstart: false,
-				first: false,
-			},
-		]);
+		this.actlist = this.createStartStates(this.startStateArgs);
+		this.setInitialFlags();
 
 		console.log(this.actlist);
-
-		this.setInitialFlags();
 	}
 
 	createStartStates = args => {
+
+		this.specialBtnsDescs = this.all_specialBtnsDescs;
+
 		let ac = [];
 
 		args.forEach(start => {
@@ -456,7 +471,7 @@ export default class App extends React.Component {
 		//Die Teilnehmer haben 4 Minuten Zeit zurückzukehren, derweil wird das restliche Feld angehalten, damit keine Verwirrung entsteht.
 		//Das restliche Feld wird nur wenn nötig angehalten.
 		if (this.state.interval < 10) {
-			this.setState({ specialChoice: 97 });
+			this.setState({ specialKey: 97 });
 		}
 
 		//neue actions
@@ -534,7 +549,7 @@ export default class App extends React.Component {
 			badstart = false;
 		} else {
 			//SppecialChoice 98: 1fhs
-			this.setState({ specialChoice: 98 });
+			this.setState({ specialKey: 98 });
 		}
 
 		bsacts = this.createStartStates([
@@ -574,7 +589,7 @@ export default class App extends React.Component {
 			}
 		}
 		this.setState({ postPoneBadStart: false });
-		this.setState({ specialChoice: undefined });
+		this.setState({ specialKey: undefined });
 		this.updateFlags();
 	};
 
@@ -591,7 +606,7 @@ export default class App extends React.Component {
 			elem.addTime(time, unit);
 		});
 
-		this.setState({ specialChoice: undefined });
+		this.setState({ specialKey: undefined });
 
 		//Einfügen der veränderten Werte
 		//splice(startINDEX, deletions in front, new elements)
@@ -609,6 +624,29 @@ export default class App extends React.Component {
 	componentDidMount = () => {
 		//ggf zu lockTolandscapeLeft() aendern
 		Orientation.lockToLandscape();
+
+		if(!this.props.navigation.state.params.start){
+			this.actlist = [
+				new actState(
+				[{},{},{},{}],
+				[],
+				moment(),
+				false,
+				undefined,
+				true,
+				true,
+			),
+		];
+
+			this.setState({specialKey: undefined})
+
+			this.specialBtnsDescs = [this.all_specialBtnsDescs[3],this.all_specialBtnsDescs[4],this.all_specialBtnsDescs[5],this.all_specialBtnsDescs[6]];
+		}
+
+
+
+		this.step = -1;
+		this.updateFlags();
 	};
 
 	dropOrangeFlag = () => {
@@ -640,26 +678,51 @@ export default class App extends React.Component {
 	};
 
 	updateFlags = () => {
-		//Auffhören mit updaten wenn liste abgearbeitet
-		if (this.step < this.actlist.length - 1) {
-			this.setState({ startFinished: false });
-			this.step++;
-			console.log('updateFlags-beforeSetState');
-			console.log(this.step);
-			console.log(this.actlist.length);
-			console.log(this.actlist);
-			console.log(this.actlist[this.step].getState());
-			this.setState(this.actlist[this.step].getState());
-			console.log('updateFlags-afterSetState');
-			if (this.step === this.actlist.length - 3) {
-				this.dropOrangeFlag();
+
+		if(!this.props.navigation.state.params.start){
+
+			this.var++;
+
+			if((this.var === 2) && (this.actlist.length === 1) && (this.step === -1)){
+				Alert.alert(this.step.toString() + ' -- ' + this.var.toString(),this.actlist.length.toString(),[],{ cancelable: true })
+
+				const { state, navigate } = this.props.navigation;
+				this.setState({startFinished: true});
+				navigate('Timing')
+			}else{
+				if (this.step < this.actlist.length - 1) {
+					this.setState({ startFinished: false });
+					this.step++;
+					this.setState(this.actlist[this.step].getState());
+				} else {
+					const { state, navigate } = this.props.navigation;
+					this.setState({startFinished: true})
+					navigate('Timing');
+				}
 			}
-		} else {
-			const { state, navigate } = this.props.navigation;
-			this.setState({startFinished: true})
-			navigate('Timing');
-		}
-	};
+		}else{
+			console.log('updateFlags')
+			//Auffhören mit updaten wenn liste abgearbeitet
+			if (this.step < this.actlist.length - 1) {
+				this.setState({ startFinished: false });
+				this.step++;
+				// console.log('updateFlags-beforeSetState');
+				// console.log(this.step);
+				// console.log(this.actlist.length);
+				// console.log(this.actlist);
+				// console.log(this.actlist[this.step].getState());
+				this.setState(this.actlist[this.step].getState());
+				// console.log('updateFlags-afterSetState');
+				if (this.step === this.actlist.length - 3) {
+					this.dropOrangeFlag();
+				}
+			} else {
+				const { state, navigate } = this.props.navigation;
+				this.setState({startFinished: true})
+				navigate('Timing');
+			}
+		};
+	}
 
 	postponeAP = () => {
 		console.log('postPoneAP');
@@ -749,6 +812,10 @@ export default class App extends React.Component {
 		this.actlist.splice(0, 0, ...cancelActs);
 		this.step = -1;
 		this.updateFlags();
+
+		if(!this.props.navigation.state.params.start){
+			this.actlist.splice(1,0,...this.createStartStates(this.startStateArgs));
+		}
 	};
 
 	cancelNH = () => {
@@ -771,6 +838,10 @@ export default class App extends React.Component {
 		this.actlist.splice(0, 0, ...cancelActs);
 		this.step = -1;
 		this.updateFlags();
+
+		if(!this.props.navigation.state.params.start){
+			this.actlist.splice(1,0,...this.createStartStates(this.startStateArgs));
+		}
 	};
 
 	cancelNA = () => {
@@ -929,7 +1000,7 @@ export default class App extends React.Component {
 
 	makeSpecialDecision = () => {
 		console.log('makeSpecialDecision');
-		switch (this.state.specialChoice) {
+		switch (this.state.specialKey) {
 			case 0:
 				this.postponeAP();
 				break;
@@ -954,7 +1025,7 @@ export default class App extends React.Component {
 			default:
 				//weis nicht warum notwendig, einfach if wegtun wenn interessiert.
 				if (this.step !== 0) {
-					this.setState({ specialChoice: undefined });
+					this.setState({ specialKey: undefined });
 				}
 		}
 	};
@@ -1175,8 +1246,8 @@ export default class App extends React.Component {
 					onFinished={() => {
 						console.log('onFinished()------------------');
 						if (!this.state.startFinished) {
-							if (this.state.specialChoice !== undefined) {
-								switch (this.state.specialChoice) {
+							if (this.state.specialKey !== undefined) {
+								switch (this.state.specialKey) {
 									case 0:
 									case 1:
 									case 3:

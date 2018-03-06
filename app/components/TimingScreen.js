@@ -119,7 +119,7 @@ export default class App extends Component {
         <TouchableOpacity
           onPress={() => {
             const { state, navigate } = this.props.navigation;
-            navigate('Start')
+            navigate('Start', {start: false});
           }}>
           <View style={styles.returnBtn}>
             <Text style={styles.itemCode}>B</Text>
