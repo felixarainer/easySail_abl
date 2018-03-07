@@ -103,7 +103,8 @@ export const menu = {
 	burger_menu: require('./menu/burger_menu.png'),
 	menu_dots: require('./menu/menu_dots.png'),
 	skip: require('./menu/skip.png'),
-	stopwatch: require('/menu/stopwatch.png'),
+	stopwatch: require('./menu/stopwatch.png'),
+	back: require('./menu/back.png'),
 }
 
 export const div = {
@@ -111,6 +112,7 @@ export const div = {
 	ship_long: require('./div/ship_long.png'),
 	ship_short: require('./div/ship_short.png'),
 	ship: require('./div/ship_short.png'),
+	checkered_flag: require('./div/checkered_flag.png'),
 }
 
 export const actions = {
