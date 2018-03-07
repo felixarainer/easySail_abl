@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import GridView from 'react-native-super-grid';
 import moment from 'moment';
 import Modal from 'react-native-modal';
+import styles from '../styles.js';
+import * as res from '../res/res.js';
 
 export default class App extends Component {
   constructor(){
@@ -121,14 +129,14 @@ export default class App extends Component {
             const { state, navigate } = this.props.navigation;
             navigate('Start', {start: false});
           }}>
-          <View style={styles.returnBtn}>
-            <Text style={styles.itemCode}>B</Text>
+          <View style={stylesTime.returnBtn}>
+            <Image style={stylesTime.footerBtn} source={res.menu.back}/>
           </View>
         </TouchableOpacity>
       );
     }else{
       return(
-        <View style={styles.returnBtn_dis}>
+        <View style={stylesTime.returnBtn_dis}>
         </View>
       )
     }
@@ -144,14 +152,14 @@ export default class App extends Component {
             this.forceUpdate();
             console.log(this.items)
           }}>
-          <View style={styles.finishBtn}>
-            <Text style={styles.itemCode}>F</Text>
+          <View style={stylesTime.finishBtn}>
+            <Image style={stylesTime.footerBtn} source={res.div.checkered_flag}/>
           </View>
         </TouchableOpacity>
       );
     }else{
       return(
-        <View style={styles.returnBtn_dis}>
+        <View style={stylesTime.returnBtn_dis}>
         </View>
       )
     }
@@ -168,46 +176,42 @@ export default class App extends Component {
   renderMenu = () => {
 		console.log('renderStartPicker()');
 		return (
-			<View style={styles.modal}>
-        <View style={styles.modalName}>
-          <Text style={styles.itemName}>{this.items[this.state.page][this.curElem].name}</Text>
+			<View style={stylesTime.modal}>
+        <View style={stylesTime.modalName}>
+          <Text style={stylesTime.itemName}>{this.items[this.state.page][this.curElem].name}</Text>
         </View>
 
-        <View style={styles.modalChoices}>
-
+        <View style={stylesTime.modalChoices}>
           {
             this.choices.map((item) => {
               return(
-                <View style={styles.choice}>
+                <View style={stylesTime.choice}>
                   <TouchableOpacity
                     onPress={() => {
                       this.setAll(this.items[this.state.page][this.curElem], item.code);
                       this.toggleMenu();
                       this.sortArray();
                     }}>
-                    <View style={styles.choiceL}>
-                      <Text style={styles.itemName}>{item.code}</Text>
+                    <View style={stylesTime.choiceL}>
+                      <Text style={stylesTime.itemName}>{item.code}</Text>
                     </View>
                   </TouchableOpacity>
-                  <View style={styles.choiceR}>
-                    <Text style={styles.itemCode}>{item.text}</Text>
+                  <View style={stylesTime.choiceR}>
+                    <Text style={stylesTime.itemCode}>{item.text}</Text>
                   </View>
                 </View>
               )
-
-
             })
           }
-
         </View>
 
-        <View style={styles.modalBtnContainer}>
+        <View style={stylesTime.modalBtnContainer}>
           <TouchableOpacity
             onPress={() => {
               this.toggleMenu();
             }}>
-            <View style={styles.modalBtnBack}>
-              <Text style={styles.modalNameText}>Abbrechen</Text>
+            <View style={stylesTime.modalBtnBack}>
+              <Text style={stylesTime.modalNameText}>Abbrechen</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -268,31 +272,31 @@ export default class App extends Component {
         <GridView
           itemDimension={240}
           items={this.items[this.state.page]}
-          style={styles.gridView}
+          style={stylesTime.gridView}
           renderItem={item => (
-            <View style={styles.itemContainer}>
+            <View style={stylesTime.itemContainer}>
               <TouchableOpacity
                 onPress={() => {
                   this.toggleMenu(item);
                 }}>
-                <View style={styles.itemContainerL}>
-                  <Text style={styles.itemTime}>M</Text>
+                <View style={stylesTime.itemContainerL}>
+                  <Image style={stylesTime.dotButton} source={res.menu.menu_dots}/>
                 </View>
               </TouchableOpacity>
-              <View style={styles.itemContainerMid}>
-                <View style={styles.nameContainer}>
-                  <View style={styles.nameContainer}>
-                    <Text style={styles.itemName}>{item.name}</Text>
+              <View style={stylesTime.itemContainerMid}>
+                <View style={stylesTime.nameContainer}>
+                  <View style={stylesTime.nameContainer}>
+                    <Text style={stylesTime.itemName}>{item.name}</Text>
                   </View>
-                  <View style={styles.btnContainer}>
-                    <View style={styles.btn2}>
-                      <Text style={styles.itemLeg}>Bahn</Text>
+                  <View style={stylesTime.btnContainer}>
+                    <View style={stylesTime.btn2}>
+                      <Text style={stylesTime.itemLeg}>Bahn</Text>
                     </View>
-                    <View style={styles.btn3}>
+                    <View style={stylesTime.btn3}>
                       {item.active ? (
-                        <Text style={styles.itemCode}>{item.checkPoint+1}</Text>
+                        <Text style={stylesTime.itemCode}>{item.checkPoint+1}</Text>
                       ):(
-                        <Text style={styles.itemLeg}>{item.checkPoint}</Text>
+                        <Text style={stylesTime.itemLeg}>{item.checkPoint}</Text>
                       )}
                     </View>
                     {item.active ? (
@@ -303,12 +307,12 @@ export default class App extends Component {
                           this.sortArray();
                           this.forceUpdate();
                         }}>
-                        <View style={styles.btn4}>
-                          <Text style={styles.itemSkip}>S</Text>
+                        <View style={stylesTime.btn4}>
+                          <Image style={stylesTime.skipButton} source={res.menu.skip}/>
                         </View></TouchableOpacity>
                       ):(
-                        <View style={styles.btn4_dis}>
-                          <Text style={styles.itemSkip}>S</Text>
+                        <View style={stylesTime.btn4_dis}>
+                          <Image style={stylesTime.skipButton} source={res.menu.skip}/>
                         </View>)}
                   </View>
                 </View>
@@ -320,23 +324,23 @@ export default class App extends Component {
                     item.checkPoint++;
                     this.sortArray();
                     this.forceUpdate();
-                  }}><View style={styles.itemContainerR}>
-                    <Text style={styles.itemTime}>T</Text>
+                  }}><View style={stylesTime.itemContainerR}>
+                    <Image style={stylesTime.stopButton} source={res.div.stopwatch}/>
                   </View></TouchableOpacity>)
                   :
-                  (<View style={styles.itemContainerR_dis}>
-                    <Text style={styles.itemTime}>T</Text>
+                  (<View style={stylesTime.itemContainerR_dis}>
+                    <Image style={stylesTime.stopButton} source={res.div.stopwatch}/>
                   </View>)}
             </View>
           )}
         />
-        <View style={styles.footer}>
+        <View style={stylesTime.footer}>
           <TouchableOpacity
             onPress={() => {
               this.handleSwitch(0);
             }}>
-            <View style={styles.nextlastBtn}>
-              <Text style={styles.itemTime}>prev</Text>
+            <View style={stylesTime.nextlastBtn}>
+              <Text style={stylesTime.itemTime}>prev</Text>
             </View>
           </TouchableOpacity>
 
@@ -344,15 +348,19 @@ export default class App extends Component {
             onPress={() => {
               this.extendBtn();
             }}>
-            <View style={styles.extendBtn}>
-              <Text style={styles.itemCode}>{this.menuLogo}</Text>
+            <View style={stylesTime.extendBtn}>
+            {this.state.menu ? (
+              <Image style={stylesTime.footerBtn} source={res.menu.arrow_left}/>
+            ):(
+              <Image style={stylesTime.footerBtn} source={res.menu.arrow_right}/>
+            )}
             </View>
           </TouchableOpacity>
 
           {this.renderReturnBtn()}
 
-          <View style={styles.klassDisplay}>
-            <Text style={styles.itemCode}>{this.klasses[this.state.page].name}</Text>
+          <View style={stylesTime.klassDisplay}>
+            <Text style={stylesTime.itemCode}>{this.klasses[this.state.page].name}</Text>
           </View>
 
           {this.renderFinishBtn()}
@@ -361,8 +369,8 @@ export default class App extends Component {
             onPress={() => {
               this.handleSwitch(1);
             }}>
-            <View style={styles.nextlastBtn}>
-              <Text style={styles.itemTime}>next</Text>
+            <View style={stylesTime.nextlastBtn}>
+              <Text style={stylesTime.itemTime}>next</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -374,7 +382,24 @@ export default class App extends Component {
   }
 }
 
-const styles = StyleSheet.create({
+const stylesTime = StyleSheet.create({
+  footerBtn:{
+    height: 80,
+    width: 80,
+  },
+  stopButton: {
+    height: 100,
+    width: 40,
+  },
+  skipButton: {
+    flex: 1,
+    width: 50,
+  },
+  dotButton: {
+    flex: 1,
+    height: 100,
+    width: 50,
+  },
   choiceR:{
     justifyContent: 'center',
     alignItems: 'center',
@@ -490,14 +515,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fc5c65',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 40,
+    width: 50,
   },
   btn4_dis: {
     flex: 2,
     backgroundColor: 'grey',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 40,
+    width: 50,
   },
   nameContainer: {
     backgroundColor: 'lightgrey',
@@ -557,11 +582,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 18,
     color: '#222',
-  },
-  itemSkip: {
-    fontWeight: '400',
-    fontSize: 34,
-    color: '#fff',
   },
   itemTime: {
     fontWeight: '300',

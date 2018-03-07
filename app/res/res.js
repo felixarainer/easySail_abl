@@ -98,21 +98,21 @@ export const flags = {
 };
 
 export const menu = {
-	arrow_right: require('./menu/arrow_right.png'),
-	arrow_left: require('./menu/arrow_left.png'),
-	burger_menu: require('./menu/burger_menu.png'),
-	menu_dots: require('./menu/menu_dots.png'),
-	skip: require('./menu/skip.png'),
-	stopwatch: require('./menu/stopwatch.png'),
-	back: require('./menu/back.png'),
+	arrow_right: require('./pics/menu/arrow_right.png'),
+	arrow_left: require('./pics/menu/arrow_left.png'),
+	burger_menu: require('./pics/menu/burger_menu.png'),
+	menu_dots: require('./pics/menu/menu_dots.png'),
+	skip: require('./pics/menu/skip.png'),
+	back: require('./pics/menu/back.png'),
 }
 
 export const div = {
-	peilstange: require('./div/peilstange.png'),
-	ship_long: require('./div/ship_long.png'),
-	ship_short: require('./div/ship_short.png'),
-	ship: require('./div/ship_short.png'),
-	checkered_flag: require('./div/checkered_flag.png'),
+	peilstange: require('./pics/div/peilstange.png'),
+	ship_long: require('./pics/div/ship_long.png'),
+	ship_short: require('./pics/div/ship_short.png'),
+	ship: require('./pics/div/ship_short.png'),
+	checkered_flag: require('./pics/div/checkered_flag.png'),
+	stopwatch: require('./pics/div/stopwatch.png'),
 }
 
 export const actions = {
