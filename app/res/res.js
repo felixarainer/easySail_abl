@@ -97,15 +97,26 @@ export const flags = {
 	},
 };
 
+export const menu = {
+	arrow_right: require('./menu/arrow_right.png'),
+	arrow_left: require('./menu/arrow_left.png'),
+	burger_menu: require('./menu/burger_menu.png'),
+	menu_dots: require('./menu/menu_dots.png'),
+	skip: require('./menu/skip.png'),
+	stopwatch: require('/menu/stopwatch.png'),
+}
+
+export const div = {
+	peilstange: require('./div/peilstange.png'),
+	ship_long: require('./div/ship_long.png'),
+	ship_short: require('./div/ship_short.png'),
+	ship: require('./div/ship_short.png'),
+}
+
 export const actions = {
 	flag_up: require('./pics/actions/flag_up.png'),
 	flag_down: require('./pics/actions/flag_down.png'),
 	signal_1: require('./pics/actions/signal_1.png'),
 	signal_2: require('./pics/actions/signal_2.png'),
 	signal_3: require('./pics/actions/signal_3.png'),
-	skip_klass: {
-		name: 'skip_klass',
-		pic: require('./pics/actions/skip_klass.png'),
-		ratio: 1,
-	},
 };
