@@ -748,6 +748,8 @@ export default class App extends React.Component {
 			)
 		);
 
+		this.step -= this.actlist[this.step].getRank();
+
 		//TODO: versichern, dass verschieben Buttons nicht während der startphase verfügbar sind.
 		this.actlist.splice(this.step, 0, ...postActs);
 		this.step--;
@@ -771,6 +773,8 @@ export default class App extends React.Component {
 			)
 		);
 
+		this.step -= this.actlist[this.step].getRank();
+
 		//TODO: versichern, dass verschieben Buttons nicht während der startphase verfügbar sind.
 		this.actlist.splice(this.step, 0, ...postActs);
 		this.step--;
@@ -793,6 +797,8 @@ export default class App extends React.Component {
 				false
 			)
 		);
+
+		this.step -= this.actlist[this.step].getRank();
 
 		this.actlist = postActs;
 		this.step = -1;
