@@ -178,6 +178,12 @@ export default class App extends React.Component {
 				specialpics: [res.actions.signal_1, res.actions.flag_up, res.flags.y],
 				description: 'Setzen der Flagge "Y"',
 			},
+			{
+				key: 7,
+				button: 'In Rufweite kommen (Aufruf)',
+				specialpics: [res.actions.signal_1, res.actions.flag_up, res.flags.l],
+				description: 'Setzen der Flagge "L"',
+			},
 		];
 
 		this.specialBtnsDescs = this.all_specialBtnsDescs;
@@ -725,6 +731,7 @@ export default class App extends React.Component {
 	}
 
 	postponeAP = () => {
+		//TODO: this.step in die Vergangenheit schieben
 		console.log('postPoneAP');
 		let postActs = [];
 		let newTime = 0;
@@ -867,24 +874,32 @@ export default class App extends React.Component {
 	};
 
 	handleFlagY = () => {
-		console.log('handleFlagY()');
+
 
 		let newFlag = undefined;
 
 		if (this.flagSpot4 !== res.flags.y) {
-			console.log('!== Y');
+			console.log('1')
 			newFlag = res.flags.y;
 			this.specialBtnsDescs[6] = {
 				key: 6,
 				button: 'Schwimmwesten ablegen',
+				specialpics: [res.actions.signal_1, res.actions.flag_down, res.flags.y],
 				description: 'Bergen der Flagge "Y"',
 			};
+			this.specialBtnsDescs[7] = {
+				key: 7,
+				button: 'In Rufweite kommen (Aufruf)',
+				specialpics: [res.actions.signal_1, res.actions.flag_up, res.flags.l],
+				description: 'Setzen der Flagge "L"',
+			};
 		} else {
-			console.log('=== Y');
+			console.log('2')
 			newFlag = {};
 			this.specialBtnsDescs[6] = {
 				key: 6,
 				button: 'Schwimmwesten anlegen (Aufruf)',
+				specialpics: [res.actions.signal_1, res.actions.flag_up, res.flags.y],
 				description: 'Setzen der Flagge "Y"',
 			};
 		}
@@ -899,6 +914,47 @@ export default class App extends React.Component {
 
 		this.step--;
 		this.updateFlags();
+		this.forceUpdate();
+	};
+
+	handleFlagL = () => {
+		let newFlag = undefined;
+
+		if (this.flagSpot4 !== res.flags.l) {
+			newFlag = res.flags.l;
+			this.specialBtnsDescs[7] = {
+				key: 7,
+				button: 'Nicht in Rufweite kommen',
+				specialpics: [res.actions.signal_1, res.actions.flag_down, res.flags.l],
+				description: 'Bergen der Flagge "L"',
+			};
+			this.specialBtnsDescs[6] = {
+				key: 6,
+				button: 'Schwimmwesten anlegen (Aufruf)',
+				specialpics: [res.actions.signal_1, res.actions.flag_up, res.flags.y],
+				description: 'Setzen der Flagge "Y"',
+			};
+		} else {
+			newFlag = {};
+			this.specialBtnsDescs[7] = {
+				key: 7,
+				button: 'In Rufweite kommen! (Aufruf)',
+				specialpics: [res.actions.signal_1, res.actions.flag_up, res.flags.l],
+				description: 'Setzen der Flagge "L"',
+			};
+		}
+
+		this.flagSpot4 = newFlag;
+
+		this.actlist.forEach(elem => {
+			let flags = elem.getFlags();
+			flags[3] = newFlag;
+			elem.setFlags(flags);
+		});
+
+		this.step--;
+		this.updateFlags();
+		this.forceUpdate();
 	};
 
 	renderStartPicker = () => {
@@ -1022,6 +1078,9 @@ export default class App extends React.Component {
 			case 6:
 				this.handleFlagY();
 				break;
+			case 7:
+				this.handleFlagL();
+				break;
 			default:
 				//weis nicht warum notwendig, einfach if wegtun wenn interessiert.
 				if (this.step !== 0) {
@@ -1032,6 +1091,9 @@ export default class App extends React.Component {
 
 	renderMenu = () => {
 		console.log('renderMenu();');
+
+
+
 		return (
 			<View
 				style={[
