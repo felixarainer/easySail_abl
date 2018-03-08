@@ -198,7 +198,7 @@ export default class App extends React.Component {
 				first: true,
 			},
 			{
-				time: moment().add(this.startStateArgs + this.state.interval, 'minutes'),
+				time: moment().add(this.temp_starttime + this.state.interval, 'minutes'),
 				condition: 'p',
 				badstart: false,
 				first: false,
