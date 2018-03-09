@@ -9,6 +9,7 @@ import {
   Button,
   TouchableHighlight,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
@@ -56,21 +57,24 @@ export default class HomeScreen extends React.Component {
 
   renderList = navigate => {
     return (
-      <View>
+      <ScrollView
+        style={styles.table}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+      >
         {this.state.data.map((elem, index) => {
           return (
-            <TouchableHighlight
+            <TouchableOpacity
+              style={styles.tableElement}
               onPress={() =>
                 navigate('Summary', { key: this.state.data[index].key })
               }
             >
-              <Text>
-                {elem.regattaName} am {elem.startDate}
-              </Text>
-            </TouchableHighlight>
+              <Text style={styles.tableElementText}>{elem.regattaName}</Text>
+              <Text>{elem.startDate}</Text>
+            </TouchableOpacity>
           );
         })}
-      </View>
+      </ScrollView>
     );
   };
 
@@ -78,14 +82,20 @@ export default class HomeScreen extends React.Component {
     const { state, navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <View style={{ flex: 1, alignItems: 'center' }}>
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
           {this.renderList(navigate)}
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Button
+          <TouchableOpacity
+            style={styles.touchableOpacityBtn}
             onPress={() => navigate('Summary', { key: '' })}
-            title="Neue Regatta"
-          />
+          >
+            <Text style={styles.btnText}>Neue Regatta</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -99,5 +109,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+  },
+  touchableOpacityBtn: {
+    borderWidth: 2,
+    borderColor: '#45c1bd',
+    borderRadius: 4,
+    padding: 20,
+  },
+  btnText: {
+    fontSize: 20,
+    color: '#45c1bd',
+  },
+  table: {
+    marginLeft: '40%',
+  },
+  tableElement: {
+    padding: 3,
+  },
+  tableElementText: {
+    fontSize: 20,
   },
 });

@@ -3,7 +3,7 @@
 // Hosts FlagView and ActionView. Passes current Flags / Actions () / Count-
 // 	down to children as props i.e. sets next state for the whole app ('Regelsys-
 //	tem')
-
+//navigate('Start',{start: true, regattaKey: this.state.regattaKey});
 //Alert.alert('Alert Title','My Alert Msg',[],{ cancelable: true })
 
 import React from 'react';

@@ -8,6 +8,9 @@ import {
   View,
   Button,
   FlatList,
+  TouchableOpacity,
+  TouchableHighlight,
+  ScrollView,
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { RadioGroup, RadioButton } from 'react-native-flexi-radio-button';
@@ -59,6 +62,9 @@ export default class SummaryScreen extends React.Component {
     this.setState({
       promptVisible: false,
     });
+
+    console.log('Ende addBoatClass:');
+    console.log(this.state.boatClasses);
   };
 
   fetchData = async () => {
@@ -131,13 +137,77 @@ export default class SummaryScreen extends React.Component {
     }
   };
 
+  moveUp = index => {
+    console.log('Anfang moveUp:');
+    console.log(this.state.boatClasses);
+    if (index != 0) {
+      var cache = this.state.boatClasses[index - 1];
+      var boatClasses = this.state.boatClasses;
+
+      boatClasses[index - 1] = this.state.boatClasses[index];
+      boatClasses[index] = cache;
+
+      boatClasses.map(boatClass => {
+        this.setState({
+          boatClasses: this.state.boatClasses.concat([boatClass]),
+        });
+      });
+
+      console.log('Nach moveUp');
+      console.log(this.state.boatClasses);
+    }
+  };
+
+  moveDown = index => {
+    console.log('Anfang moveDown:');
+    console.log(this.state.boatClasses);
+
+    if (index != this.state.boatClasses.length - 1) {
+      var cache = this.state.boatClasses[index + 1];
+      var boatClasses = this.state.boatClasses;
+
+      boatClasses[index + 1] = this.state.boatClasses[index];
+      boatClasses[index] = cache;
+
+      boatClasses.map(boatClass => {
+        this.setState({
+          boatClasses: this.state.boatClasses.concat([boatClass]),
+        });
+      });
+      console.log('Nach moveDown:');
+      console.log(this.state.boatClasses);
+    }
+  };
+
   renderList = () => {
+    console.log('Anfang renderList:');
+    console.log(this.state.boatClasses);
     return (
-      <View>
-        {this.state.boatClasses.map(elem => {
-          return <Text>{elem}</Text>;
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+      >
+        {this.state.boatClasses.map((elem, index) => {
+          return (
+            <View>
+              <Text>{elem}</Text>
+              <TouchableHighlight
+                onPress={() => {
+                  this.moveUp(index);
+                }}
+              >
+                <Text>up</Text>
+              </TouchableHighlight>
+              <TouchableHighlight
+                onPress={() => {
+                  this.moveDown(index);
+                }}
+              >
+                <Text>down</Text>
+              </TouchableHighlight>
+            </View>
+          );
         })}
-      </View>
+      </ScrollView>
     );
   };
 
@@ -146,12 +216,7 @@ export default class SummaryScreen extends React.Component {
     return (
       <View style={styles.container}>
         {/*LEFT FLEX BOX - REGATTA DATA*/}
-        <View
-          style={{
-            flex: 1,
-            // alignItems: 'center',
-          }}
-        >
+        <View style={{ flex: 1 }}>
           <View style={{ flexDirection: 'row' }}>
             <Text>Name: </Text>
             <TextInput
@@ -210,16 +275,20 @@ export default class SummaryScreen extends React.Component {
           </View>
         </View>
         {/*MID FLEX BOX - BOATCLASS STUFF*/}
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={{ alignItems: 'center' }}>{this.renderList()}</View>
-          <Button
-            onPress={() =>
-              this.setState({
-                promptVisible: true,
-              })
-            }
-            title="Bootsklasse hinzufügen"
-          />
+        <View
+          style={{ flex: 1, alignItems: 'center', flexDirection: 'column' }}
+        >
+          <View style={{ flex: 3.33, alignItems: 'center' }}>
+            <View style={{ alignItems: 'center' }}>{this.renderList()}</View>
+          </View>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <TouchableOpacity
+              style={styles.touchableOpacityBtn}
+              onPress={() => this.setState({ promptVisible: true })}
+            >
+              <Text style={styles.btnText}>Neue Bootsklasse</Text>
+            </TouchableOpacity>
+          </View>
           <Prompt
             title="Neue Bootsklasse"
             visible={this.state.promptVisible}
@@ -232,22 +301,42 @@ export default class SummaryScreen extends React.Component {
           />
         </View>
         {/*RIGHT FLEX BOX - NEXT ACTIONS*/}
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <Button
-            onPress={() => {
-              this.saveData();
-              navigate('Start',{start: true, regattaKey: this.state.regattaKey});
-            }}
-            title="Speichern und starten"
-          />
-          <Button
-            onPress={() => {
-              this.saveData();
-              navigate('Home');
-            }}
-            title="Speichern"
-          />
-          <Button onPress={() => navigate('Home')} title="Abbrechen" />
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <View style={styles.btnContainer}>
+            <TouchableOpacity
+              style={
+                styles.touchableOpacityBtn
+              } onPress={() => navigate('Start',{start: true, regattaKey: this.state.regattaKey})}
+            >
+              <Text style={styles.btnText}>Starten</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.btnContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                this.saveData();
+                navigate('Home');
+              }}
+              style={styles.touchableOpacityBtn}
+            >
+              <Text style={styles.btnText}>Speichern</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.btnContainer}>
+            <TouchableOpacity
+              onPress={() => navigate('Home')}
+              style={styles.touchableOpacityBtn}
+            >
+              <Text style={styles.btnText}>Abbrechen</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -261,5 +350,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+  },
+  btnContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  touchableOpacityBtn: {
+    borderWidth: 2,
+    borderColor: '#45c1bd',
+    borderRadius: 4,
+    padding: 20,
+    marginVertical: 15,
+  },
+  btnText: {
+    fontSize: 20,
+    color: '#45c1bd',
   },
 });
