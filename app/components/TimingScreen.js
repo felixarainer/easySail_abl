@@ -187,7 +187,7 @@ export default class App extends Component {
           {
             this.choices.map((item) => {
               return(
-                <View style={stylesTime.choice}>
+                <View key={item.key} style={stylesTime.choice}>
                   <TouchableOpacity
                     onPress={() => {
                       this.setAll(this.items[this.state.page][this.curElem], item.key);

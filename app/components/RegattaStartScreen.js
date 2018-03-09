@@ -796,7 +796,7 @@ export default class App extends React.Component {
 	}
 
 	postponeAP = () => {
-		//TODO: this.step in die Vergangenheit schieben
+		//TODO checken warum auf einmal 30 min
 		console.log('postPoneAP');
 		let postActs = [];
 		let newTime = 0;
@@ -815,6 +815,10 @@ export default class App extends React.Component {
 		);
 
 		this.step -= this.actlist[this.step].getRank();
+
+		if(this.step === 0){
+			this.step++;
+		}
 
 		//TODO: versichern, dass verschieben Buttons nicht während der startphase verfügbar sind.
 		this.actlist.splice(this.step, 0, ...postActs);
@@ -897,6 +901,7 @@ export default class App extends React.Component {
 
 		if(!this.props.navigation.state.params.start){
 			this.actlist.splice(1,0,...this.createStartStates(this.startStateArgs));
+			this.actlist.splice(-1, 1);
 		}
 	};
 
