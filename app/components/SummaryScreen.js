@@ -236,7 +236,7 @@ export default class SummaryScreen extends React.Component {
           <Button
             onPress={() => {
               this.saveData();
-              navigate('Start',{start: true});
+              navigate('Start',{start: true, regattaKey: this.state.regattaKey});
             }}
             title="Speichern und starten"
           />

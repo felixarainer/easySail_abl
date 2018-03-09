@@ -8,6 +8,7 @@
 
 import React from 'react';
 import {
+	AsyncStorage,
 	StyleSheet,
 	Text,
 	View,
@@ -187,38 +188,73 @@ export default class App extends React.Component {
 		];
 
 		this.specialBtnsDescs = this.all_specialBtnsDescs;
-
-		this.temp_starttime = 11
-
-		this.startStateArgs = [
-			{
-				time: moment().add(this.temp_starttime, 'minutes'),
-				condition: 'i',
-				badstart: false,
-				first: true,
-			},
-			{
-				time: moment().add(this.temp_starttime + this.state.interval, 'minutes'),
-				condition: 'p',
-				badstart: false,
-				first: false,
-			},
-		]
 	}
 
 	static navigationOptions = {
 		header: null,
 	};
 
-	//componentwillmount wird NACH dem constructor aufgerufen...
 	componentWillMount() {
 		console.log('componentWillMount();');
-		let start = 11;
 
-		this.actlist = this.createStartStates(this.startStateArgs);
+		this.actlist = [new actState(
+			[{}, {}, {}, {}],
+			[],
+			moment(),
+			false,
+			undefined,
+			true,
+			true
+		)];
+
+		this.fetchData();
+
 		this.setInitialFlags();
 
 		console.log(this.actlist);
+	}
+
+	handleStartCreation = (regattaData) => {
+		console.log('handleStartCreation()')
+
+		console.log(regattaData);
+
+		let startArgs = []
+		let counter = 0;
+		let firstBool = true;
+
+		regattaData.boatClasses.forEach((elem) => {
+
+			let startMom = moment(regattaData.startDate + ' ' + regattaData.startTime, 'DD.MM.YYYY HH:mm').add(counter*regattaData.boatTimeDifference,'minutes');
+			counter ++;
+
+			startArgs.push({
+				time: startMom,
+				condition: regattaData.startFlag.toLowerCase(),
+				badstart: false,
+				first: firstBool,
+			})
+
+			firstBool = false;
+		})
+
+		console.log(startArgs)
+
+		this.actlist = this.createStartStates(startArgs);
+		this.step = -1;
+		this.updateFlags();
+	}
+
+	fetchData = async () => {
+		console.log('fetchData()')
+
+		let regattaData = JSON.parse(
+			await AsyncStorage.getItem(this.props.navigation.state.params.regattaKey)
+		);
+
+		console.log(regattaData)
+
+		this.handleStartCreation(regattaData);
 	}
 
 	createStartStates = args => {
@@ -251,7 +287,7 @@ export default class App extends React.Component {
 					)
 				);
 			} else {
-				//worange flagge muss nur gesetzt werden, wenn startanfang
+				//orange flagge muss nur gesetzt werden, wenn startanfang
 				if (start.first) {
 					console.log('createFirstStart()');
 
@@ -646,7 +682,7 @@ export default class App extends React.Component {
 
 			this.setState({specialKey: undefined})
 
-			this.specialBtnsDescs = [this.all_specialBtnsDescs[3],this.all_specialBtnsDescs[4],this.all_specialBtnsDescs[5],this.all_specialBtnsDescs[6]];
+			this.specialBtnsDescs = [this.all_specialBtnsDescs[3],this.all_specialBtnsDescs[4],this.all_specialBtnsDescs[5],this.all_specialBtnsDescs[6],,this.all_specialBtnsDescs[7]];
 		}
 
 
