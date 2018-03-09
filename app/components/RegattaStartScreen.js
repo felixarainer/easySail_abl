@@ -207,7 +207,9 @@ export default class App extends React.Component {
 			true
 		)];
 
-		this.fetchData();
+		if(this.props.navigation.state.params.start){
+			this.fetchData();
+		}
 
 		this.setInitialFlags();
 
@@ -252,7 +254,7 @@ export default class App extends React.Component {
 			await AsyncStorage.getItem(this.props.navigation.state.params.regattaKey)
 		);
 
-		console.log(regattaData)
+		this.regattaKey = this.props.navigation.state.params.regattaKey;
 
 		this.handleStartCreation(regattaData);
 	}
@@ -730,7 +732,7 @@ export default class App extends React.Component {
 
 				const { state, navigate } = this.props.navigation;
 				this.setState({startFinished: true});
-				navigate('Timing')
+				navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey})
 			}else{
 				if (this.step < this.actlist.length - 1) {
 					this.setState({ startFinished: false });
@@ -739,7 +741,7 @@ export default class App extends React.Component {
 				} else {
 					const { state, navigate } = this.props.navigation;
 					this.setState({startFinished: true})
-					navigate('Timing');
+					navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey});
 				}
 			}
 		}else{
@@ -748,20 +750,14 @@ export default class App extends React.Component {
 			if (this.step < this.actlist.length - 1) {
 				this.setState({ startFinished: false });
 				this.step++;
-				// console.log('updateFlags-beforeSetState');
-				// console.log(this.step);
-				// console.log(this.actlist.length);
-				// console.log(this.actlist);
-				// console.log(this.actlist[this.step].getState());
 				this.setState(this.actlist[this.step].getState());
-				// console.log('updateFlags-afterSetState');
 				if (this.step === this.actlist.length - 3) {
 					this.dropOrangeFlag();
 				}
 			} else {
 				const { state, navigate } = this.props.navigation;
 				this.setState({startFinished: true})
-				navigate('Timing');
+				navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey});
 			}
 		};
 	}

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  AsyncStorage,
   StyleSheet,
   View,
   Image,
@@ -11,6 +12,7 @@ import moment from 'moment';
 import Modal from 'react-native-modal';
 import styles from '../styles.js';
 import * as res from '../res/res.js';
+import { StackNavigator } from 'react-navigation';
 
 export default class App extends Component {
   constructor(){
@@ -47,8 +49,6 @@ export default class App extends Component {
 
     this.menuLogo = '>';
   }
-
-
 
   static navigationOptions = {
     header: null,
@@ -127,7 +127,8 @@ export default class App extends Component {
         <TouchableOpacity
           onPress={() => {
             const { state, navigate } = this.props.navigation;
-            navigate('Start', {start: false});
+            console.log(this.props.navigation)
+            navigate('Start', {start: false,regattaKey: this.props.navigation.state.params.regattaKey});
           }}>
           <View style={stylesTime.returnBtn}>
             <Image style={stylesTime.footerBtn} source={res.menu.back}/>

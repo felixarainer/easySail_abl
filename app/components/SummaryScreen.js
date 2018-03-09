@@ -313,7 +313,10 @@ export default class SummaryScreen extends React.Component {
             <TouchableOpacity
               style={
                 styles.touchableOpacityBtn
-              } onPress={() => navigate('Start',{start: true, regattaKey: this.state.regattaKey})}
+              }
+               onPress={() =>
+                 navigate('Start',{start: true, regattaKey: this.state.regattaKey}
+               )}
             >
               <Text style={styles.btnText}>Starten</Text>
             </TouchableOpacity>
