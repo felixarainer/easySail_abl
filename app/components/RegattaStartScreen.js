@@ -31,7 +31,7 @@ import { StackNavigator } from 'react-navigation';
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags, actions, time, isStart, rank, isIndefinite, isSkippable) {
+	constructor(flags, actions, time, isStart, rank, isIndefinite, isSkippable, name) {
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
@@ -39,6 +39,7 @@ class actState {
 		this.rank = rank;
 		this.isIndefinite = isIndefinite;
 		this.isSkippable = isSkippable;
+		this.name = name;
 	}
 
 	getState = () => {
@@ -91,6 +92,10 @@ class actState {
 	setTime = newTime => {
 		this.time = newTime;
 	};
+
+	getName = () => {
+		return this.name;
+	}
 }
 
 export default class App extends React.Component {
@@ -208,7 +213,8 @@ export default class App extends React.Component {
 			false,
 			undefined,
 			true,
-			true
+			true,
+			undefined,
 		)];
 
 		this.fetchData();
@@ -244,6 +250,7 @@ export default class App extends React.Component {
 			counter ++;
 
 			this.startStateArgs.push({
+				name: elem,
 				time: startMom,
 				condition: regattaData.startFlag.toLowerCase(),
 				badstart: false,
@@ -290,7 +297,8 @@ export default class App extends React.Component {
 						false,
 						0,
 						true,
-						true
+						true,
+						start.name,
 					)
 				);
 			} else {
@@ -313,7 +321,8 @@ export default class App extends React.Component {
 							false,
 							0,
 							true,
-							true
+							true,
+							start.name,
 						)
 					);
 				} else {
@@ -341,6 +350,7 @@ export default class App extends React.Component {
 							// false,
 							true,
 							true,
+							start.name,
 						)
 					);
 				}
@@ -370,6 +380,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
+					start.name,
 				)
 			);
 
@@ -399,6 +410,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
+					start.name,
 				)
 			);
 
@@ -432,6 +444,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
+					start.name,
 				)
 			);
 
@@ -460,6 +473,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
+					start.name,
 				)
 			);
 
@@ -478,6 +492,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
+					start.name,
 				)
 			);
 
@@ -494,6 +509,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
+					start.name,
 				)
 			);
 		});
@@ -541,7 +557,8 @@ export default class App extends React.Component {
 				false,
 				undefined,
 				false,
-				false
+				false,
+				undefined,
 			)
 		);
 
@@ -603,6 +620,7 @@ export default class App extends React.Component {
 
 		bsacts = this.createStartStates([
 			{
+				name: this.actlist[this.step-4].getName(),
 				time: mom,
 				condition: ARGcondition,
 				badstart: badstart,
@@ -684,6 +702,7 @@ export default class App extends React.Component {
 				undefined,
 				true,
 				true,
+				undefined,
 			),
 		];
 
@@ -719,7 +738,8 @@ export default class App extends React.Component {
 				oldTime,
 				oldStart,
 				true,
-				true
+				true,
+				undefined,
 			)
 		);
 
@@ -737,20 +757,20 @@ export default class App extends React.Component {
 
 				const { state, navigate } = this.props.navigation;
 				this.setState({startFinished: true});
-				navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey})
+				navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey, order: this.startTimes})
 			}else{
 				if (this.step < this.actlist.length - 1) {
 					this.setState({ startFinished: false });
 					this.step++;
 					if(this.actlist[this.step].wasStart()){
-						this.startTimes.push(moment())
+						this.startTimes.push({name: this.actlist[this.step].getName(), starttime:moment()})
 						console.log(this.startTimes)
 					}
 					this.setState(this.actlist[this.step].getState());
 				} else {
 					const { state, navigate } = this.props.navigation;
 					this.setState({startFinished: true})
-					navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey});
+					navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey, order: this.startTimes});
 				}
 			}
 		}else{
@@ -760,7 +780,7 @@ export default class App extends React.Component {
 				this.setState({ startFinished: false });
 				this.step++;
 				if(this.actlist[this.step].wasStart()){
-					this.startTimes.push(moment())
+					this.startTimes.push({name: this.actlist[this.step].getName(), starttime:moment()})
 					console.log(this.startTimes)
 				}
 				this.setState(this.actlist[this.step].getState());
@@ -770,7 +790,7 @@ export default class App extends React.Component {
 			} else {
 				const { state, navigate } = this.props.navigation;
 				this.setState({startFinished: true})
-				navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey});
+				navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey, order: this.startTimes});
 			}
 		};
 	}
@@ -790,6 +810,7 @@ export default class App extends React.Component {
 				undefined,
 				true,
 				true,
+				undefined,
 			)
 		);
 
@@ -814,7 +835,8 @@ export default class App extends React.Component {
 				false,
 				undefined,
 				true,
-				true
+				true,
+				undefined,
 			)
 		);
 
@@ -839,7 +861,8 @@ export default class App extends React.Component {
 				false,
 				undefined,
 				false,
-				false
+				false,
+				undefined,
 			)
 		);
 
@@ -863,7 +886,8 @@ export default class App extends React.Component {
 				false,
 				undefined,
 				true,
-				true
+				true,
+				undefined,
 			)
 		);
 
@@ -889,7 +913,8 @@ export default class App extends React.Component {
 				false,
 				undefined,
 				true,
-				true
+				true,
+				undefined,
 			)
 		);
 
@@ -915,7 +940,8 @@ export default class App extends React.Component {
 				false,
 				undefined,
 				false,
-				false
+				false,
+				undefined,
 			)
 		);
 

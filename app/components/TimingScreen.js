@@ -18,11 +18,7 @@ export default class App extends Component {
   constructor(){
     super();
 
-    this.klasses = [
-      {name: 'Drachen', starttime: '07:00:00'},
-      {name: 'Laser', starttime: '07:05:00'},
-      {name: 'TopKat', starttime: '07:10:00'},
-    ]
+    this.klasses = []
 
     this.items = [
       [{ name: 'AUT11', checkPoint: 0, times: [], active: true },{ name: 'AUT12', checkPoint: 0, times: [], active: true },{ name: 'AUT13', checkPoint: 0, times: [], active: true },{ name: 'AUT14', checkPoint: 0, times: [], active: true },{ name: 'AUT15', checkPoint: 0, times: [], active: true },{ name: 'AUT16', checkPoint: 0, times: [], active: true },{ name: 'AUT17', checkPoint: 0, times: [], active: true }],
@@ -53,6 +49,11 @@ export default class App extends Component {
   static navigationOptions = {
     header: null,
   };
+
+  componentWillMount = () => {
+    this.klasses = this.props.navigation.state.params.order
+    console.log(this.klasses)
+  }
 
   sortArray = () => {
     this.items.map((klass) => {
@@ -229,18 +230,12 @@ export default class App extends Component {
         let arr = []
         team.times.map((time) => {
           if(time.includes(':')){
-            var start = this.klasses[kIndex].starttime;
             var diffTime = time;
 
-            var momA = moment();
+            var momA = this.klasses[kIndex].starttime
             var momB = moment();
 
-            var arr1 = start.split(':')
             var arr2 = diffTime.split(':')
-
-            momA = momA.hour(arr1[0])
-            momA = momA.minute(arr1[1])
-            momA = momA.second(arr1[2])
 
             momB = momB.hour(arr2[0])
             momB = momB.minute(arr2[1])
