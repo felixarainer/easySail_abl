@@ -188,6 +188,10 @@ export default class App extends React.Component {
 		];
 
 		this.specialBtnsDescs = this.all_specialBtnsDescs;
+
+		this.startTimes = [];
+
+		this.startStateArgs = [];
 	}
 
 	static navigationOptions = {
@@ -207,44 +211,11 @@ export default class App extends React.Component {
 			true
 		)];
 
-		if(this.props.navigation.state.params.start){
-			this.fetchData();
-		}
+		this.fetchData();
 
 		this.setInitialFlags();
 
 		console.log(this.actlist);
-	}
-
-	handleStartCreation = (regattaData) => {
-		console.log('handleStartCreation()')
-
-		console.log(regattaData);
-
-		let startArgs = []
-		let counter = 0;
-		let firstBool = true;
-
-		regattaData.boatClasses.forEach((elem) => {
-
-			let startMom = moment(regattaData.startDate + ' ' + regattaData.startTime, 'DD.MM.YYYY HH:mm').add(counter*regattaData.boatTimeDifference,'minutes');
-			counter ++;
-
-			startArgs.push({
-				time: startMom,
-				condition: regattaData.startFlag.toLowerCase(),
-				badstart: false,
-				first: firstBool,
-			})
-
-			firstBool = false;
-		})
-
-		console.log(startArgs)
-
-		this.actlist = this.createStartStates(startArgs);
-		this.step = -1;
-		this.updateFlags();
 	}
 
 	fetchData = async () => {
@@ -257,6 +228,40 @@ export default class App extends React.Component {
 		this.regattaKey = this.props.navigation.state.params.regattaKey;
 
 		this.handleStartCreation(regattaData);
+	}
+
+	handleStartCreation = (regattaData) => {
+		console.log('handleStartCreation()')
+
+		console.log(regattaData);
+
+		let counter = 0;
+		let firstBool = true;
+
+		regattaData.boatClasses.forEach((elem) => {
+
+			let startMom = moment(regattaData.startDate + ' ' + regattaData.startTime, 'DD.MM.YYYY HH:mm').add(counter*regattaData.boatTimeDifference,'minutes');
+			counter ++;
+
+			this.startStateArgs.push({
+				time: startMom,
+				condition: regattaData.startFlag.toLowerCase(),
+				badstart: false,
+				first: firstBool,
+			})
+
+			firstBool = false;
+		})
+
+		console.log(this.startStateArgs)
+
+		if(this.props.navigation.state.params.start){
+			this.actlist = this.createStartStates(this.startStateArgs);
+
+			console.log(this.actlist)
+			this.step = -1;
+			this.updateFlags();
+		}
 	}
 
 	createStartStates = args => {
@@ -737,6 +742,10 @@ export default class App extends React.Component {
 				if (this.step < this.actlist.length - 1) {
 					this.setState({ startFinished: false });
 					this.step++;
+					if(this.actlist[this.step].wasStart()){
+						this.startTimes.push(moment())
+						console.log(this.startTimes)
+					}
 					this.setState(this.actlist[this.step].getState());
 				} else {
 					const { state, navigate } = this.props.navigation;
@@ -750,6 +759,10 @@ export default class App extends React.Component {
 			if (this.step < this.actlist.length - 1) {
 				this.setState({ startFinished: false });
 				this.step++;
+				if(this.actlist[this.step].wasStart()){
+					this.startTimes.push(moment())
+					console.log(this.startTimes)
+				}
 				this.setState(this.actlist[this.step].getState());
 				if (this.step === this.actlist.length - 3) {
 					this.dropOrangeFlag();
@@ -776,7 +789,7 @@ export default class App extends React.Component {
 				false,
 				undefined,
 				true,
-				true
+				true,
 			)
 		);
 

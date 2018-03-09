@@ -31,12 +31,12 @@ export default class App extends Component {
     ];
 
     this.choices = [
-      {code: 'DNC', text: 'Nicht erschienen (Did Not Come)'},
-      {code: 'DNS', text: 'Nicht gestartet (Did Not Start)'},
-      {code: 'BFD', text: 'Schwarze-Flagge DSQ (Black-Flag Disqualified)'},
-      {code: 'DNF', text: 'Aufgegeben, Abgebrochen (Did Not Finish)'},
-      {code: 'RAF', text: 'Nach Zieleinlauf Aufgegeben\n(Retired After Finishing)'},
-      {code: 'DSQ', text: 'Disqualifiziert'},
+      {key: 'DNC', text: 'Nicht erschienen (Did Not Come)'},
+      {key: 'DNS', text: 'Nicht gestartet (Did Not Start)'},
+      {key: 'BFD', text: 'Schwarze-Flagge DSQ (Black-Flag Disqualified)'},
+      {key: 'DNF', text: 'Aufgegeben, Abgebrochen (Did Not Finish)'},
+      {key: 'RAF', text: 'Nach Zieleinlauf Aufgegeben\n(Retired After Finishing)'},
+      {key: 'DSQ', text: 'Disqualifiziert'},
     ]
 
     this.curElem = 0;
@@ -189,16 +189,16 @@ export default class App extends Component {
                 <View style={stylesTime.choice}>
                   <TouchableOpacity
                     onPress={() => {
-                      this.setAll(this.items[this.state.page][this.curElem], item.code);
+                      this.setAll(this.items[this.state.page][this.curElem], item.key);
                       this.toggleMenu();
                       this.sortArray();
                     }}>
                     <View style={stylesTime.choiceL}>
-                      <Text style={stylesTime.itemName}>{item.code}</Text>
+                      <Text style={stylesTime.itemName}>{item.key}</Text>
                     </View>
                   </TouchableOpacity>
                   <View style={stylesTime.choiceR}>
-                    <Text style={stylesTime.itemCode}>{item.text}</Text>
+                    <Text style={stylesTime.itemCode}>{item.key}</Text>
                   </View>
                 </View>
               )
