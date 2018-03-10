@@ -88,10 +88,10 @@ export default class App extends Component {
     }
 
     if(cur<0){
-      cur = this.items.length-1;
+      cur = this.klasses.length-1;
     }
 
-    if(cur >= this.items.length){
+    if(cur >= this.klasses.length){
       cur = 0;
     }
 

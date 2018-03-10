@@ -10,13 +10,13 @@ export const flags = {
 		name: 'black',
 		pic: require('./pics/flags/black.png'),
 		ratio: 1,
-		description: 'Das ist die Jolly Roger du landratte',
+		description: 'Schwarze Flagge - (härteste Strafe)\nBoote müssen in der Minute vor dem Start vollständig hinter der Ziellinie sein (dürfen aber ihre Verlängerungen durchfahren).\nFehlstarter werden sofort disqualifiziert es sei denn die Wettfahrt wird noch vor dem Start verschoben oder abgebrochen.\nBeim Allgemeinen Rückruf muss die Segelnummer des ausgeschiedenen am Startschiff aushängen.',
 	},
 	i: {
 		name: 'i',
 		pic: require('./pics/flags/i.png'),
 		ratio: 1,
-		description: 'Das ist die Flagge i minJong',
+		description: 'Flagge I - (wird nicht empfohlen)\nBoote müssen beim Start vollständig hinter der Startlinie sein.\nFehlstarter müssen die Startlinie durch ihre Verlängerungen umfahren und erneut über die Ziellinie starten.',
 	},
 	l: {
 		name: 'l',
@@ -27,7 +27,7 @@ export const flags = {
 		name: 'p',
 		pic: require('./pics/flags/p.png'),
 		ratio: 1,
-		description: 'Das ist die Flagge p minJong',
+		description: 'Flagge P - (empfohlen für ersten Start)\nBoote müssen beim Start vollständig hinter der Ziellinie sein.\nFehlstarter dürfen an beliebiger Stelle wieder hinter die Ziellinie fahren und erneut starten.',
 	},
 	x: {
 		name: 'x',
@@ -38,7 +38,7 @@ export const flags = {
 		name: 'z',
 		pic: require('./pics/flags/z.png'),
 		ratio: 1,
-		description: 'Das ist die Flagge z min Jong',
+		description: 'Flagge Z - (wird nicht empfohlen)\nBoote müssen in der Minute vor dem Start vollständig hinter der Ziellinie sein (dürfen aber ihre Verlängerungen durchfahren).\nFehlstarter erhalten jedes mal eine 20% Wertungsstrafe.\nAuch wenn die Wettfahrt erneut gestartet oder gesegelt wird, bleibt(bleiben) die Wertungsstrafe(n) bestehen, jedoch nicht, wenn sie vor dem Startsignal verschoben oder abgebrochen wird.',
 	},
 	klass: {
 		name: 'klass',
@@ -94,6 +94,12 @@ export const flags = {
 		name: 'y',
 		pic: require('./pics/flags/y.png'),
 		ratio: 1,
+	},
+	u: {
+		name: 'u',
+		pic: require('./pics/flags/u.png'),
+		ratio: 1,
+		description: 'Flagge U - (bei großen Jollenfeldern geeignet)\nBoote müssen in der Minute vor dem Start hinter der Ziellinie sein (dürfen aber ihre Verlängerungen durchfahren).\nFehlstarter werden sofort disqualifiziert, dürfen aber bei einem Allgemeinen Rückruf mitstarten.\nFehlstarter dürfen erneut starten, wenn die Wettfahrt vor dem Startsignal verschoben oder abgebrochen wird.',
 	},
 };
 

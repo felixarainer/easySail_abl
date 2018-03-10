@@ -574,6 +574,9 @@ export default class App extends React.Component {
 		this.setState({ enableBadStartBtns: false });
 
 		this.setState({ isStartPickerVisible: false });
+
+		this.startTimes.splice(-1,1);
+
 		//neue actions
 		let bsacts = [];
 		let badstart = true;
@@ -1173,9 +1176,6 @@ export default class App extends React.Component {
 
 	renderMenu = () => {
 		console.log('renderMenu();');
-
-
-
 		return (
 			<View
 				style={[
