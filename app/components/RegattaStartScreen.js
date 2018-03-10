@@ -104,7 +104,6 @@ export default class App extends React.Component {
 		this.state = {
 			curFlags: {},
 			enableBadStartBtns: false,
-			startFinished: false,
 			isStartPickerVisible: false,
 			isActionsMenuVisible: false,
 			specialDescription: '',
@@ -118,6 +117,8 @@ export default class App extends React.Component {
 			shortenedMenu: false,
 		};
 		this.step = 0;
+
+		this.startFinished = false;
 
 		//Important für react navigation, nicht löschen!
 		//bei wiedereinstieg in diesen screen wird zweimal updateflags aufgerufen
@@ -529,7 +530,7 @@ export default class App extends React.Component {
 		console.log('singlebadStart()');
 
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
-		this.setState({ startFinished: false });
+		this.startFinished = false;
 		//rückrufbuttons deaktivieren
 		this.setState({ enableBadStartBtns: false });
 
@@ -569,7 +570,7 @@ export default class App extends React.Component {
 
 	massiveBadStart = ARGcondition => {
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
-		this.setState({ startFinished: false });
+		this.startFinished = false;
 		//rückrufbuttons deaktivieren
 		this.setState({ enableBadStartBtns: false });
 
@@ -617,6 +618,9 @@ export default class App extends React.Component {
 
 			badstart = false;
 		} else {
+			//Wenn start nicht postponed is
+			//Wenn start illegal postponed ist
+
 			//SppecialChoice 98: 1fhs
 			this.setState({ specialKey: 98 });
 		}
@@ -658,8 +662,7 @@ export default class App extends React.Component {
 				this.step -= rank + 1;
 			}
 		}
-		this.setState({ postPoneBadStart: false });
-		this.setState({ specialKey: undefined });
+		this.setState({ postPoneBadStart: false});
 		this.updateFlags();
 	};
 
@@ -757,11 +760,11 @@ export default class App extends React.Component {
 
 			if((this.var === 2) && (this.actlist.length === 1) && (this.step === -1)){
 				const { state, navigate } = this.props.navigation;
-				this.setState({startFinished: true});
+				this.startFinished = true;
 				navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey, order: this.startTimes})
 			}else{
 				if (this.step < this.actlist.length - 1) {
-					this.setState({ startFinished: false });
+					this.startFinished = false;
 					this.step++;
 					if(this.actlist[this.step].wasStart()){
 						this.startTimes.push({name: this.actlist[this.step].getName(), starttime:moment()})
@@ -770,7 +773,7 @@ export default class App extends React.Component {
 					this.setState(this.actlist[this.step].getState());
 				} else {
 					const { state, navigate } = this.props.navigation;
-					this.setState({startFinished: true})
+					this.startFinished = true;
 					navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey, order: this.startTimes});
 				}
 			}
@@ -778,7 +781,7 @@ export default class App extends React.Component {
 			console.log('updateFlags')
 			//Auffhören mit updaten wenn liste abgearbeitet
 			if (this.step < this.actlist.length - 1) {
-				this.setState({ startFinished: false });
+				this.startFinished = false;
 				this.step++;
 				if(this.actlist[this.step].wasStart()){
 					this.startTimes.push({name: this.actlist[this.step].getName(), starttime:moment()})
@@ -790,7 +793,7 @@ export default class App extends React.Component {
 				}
 			} else {
 				const { state, navigate } = this.props.navigation;
-				this.setState({startFinished: true})
+				this.startFinished = true;
 				navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey, order: this.startTimes});
 			}
 		};
@@ -1387,7 +1390,8 @@ export default class App extends React.Component {
 					countdownEndDate={this.state.countdownEndDate}
 					onFinished={() => {
 						console.log('onFinished()------------------');
-						if (!this.state.startFinished) {
+
+						if (!this.startFinished) {
 							if (this.state.specialKey !== undefined) {
 								switch (this.state.specialKey) {
 									case 0:
