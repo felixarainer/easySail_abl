@@ -23,7 +23,6 @@ export default class App extends Component {
     this.items = [
       [{ name: 'AUT11', checkPoint: 0, times: [], active: true },{ name: 'AUT12', checkPoint: 0, times: [], active: true },{ name: 'AUT13', checkPoint: 0, times: [], active: true },{ name: 'AUT14', checkPoint: 0, times: [], active: true },{ name: 'AUT15', checkPoint: 0, times: [], active: true },{ name: 'AUT16', checkPoint: 0, times: [], active: true },{ name: 'AUT17', checkPoint: 0, times: [], active: true }],
       [{ name: 'AUT21', checkPoint: 0, times: [], active: true },{ name: 'AUT22', checkPoint: 0, times: [], active: true },{ name: 'AUT23', checkPoint: 0, times: [], active: true },{ name: 'AUT24', checkPoint: 0, times: [], active: true },{ name: 'AUT25', checkPoint: 0, times: [], active: true },{ name: 'AUT26', checkPoint: 0, times: [], active: true },{ name: 'AUT27', checkPoint: 0, times: [], active: true }],
-      [{ name: 'AUT31', checkPoint: 0, times: [], active: true },{ name: 'AUT32', checkPoint: 0, times: [], active: true },{ name: 'AUT33', checkPoint: 0, times: [], active: true },{ name: 'AUT34', checkPoint: 0, times: [], active: true },{ name: 'AUT35', checkPoint: 0, times: [], active: true },{ name: 'AUT36', checkPoint: 0, times: [], active: true },{ name: 'AUT37', checkPoint: 0, times: [], active: true }],
     ];
 
     this.choices = [
@@ -42,6 +41,8 @@ export default class App extends Component {
       menu: false,
       isMenuVisible: false,
     };
+
+    this.finalArray = [];
 
     this.menuLogo = '>';
   }
@@ -149,10 +150,11 @@ export default class App extends Component {
       return(
         <TouchableOpacity
           onPress={() => {
+            const { state, navigate } = this.props.navigation;
             console.log('Finish Race');
             this.createFinalArray();
             this.forceUpdate();
-            console.log(this.items)
+            navigate('Finish',{finalArray: this.finalArray})
           }}>
           <View style={stylesTime.finishBtn}>
             <Image style={stylesTime.footerBtn} source={res.div.checkered_flag}/>
@@ -225,6 +227,8 @@ export default class App extends Component {
 
     let kIndex = 0;
 
+    let finalArray = [];
+
     this.items.map((klass) => {
       klass.map((team) => {
         let arr = []
@@ -252,6 +256,27 @@ export default class App extends Component {
       })
       kIndex++;
     })
+
+    kIndex = 0;
+
+    this.items.map((klass) => {
+      finalArray.push({name: ' ', times: []})
+      finalArray.push({name: this.klasses[kIndex].name, times: []})
+      finalArray.push({name: ' ', times: []})
+
+      klass.map((team) => {
+        finalArray.push({name: team.name, times: team.times})
+      })
+      kIndex++;
+    })
+
+    finalArray.splice(0,1);
+
+    this.finalArray = finalArray;
+
+    console.log(this.finalArray)
+
+
   }
 
   hhmmss = (secs) => {

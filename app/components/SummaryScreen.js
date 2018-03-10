@@ -253,7 +253,7 @@ export default class SummaryScreen extends React.Component {
 							{ flex: 1, fontWeight: 'bold', fontSize: 40 },
 						]}
 					>
-						Wählen sie eine Flagge aus:{' '}
+						Wählen sie eine Flagge:{' '}
 					</Text>
 					{startFlags.map(flag => {
 						return (

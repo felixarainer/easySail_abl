@@ -756,8 +756,6 @@ export default class App extends React.Component {
 			this.var++;
 
 			if((this.var === 2) && (this.actlist.length === 1) && (this.step === -1)){
-				Alert.alert(this.step.toString() + ' -- ' + this.var.toString(),this.actlist.length.toString(),[],{ cancelable: true })
-
 				const { state, navigate } = this.props.navigation;
 				this.setState({startFinished: true});
 				navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey, order: this.startTimes})
@@ -1044,7 +1042,7 @@ export default class App extends React.Component {
 
 	renderStartPicker = () => {
 		console.log('renderStartPicker()');
-		let startFlags = [res.flags.i, res.flags.z, res.flags.black, res.flags.p];
+		let startFlags = [res.flags.p, res.flags.u, res.flags.black, res.flags.i, res.flags.z];
 		return (
 			<View
 				style={[{ flex: 1, flexDirection: 'column' }, styles.menuBackground]}
@@ -1063,7 +1061,7 @@ export default class App extends React.Component {
 							{ flex: 1, fontWeight: 'bold', fontSize: 40 },
 						]}
 					>
-						Wählen sie eine Flagge aus:{' '}
+						Wählen sie eine Flagge:{' '}
 					</Text>
 					{startFlags.map(flag => {
 						return (

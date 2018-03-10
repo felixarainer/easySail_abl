@@ -13,6 +13,7 @@ import HomeScreen from './components/HomeScreen';
 import SummaryScreen from './components/SummaryScreen';
 import RegattaStartScreen from './components/RegattaStartScreen';
 import TimingScreen from './components/TimingScreen';
+import FinishScreen from './components/FinishScreen';
 
 export const SimpleApp = StackNavigator(
 	{
@@ -21,6 +22,7 @@ export const SimpleApp = StackNavigator(
 		Summary: { screen: SummaryScreen },
 		Start: { screen: RegattaStartScreen },
 		Timing: { screen: TimingScreen },
+		Finish: {screen: FinishScreen },
 	},
 	{
 		transitionConfig: () => ({ screenInterpolator: () => null }),
