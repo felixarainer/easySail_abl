@@ -21,8 +21,8 @@ export default class App extends Component {
     this.klasses = []
 
     this.items = [
-      [{ name: 'AUT11', checkPoint: 0, times: [], active: true },{ name: 'AUT12', checkPoint: 0, times: [], active: true },{ name: 'AUT13', checkPoint: 0, times: [], active: true },{ name: 'AUT14', checkPoint: 0, times: [], active: true },{ name: 'AUT15', checkPoint: 0, times: [], active: true },{ name: 'AUT16', checkPoint: 0, times: [], active: true },{ name: 'AUT17', checkPoint: 0, times: [], active: true }],
-      [{ name: 'AUT21', checkPoint: 0, times: [], active: true },{ name: 'AUT22', checkPoint: 0, times: [], active: true },{ name: 'AUT23', checkPoint: 0, times: [], active: true },{ name: 'AUT24', checkPoint: 0, times: [], active: true },{ name: 'AUT25', checkPoint: 0, times: [], active: true },{ name: 'AUT26', checkPoint: 0, times: [], active: true },{ name: 'AUT27', checkPoint: 0, times: [], active: true }],
+    /*klass*/  [{ name: 'AUT11', checkPoint: 0, times: [], active: true },{ name: 'AUT12', checkPoint: 0, times: [], active: true },{ name: 'AUT13', checkPoint: 0, times: [], active: true },{ name: 'AUT14', checkPoint: 0, times: [], active: true },{ name: 'AUT15', checkPoint: 0, times: [], active: true },{ name: 'AUT16', checkPoint: 0, times: [], active: true },{ name: 'AUT17', checkPoint: 0, times: [], active: true }],
+    /*klass*/  [{ name: 'AUT21', checkPoint: 0, times: [], active: true },{ name: 'AUT22', checkPoint: 0, times: [], active: true },{ name: 'AUT23', checkPoint: 0, times: [], active: true },{ name: 'AUT24', checkPoint: 0, times: [], active: true },{ name: 'AUT25', checkPoint: 0, times: [], active: true },{ name: 'AUT26', checkPoint: 0, times: [], active: true },{ name: 'AUT27', checkPoint: 0, times: [], active: true }],
     ];
 
     this.choices = [
@@ -54,6 +54,7 @@ export default class App extends Component {
   componentWillMount = () => {
     this.klasses = this.props.navigation.state.params.order
     console.log(this.klasses)
+    console.log(this.props.navigation.state.params.regattaKey)
   }
 
   sortArray = () => {
@@ -104,7 +105,7 @@ export default class App extends Component {
   }
 
   setNA = (item) => {
-    item.times.push(undefined);
+    item.times.push('unklar');
   }
 
   setAll = (item, code) => {
@@ -178,7 +179,7 @@ export default class App extends Component {
 	};
 
   renderMenu = () => {
-		console.log('renderStartPicker()');
+		console.log('renderMenu()');
 		return (
 			<View style={stylesTime.modal}>
         <View style={stylesTime.modalName}>
@@ -223,42 +224,128 @@ export default class App extends Component {
 		);
 	};
 
+  hhmmss_toSecs = (time) => {
+    var a = time.split(':'); // split it at the colons
+    var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+    return seconds;
+  }
+
   createFinalArray = () => {
 
     let kIndex = 0;
+    let teamIndex = 0;
+
 
     let finalArray = [];
 
     this.items.map((klass) => {
-      klass.map((team) => {
-        let arr = []
-        team.times.map((time) => {
-          if(time.includes(':')){
-            var diffTime = time;
 
-            var momA = this.klasses[kIndex].starttime
-            var momB = moment();
+      //Anzahl der Bojen des erstplatzierten, alle schiffe, die nicht so viele Bojen umrundet haben sind entweder ausgeschieden oder haben keine korrekten Messdaten
+      let teamLeaderLength = 0;
+      let leaderMom = undefined;
 
-            var arr2 = diffTime.split(':')
+      // = erster index bei dem eine Zieldurchlaufzeit vorliegt. Es kann sein, dass der Regattaleiter den Einlauf des ersten Bootes übersieht
+      //In diesem fall muss die Einlaufzeit für dieses Boot auf "unklar" gesetzt werden
+      //Das Zweite Boot bekommt dann die Referenzzeit 00:00:00
+      let firstTimedIndex = 0;
 
-            momB = momB.hour(arr2[0])
-            momB = momB.minute(arr2[1])
-            momB = momB.second(arr2[2])
+      //Dieser Codeblock bestimmt, ob die klasse iteriert werden soll,
+      let klasslength = klass.length
+      let iterate = true;
+      if(klass.length > 0){
+        let teamTimes = klass[klass.length-1].times.length
 
-            var diff = momB.diff(momA,'seconds')
-            let newstr = this.hhmmss(diff);
-            arr.push(newstr);
+        if(teamTimes == 0){
+          iterate = false;
+        }
+      }
+
+      if(iterate){
+        klass.map((team) => {
+          let arr = []
+
+          //Errechnen der einzelnen zeiten relativ zum startpunkt
+          team.times.map((time) => {
+            if(time.includes(':')){
+              var diffTime = time;
+
+              var momA = this.klasses[kIndex].starttime
+              var momB = moment();
+
+              var arr2 = diffTime.split(':')
+
+              momB = momB.hour(arr2[0])
+              momB = momB.minute(arr2[1])
+              momB = momB.second(arr2[2])
+
+              var diff = momB.diff(momA,'seconds')
+              let newstr = this.hhmmss(diff);
+              arr.push(newstr);
+            }else{
+              arr.push('');
+            }
+          })
+
+          if(teamIndex === firstTimedIndex){
+            //erster im Ziel bestimmt bojenanzahl und referenzZeitpunkt
+            teamLeaderLength = team.times.length;
+            leaderMom = arr[teamLeaderLength-1];
+
+            if(teamLeaderLength != 0){
+              //Team hat zeitwertungen
+              if(team.times[teamLeaderLength-1] === 'unklar'){
+                //erster im Ziel hat keine Zieldurchlaufzeit erfasst
+                arr.push('unklar');
+                firstTimedIndex++;
+              }else{
+                //erster im Ziel erfasster bekommt 00:00:00
+                arr.push('00:00:00');
+              }
+            }
           }else{
-            arr.push();
+            if(isNaN(team.checkPoint) && teamLeaderLength != 0){
+              //ausgeschiedene bekommen CODE
+              arr.push(team.checkPoint);
+            }else if(teamLeaderLength != 0){
+              //legal gesegelt
+              if(team.times.length == teamLeaderLength){
+                //Gleich viele Bojen umfahren wie erster == kompletten kurs gesegelt
+                if(team.times[teamLeaderLength-1] === 'unklar'){
+                  //Teams bei denen der Zieleinlauf übersehen wurde
+                  arr.push('unklar')
+                }else{
+                  //Teams bei denen der Zieleinlauf erfasst wurde
+
+                  let diffSecs = this.hhmmss_toSecs(arr[teamLeaderLength-1]) - this.hhmmss_toSecs(leaderMom);
+
+                  //formatieren
+                  let diffTime = '+' + this.hhmmss(diffSecs)
+                  arr.push(diffTime);
+                }
+              }else{
+                //aus irgendeinem grund eine Boje zu wenig umfahren, keine Zeiterfassung möglich
+                let diff = teamLeaderLength - team.times.length
+
+                for(i=0; i<diff; i++){
+                  arr.push('nicht erfasst')
+                }
+
+                arr.push('nicht erfasst')
+              }
+            }
           }
+          team.times = arr;
+          teamIndex++;
         })
-        team.times = arr;
-      })
+      }
+
       kIndex++;
+      teamIndex = 0;
     })
 
     kIndex = 0;
 
+    //umschreiben in neues Arry zum senden
     this.items.map((klass) => {
       finalArray.push({name: ' ', times: []})
       finalArray.push({name: this.klasses[kIndex].name, times: []})
@@ -279,12 +366,43 @@ export default class App extends Component {
 
   }
 
+  saveData = async () => {
+    try {
+      await AsyncStorage.mergeItem(
+        this.props.navigation.state.params.regattaKey,
+        JSON.stringify({
+          regattaTimes: this.finalArray,
+        })
+      );
+    } catch (error) {
+      console.warn('fehler beim schreiben');
+    }
+  };
+
   hhmmss = (secs) => {
     var minutes = Math.floor(secs / 60);
     secs = secs%60;
     var hours = Math.floor(minutes/60)
     minutes = minutes%60;
-    return hours.toString()+':'+minutes.toString()+':'+secs.toString();
+
+    var strhours = hours.toString();
+    if(hours < 10){
+      strhours = '0' + strhours;
+    }
+
+    var strminutes = minutes.toString();
+    if(minutes < 10){
+      strminutes = '0' + strminutes;
+    }
+
+    var strseconds = secs.toString();
+    if(secs < 10){
+      strseconds = '0' + strseconds;
+    }
+
+    //return hours.toString()+':'+minutes.toString()+':'+secs.toString();
+
+    return strhours+':'+strminutes+':'+strseconds;
   }
 
   render() {

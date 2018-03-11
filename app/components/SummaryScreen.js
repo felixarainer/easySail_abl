@@ -130,6 +130,8 @@ export default class SummaryScreen extends React.Component {
             boatTimeDifference: this.state.boatTimeDifference,
             startFlag: this.state.startFlag,
             boatClasses: this.state.boatClasses,
+            regattaTimes: undefined,
+            serverCode: '1a2b',
           })
         );
       } else {
@@ -142,6 +144,8 @@ export default class SummaryScreen extends React.Component {
             boatTimeDifference: this.state.boatTimeDifference,
             startFlag: this.state.startFlag,
             boatClasses: this.state.boatClasses,
+            regattaTimes: undefined,
+            serverCode: '1a2b',
           })
         );
       }
