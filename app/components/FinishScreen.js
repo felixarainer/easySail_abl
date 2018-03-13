@@ -46,6 +46,7 @@ export default class App extends Component {
   uploadArray = () => {
     Alert.alert('Uploads','Erfolgreicher upload der Daten - Weiterleiten zum webserver',[],{ cancelable: true })
     this.toggleIsUploaded();
+    //async didUpload = true;
   }
 
   viewTimes = () => {
