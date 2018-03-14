@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 module.exports = StyleSheet.create({
 	//main screen
 	buttonLabel: {
-		fontSize: 44,
+		fontSize: 36,//44,
 		fontWeight: 'bold',
 		textAlign: 'center',
 		color: '#d1d8e0',
@@ -36,12 +36,14 @@ module.exports = StyleSheet.create({
 	listEntrySelected: {
 		backgroundColor: '#0fb9b1',
 	},
-	listEntryText: { fontSize: 30, fontWeight: 'bold', textAlign: 'center' },
+	listEntryText: { fontSize: 26,//30,
+		fontWeight: 'bold', textAlign: 'center' },
 	cancelButton: { backgroundColor: '#eb3b5a' },
 	okButton: { backgroundColor: '#20bf6b' },
 	toggleButton: { backgroundColor: '#4b7bec' },
 
-	descriptionText: { fontSize: 35, padding: 5 },
+	descriptionText: { fontSize: 24,//35, 
+		padding: 5 },
 
 	actionMenuItem: {
 		height: 180,
