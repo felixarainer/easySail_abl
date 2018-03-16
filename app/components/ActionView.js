@@ -2,7 +2,6 @@
 //
 // ?TODO: display last action(s)
 // TODO: add (static) action images; pass nextActions down from App.js as props
-//
 
 import React, { Component } from 'react';
 import {
@@ -17,6 +16,7 @@ import ActionItem from './ActionItem';
 import Countdown from './Countdown';
 import moment from 'moment';
 import * as res from '../res/res.js';
+import globalstyles from '../styles.js';
 
 export default class ActionView extends Component {
 	constructor() {
@@ -24,30 +24,38 @@ export default class ActionView extends Component {
 	}
 
 	render() {
-		console.log('AV.render()');
+		//console.log('AV.render()');
 		return (
 			<View style={styles.containerAV}>
-				<View style={styles.actionContainer}>
-					<Text style={styles.title}>next Actions:</Text>
+				<View style={[{ flex: 3 }]}>
+					<Text style={{ fontWeight: 'bold', fontSize: 35 }}>
+						Nächste Aktionen:
+					</Text>
 					{this.props.actions.map(action => {
-						return <ActionItem key={action.name} item={action} />;
+						return (
+							<ActionItem
+								style={globalstyles.actionViewItem}
+								key={action.name}
+								item={action}
+							/>
+						);
 					})}
 				</View>
-				<View style={styles.actionContainer}>
-					<Text style={styles.title}>remaining time:</Text>
+				<View style={[{ flex: 1 }]}>
 					<Countdown
 						targetDate={this.props.countdownEndDate.toDate()}
-						isSkippable={true}
-						isIndefinite={true}
+						isSkippable={this.props.isSkippable}
+						isIndefinite={false}
 						onFinished={() => {
-							console.log('AV.render.onFinished()');
+							//console.log('AV.render.onFinished()');
 							this.props.onFinished();
 						}}
-						style={styles.countdownText}
+						textStyle={globalstyles.countdownText}
+						highlightStyle={globalstyles.buttonHighlight}
 					/>
-					<Text style={{ fontSize: 20 }}>
+					{/* <Text style={{ fontSize: 20 }}>
 						countdown end date: {this.props.countdownEndDate.format('LLL')}
-					</Text>
+					</Text> */}
 				</View>
 			</View>
 		);
@@ -57,22 +65,8 @@ export default class ActionView extends Component {
 const styles = StyleSheet.create({
 	containerAV: {
 		flex: 1,
-		backgroundColor: 'lightblue',
 		alignSelf: 'stretch',
 		flexDirection: 'column',
-		//justifyContent: 'center',
-		alignItems: 'flex-start',
+		backgroundColor: '#a5b1c2',
 	},
-	actionContainer: {
-		margin: '5%',
-		marginBottom: 0,
-		padding: '5%',
-		borderWidth: 1,
-		backgroundColor: 'lightgreen',
-		alignSelf: 'stretch',
-		//alignItems: 'center',
-		//justifyContent: 'space-between',
-	},
-	title: { fontSize: 30, fontWeight: 'bold' },
-	countdownText: { fontSize: 56, fontWeight: 'bold' },
 });

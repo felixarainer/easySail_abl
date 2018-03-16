@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import globalstyles from '../styles.js';
 
 const COUNTDOWN_NOT_STARTED = 1;
 const COUNTDOWN_STARTED = 2;
@@ -26,18 +27,21 @@ export default class Countdown extends Component {
 	}
 
 	componentDidMount = () => {
-		setTimeout(() => {
-			let timer = setInterval(() => {
+		clearInterval(this.state.intervalId); //TODO not sure if needed
+		if (!this.props.isIndefinite) {
+			setTimeout(() => {
+				let timer = setInterval(() => {
+					this.tick();
+				}, this.props.interval);
+
+				this.setState({
+					status: COUNTDOWN_STARTED,
+					intervalId: timer,
+				});
+
 				this.tick();
-			}, this.props.interval);
-
-			this.setState({
-				status: COUNTDOWN_STARTED,
-				intervalId: timer,
-			});
-
-			this.tick();
-		}, this.props.startDelay);
+			}, this.props.startDelay);
+		}
 	};
 
 	componentWillReceiveProps = newProps => {
@@ -61,12 +65,12 @@ export default class Countdown extends Component {
 	};
 
 	componentWillUnmount = () => {
-		console.log('Countdown.componentWillUnmount()');
+		//console.log('Countdown.componentWillUnmount()');
 		clearInterval(this.state.intervalId);
 	};
 
 	calculateRemainingTime = () => {
-		console.log('Countdown.calculateRemainingTime()');
+		//console.log('Countdown.calculateRemainingTime()');
 		if (moment().diff(this.props.targetDate) < 0) {
 			return -1 * moment().diff(this.props.targetDate);
 		} else {
@@ -82,15 +86,19 @@ export default class Countdown extends Component {
 	};
 
 	tick = () => {
+		//console.log('Countdown.tick()');
 		if (this.state.status == COUNTDOWN_STARTED) {
-			console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
+			//console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
 			this.setState({
 				remainingTime: this.calculateRemainingTime(),
 			});
 
 			if (this.state.remainingTime <= 0) {
-				console.log('ending countdown');
+				//console.log('ending countdown');
 				this.endCountdown();
+				if (this.props.onFinished && !this.props.isSkippable) {
+					this.props.onFinished();
+				}
 			}
 		}
 	};
@@ -101,9 +109,7 @@ export default class Countdown extends Component {
 		this.setState({
 			status: COUNTDOWN_FINISHED,
 		});
-		if (this.props.onFinished) {
-			this.props.onFinished();
-		}
+
 		clearInterval(this.state.intervalId);
 	};
 
@@ -111,10 +117,13 @@ export default class Countdown extends Component {
 		console.log('Countdown.skipCountdown()');
 		if (this.props.isSkippable) {
 			this.endCountdown();
+			if (this.props.onFinished) {
+				this.props.onFinished();
+			}
 		}
 	};
 
-	renderRemainingTime = () => {
+	render() {
 		let returnValue = [];
 		let { remainingTime } = this.state;
 
@@ -124,33 +133,23 @@ export default class Countdown extends Component {
 		let seconds = this.addLeadingZero(
 			moment.duration(remainingTime).get('seconds')
 		);
-
-		return (
-			<Text style={this.props.style}>
-				{minutes}:{seconds}
-				{this.props.isSkippable ? 's' : ''}
-				{this.props.isIndefinite ? 'i' : ''}
-			</Text>
-		);
-	};
-
-	render() {
-		console.log('Countdown.render()');
+		//console.log('Countdown.render()');
 		return (
 			<TouchableHighlight
-				onPress={() => {
-					this.skipCountdown();
-				}}
+				style={[
+					this.props.highlightStyle,
+					this.props.isSkippable
+						? { backgroundColor: '#26de81' }
+						: { backgroundColor: 'transparent' },
+				]}
+				underlayColor={this.props.isSkippable ? '#20bf6b' : 'transparent'}
+				onPress={() => this.skipCountdown()}
 			>
-				{this.state.status != COUNTDOWN_FINISHED ? (
-					this.renderRemainingTime()
-				) : (
-					<Text style={this.props.style}>
-						--:--
-						{this.props.isSkippable ? 's' : ''}
-						{this.props.isIndefinite ? 'i' : ''}
-					</Text>
-				)}
+				<Text style={this.props.textStyle}>
+					{minutes}:{seconds}
+					{/* {this.props.isSkippable ? 's' : ''}
+					{this.props.isIndefinite ? 'i' : ''} */}
+				</Text>
 			</TouchableHighlight>
 		);
 	}
@@ -169,7 +168,6 @@ Countdown.propTypes = {
 Countdown.defaultProps = {
 	interval: 1000,
 	startDelay: 0,
-	style: { fontSize: 56, fontWeight: 'bold' },
 	isSkippable: false,
 	isIndefinite: false,
 };
