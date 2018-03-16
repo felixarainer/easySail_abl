@@ -1337,9 +1337,14 @@ export default class App extends React.Component {
 						<View style={styles.flagRow}>
 							<View style={styles.flagContainer}>
 								<Image
-									style={styles.flagImage}
-									source={this.state.curFlags.flag1.pic}
-								/>
+									style={styles.backgroundImage}
+									source={res.div.peilstange}
+								>
+									<Image
+										style={styles.flagImage}
+										source={this.state.curFlags.flag1.pic}
+									/>
+								</Image>
 							</View>
 							<View style={styles.flagContainer}>
 								<Image
