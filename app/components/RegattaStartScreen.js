@@ -1157,6 +1157,7 @@ export default class App extends React.Component {
 						style={[styles.buttonHighlight, styles.okButton]}
 						onPress={() => {
 							this.toggleStartPicker();
+							this.toggleStartButtons();
 							this.massiveBadStart(this.state.badStartCondition);
 						}}
 					>
@@ -1394,7 +1395,6 @@ export default class App extends React.Component {
 							]}
 							onPress={() => {
 								if (this.state.enableBadStartBtns) {
-									this.toggleStartButtons();
 									this.toggleStartPicker();
 								}
 							}}
