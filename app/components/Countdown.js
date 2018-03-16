@@ -6,7 +6,13 @@
 //TODO Design: Wenn countdown fertig solle die rechte komponente blinken, damit der user weis, dass sie ncht freezed is..
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import {
+	View,
+	Text,
+	StyleSheet,
+	TouchableHighlight,
+	TouchableOpacity,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import globalstyles from '../styles.js';
@@ -133,24 +139,20 @@ export default class Countdown extends Component {
 		let seconds = this.addLeadingZero(
 			moment.duration(remainingTime).get('seconds')
 		);
-		//console.log('Countdown.render()');
 		return (
-			<TouchableHighlight
+			<TouchableOpacity
 				style={[
 					this.props.highlightStyle,
 					this.props.isSkippable
 						? { backgroundColor: '#26de81' }
 						: { backgroundColor: 'transparent' },
 				]}
-				underlayColor={this.props.isSkippable ? '#20bf6b' : 'transparent'}
 				onPress={() => this.skipCountdown()}
 			>
 				<Text style={this.props.textStyle}>
 					{minutes}:{seconds}
-					{/* {this.props.isSkippable ? 's' : ''}
-					{this.props.isIndefinite ? 'i' : ''} */}
 				</Text>
-			</TouchableHighlight>
+			</TouchableOpacity>
 		);
 	}
 }
