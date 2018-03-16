@@ -156,7 +156,7 @@ export default class SummaryScreen extends React.Component {
 
 	switchElem = (oldPos, newPos) => {
 		arr = this.state.boatClasses.slice();
-		if (newPos >= 0 && newPos <= arr.length) {
+		if (newPos >= 0 && newPos < arr.length) {
 			let k = arr[oldPos];
 			arr[oldPos] = arr[newPos];
 			arr[newPos] = k;
@@ -164,12 +164,12 @@ export default class SummaryScreen extends React.Component {
 		}
 	};
 
-	removeElem = index => {
-		arr = this.state.boatClasses.slice();
-		let k = arr[oldPos];
-		arr[oldPos] = arr[newPos];
-		arr[newPos] = k;
-		this.setState({ boatClasses: arr });
+	removeElem = toDel => {
+		this.setState({
+			boatClasses: this.state.boatClasses.filter(
+				(item, index) => index !== toDel
+			),
+		});
 	};
 
 	renderList = () => {
@@ -199,7 +199,7 @@ export default class SummaryScreen extends React.Component {
 							</TouchableHighlight>
 							<TouchableHighlight
 								onPress={() => {
-									this.switchElem(index, index + 1);
+									this.removeElem(index);
 								}}
 							>
 								<Text>remove</Text>
