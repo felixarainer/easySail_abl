@@ -9,7 +9,12 @@ module.exports = StyleSheet.create({
 		textAlign: 'center',
 		color: '#d1d8e0',
 	},
-	buttonHighlight: { justifyContent: 'center', flex: 1, padding: 5 },
+	buttonHighlight: {
+		justifyContent: 'center',
+		flex: 1,
+		padding: 5,
+		opacity: 1,
+	},
 
 	buttonDisabled: { backgroundColor: '#778ca3' },
 	countdownText: { fontSize: 80, fontWeight: 'bold', textAlign: 'center' },

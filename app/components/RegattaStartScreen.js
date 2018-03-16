@@ -1389,7 +1389,12 @@ export default class App extends React.Component {
 								} //TODO change back
 							}}
 						>
-							<Text style={styles.buttonLabel}>Einzelrückruf</Text>
+							<Image
+								style={[styles.flagImage, { justifyContent: 'center' }]}
+								source={res.div.x}
+							>
+								<Text style={styles.buttonLabel}>Einzelrückruf</Text>
+							</Image>
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={[
@@ -1404,7 +1409,12 @@ export default class App extends React.Component {
 								}
 							}}
 						>
-							<Text style={styles.buttonLabel}>Allgemeiner Rückruf</Text>
+							<Image
+								style={[styles.flagImage, { justifyContent: 'center' }]}
+								source={res.div.fhs}
+							>
+								<Text style={styles.buttonLabel}>Allgemeiner Rückruf</Text>
+							</Image>
 						</TouchableOpacity>
 						<Modal isVisible={this.state.isActionsMenuVisible}>
 							{this.renderMenu()}
