@@ -64,10 +64,9 @@ export default class HomeScreen extends React.Component {
         {this.state.data.map((elem, index) => {
           return (
             <TouchableOpacity
-              key={elem.key}
               style={styles.tableElement}
               onPress={() =>
-                navigate('Summary', { key: elem.key })
+                navigate('Summary', { key: this.state.data[index].key })
               }
             >
               <Text style={styles.tableElementText}>{elem.regattaName}</Text>
@@ -112,10 +111,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   touchableOpacityBtn: {
+    width: 205,
     borderWidth: 2,
     borderColor: '#45c1bd',
     borderRadius: 4,
     padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   btnText: {
     fontSize: 20,
