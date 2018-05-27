@@ -202,7 +202,7 @@ export default class App extends Component {
                     </View>
                   </TouchableOpacity>
                   <View style={stylesTime.choiceR}>
-                    <Text style={stylesTime.itemCode}>{item.key}</Text>
+                    <Text style={stylesTime.itemCode}>{item.text}</Text>
                   </View>
                 </View>
               )

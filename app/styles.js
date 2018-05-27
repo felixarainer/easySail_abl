@@ -4,12 +4,17 @@ import { StyleSheet } from 'react-native';
 module.exports = StyleSheet.create({
 	//main screen
 	buttonLabel: {
-		fontSize: 36,//44,
+		fontSize: 36, //44,
 		fontWeight: 'bold',
 		textAlign: 'center',
 		color: '#d1d8e0',
 	},
-	buttonHighlight: { justifyContent: 'center', flex: 1, padding: 5 },
+	buttonHighlight: {
+		justifyContent: 'center',
+		flex: 1,
+		padding: 5,
+		opacity: 1,
+	},
 
 	buttonDisabled: { backgroundColor: '#778ca3' },
 	countdownText: { fontSize: 80, fontWeight: 'bold', textAlign: 'center' },
@@ -36,14 +41,19 @@ module.exports = StyleSheet.create({
 	listEntrySelected: {
 		backgroundColor: '#0fb9b1',
 	},
-	listEntryText: { fontSize: 26,//30,
-		fontWeight: 'bold', textAlign: 'center' },
+	listEntryText: {
+		fontSize: 26, //30,
+		fontWeight: 'bold',
+		textAlign: 'center',
+	},
 	cancelButton: { backgroundColor: '#eb3b5a' },
 	okButton: { backgroundColor: '#20bf6b' },
 	toggleButton: { backgroundColor: '#4b7bec' },
 
-	descriptionText: { fontSize: 24,//35, 
-		padding: 5 },
+	descriptionText: {
+		fontSize: 24, //35,
+		padding: 5,
+	},
 
 	actionMenuItem: {
 		height: 180,
@@ -81,13 +91,12 @@ module.exports = StyleSheet.create({
 		height: undefined,
 		width: undefined,
 		resizeMode: 'contain',
-		backgroundColor: 'lightgreen',
 	},
-	flagContainer: { flex: 1 },
 	backgroundImage: {
 		flex: 1,
 		height: undefined,
 		width: undefined,
-		resizeMode: 'cover',
+		resizeMode: 'stretch',
 	},
+	flagContainer: { flex: 1 },
 });

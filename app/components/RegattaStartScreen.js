@@ -31,7 +31,16 @@ import { StackNavigator } from 'react-navigation';
 
 class actState {
 	//isstart sagt aus, ob dieses ereignis in der Liste ein Startereignis ist
-	constructor(flags, actions, time, isStart, rank, isIndefinite, isSkippable, name) {
+	constructor(
+		flags,
+		actions,
+		time,
+		isStart,
+		rank,
+		isIndefinite,
+		isSkippable,
+		name
+	) {
 		this.flags = flags;
 		this.actions = actions;
 		this.time = time;
@@ -95,7 +104,7 @@ class actState {
 
 	getName = () => {
 		return this.name;
-	}
+	};
 }
 
 export default class App extends React.Component {
@@ -207,16 +216,18 @@ export default class App extends React.Component {
 	componentWillMount() {
 		console.log('componentWillMount();');
 
-		this.actlist = [new actState(
-			[{}, {}, {}, {}],
-			[],
-			moment(),
-			false,
-			undefined,
-			true,
-			true,
-			undefined,
-		)];
+		this.actlist = [
+			new actState(
+				[{}, {}, {}, {}],
+				[],
+				moment(),
+				false,
+				undefined,
+				true,
+				true,
+				undefined
+			),
+		];
 
 		this.fetchData();
 
@@ -226,7 +237,7 @@ export default class App extends React.Component {
 	}
 
 	fetchData = async () => {
-		console.log('fetchData()')
+		console.log('fetchData()');
 
 		let regattaData = JSON.parse(
 			await AsyncStorage.getItem(this.props.navigation.state.params.regattaKey)
@@ -235,20 +246,22 @@ export default class App extends React.Component {
 		this.regattaKey = this.props.navigation.state.params.regattaKey;
 
 		this.handleStartCreation(regattaData);
-	}
+	};
 
-	handleStartCreation = (regattaData) => {
-		console.log('handleStartCreation()')
+	handleStartCreation = regattaData => {
+		console.log('handleStartCreation()');
 
 		console.log(regattaData);
 
 		let counter = 0;
 		let firstBool = true;
 
-		regattaData.boatClasses.forEach((elem) => {
-
-			let startMom = moment(regattaData.startDate + ' ' + regattaData.startTime, 'DD.MM.YYYY HH:mm').add(counter*regattaData.boatTimeDifference,'minutes');
-			counter ++;
+		regattaData.boatClasses.forEach(elem => {
+			let startMom = moment(
+				regattaData.startDate + ' ' + regattaData.startTime,
+				'DD.MM.YYYY HH:mm'
+			).add(counter * regattaData.boatTimeDifference, 'minutes');
+			counter++;
 
 			this.startStateArgs.push({
 				name: elem,
@@ -256,24 +269,23 @@ export default class App extends React.Component {
 				condition: regattaData.startFlag.toLowerCase(),
 				badstart: false,
 				first: firstBool,
-			})
+			});
 
 			firstBool = false;
-		})
+		});
 
-		console.log(this.startStateArgs)
+		console.log(this.startStateArgs);
 
-		if(this.props.navigation.state.params.start){
+		if (this.props.navigation.state.params.start) {
 			this.actlist = this.createStartStates(this.startStateArgs);
 
-			console.log(this.actlist)
+			console.log(this.actlist);
 			this.step = -1;
 			this.updateFlags();
 		}
-	}
+	};
 
 	createStartStates = args => {
-
 		this.specialBtnsDescs = this.all_specialBtnsDescs;
 
 		let ac = [];
@@ -299,7 +311,7 @@ export default class App extends React.Component {
 						0,
 						true,
 						true,
-						start.name,
+						start.name
 					)
 				);
 			} else {
@@ -323,7 +335,7 @@ export default class App extends React.Component {
 							0,
 							true,
 							true,
-							start.name,
+							start.name
 						)
 					);
 				} else {
@@ -351,7 +363,7 @@ export default class App extends React.Component {
 							// false,
 							true,
 							true,
-							start.name,
+							start.name
 						)
 					);
 				}
@@ -381,7 +393,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
-					start.name,
+					start.name
 				)
 			);
 
@@ -411,7 +423,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
-					start.name,
+					start.name
 				)
 			);
 
@@ -445,7 +457,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
-					start.name,
+					start.name
 				)
 			);
 
@@ -474,7 +486,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
-					start.name,
+					start.name
 				)
 			);
 
@@ -493,7 +505,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
-					start.name,
+					start.name
 				)
 			);
 
@@ -510,7 +522,7 @@ export default class App extends React.Component {
 					// false,
 					true,
 					true,
-					start.name,
+					start.name
 				)
 			);
 		});
@@ -559,7 +571,7 @@ export default class App extends React.Component {
 				undefined,
 				false,
 				false,
-				undefined,
+				undefined
 			)
 		);
 
@@ -576,7 +588,7 @@ export default class App extends React.Component {
 
 		this.setState({ isStartPickerVisible: false });
 
-		this.startTimes.splice(-1,1);
+		this.startTimes.splice(-1, 1);
 
 		//neue actions
 		let bsacts = [];
@@ -627,7 +639,7 @@ export default class App extends React.Component {
 
 		bsacts = this.createStartStates([
 			{
-				name: this.actlist[this.step-4].getName(),
+				name: this.actlist[this.step - 4].getName(),
 				time: mom,
 				condition: ARGcondition,
 				badstart: badstart,
@@ -662,7 +674,7 @@ export default class App extends React.Component {
 				this.step -= rank + 1;
 			}
 		}
-		this.setState({ postPoneBadStart: false});
+		this.setState({ postPoneBadStart: false });
 		this.updateFlags();
 	};
 
@@ -698,26 +710,31 @@ export default class App extends React.Component {
 		//ggf zu lockTolandscapeLeft() aendern
 		Orientation.lockToLandscape();
 
-		if(!this.props.navigation.state.params.start){
+		if (!this.props.navigation.state.params.start) {
 			this.actlist = [
 				new actState(
-				[{},{},{},{}],
-				[],
-				moment(),
-				false,
-				undefined,
-				true,
-				true,
-				undefined,
-			),
-		];
+					[{}, {}, {}, {}],
+					[],
+					moment(),
+					false,
+					undefined,
+					true,
+					true,
+					undefined
+				),
+			];
 
-			this.setState({specialKey: undefined})
+			this.setState({ specialKey: undefined });
 
-			this.specialBtnsDescs = [this.all_specialBtnsDescs[3],this.all_specialBtnsDescs[4],this.all_specialBtnsDescs[5],this.all_specialBtnsDescs[6],,this.all_specialBtnsDescs[7]];
+			this.specialBtnsDescs = [
+				this.all_specialBtnsDescs[3],
+				this.all_specialBtnsDescs[4],
+				this.all_specialBtnsDescs[5],
+				this.all_specialBtnsDescs[6],
+				,
+				this.all_specialBtnsDescs[7],
+			];
 		}
-
-
 
 		this.step = -1;
 		this.updateFlags();
@@ -745,7 +762,7 @@ export default class App extends React.Component {
 				oldStart,
 				true,
 				true,
-				undefined,
+				undefined
 			)
 		);
 
@@ -753,39 +770,49 @@ export default class App extends React.Component {
 	};
 
 	updateFlags = () => {
-
-		if(!this.props.navigation.state.params.start){
-
+		if (!this.props.navigation.state.params.start) {
 			this.var++;
 
-			if((this.var === 2) && (this.actlist.length === 1) && (this.step === -1)){
+			if (this.var === 2 && this.actlist.length === 1 && this.step === -1) {
 				const { state, navigate } = this.props.navigation;
 				this.startFinished = true;
-				navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey, order: this.startTimes})
-			}else{
+				navigate('Timing', {
+					regattaKey: this.props.navigation.state.params.regattaKey,
+					order: this.startTimes,
+				});
+			} else {
 				if (this.step < this.actlist.length - 1) {
 					this.startFinished = false;
 					this.step++;
-					if(this.actlist[this.step].wasStart()){
-						this.startTimes.push({name: this.actlist[this.step].getName(), starttime:moment()})
-						console.log(this.startTimes)
+					if (this.actlist[this.step].wasStart()) {
+						this.startTimes.push({
+							name: this.actlist[this.step].getName(),
+							starttime: moment(),
+						});
+						console.log(this.startTimes);
 					}
 					this.setState(this.actlist[this.step].getState());
 				} else {
 					const { state, navigate } = this.props.navigation;
 					this.startFinished = true;
-					navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey, order: this.startTimes});
+					navigate('Timing', {
+						regattaKey: this.props.navigation.state.params.regattaKey,
+						order: this.startTimes,
+					});
 				}
 			}
-		}else{
-			console.log('updateFlags')
+		} else {
+			console.log('updateFlags');
 			//Auffhören mit updaten wenn liste abgearbeitet
 			if (this.step < this.actlist.length - 1) {
 				this.startFinished = false;
 				this.step++;
-				if(this.actlist[this.step].wasStart()){
-					this.startTimes.push({name: this.actlist[this.step].getName(), starttime:moment()})
-					console.log(this.startTimes)
+				if (this.actlist[this.step].wasStart()) {
+					this.startTimes.push({
+						name: this.actlist[this.step].getName(),
+						starttime: moment(),
+					});
+					console.log(this.startTimes);
 				}
 				this.setState(this.actlist[this.step].getState());
 				if (this.step === this.actlist.length - 3) {
@@ -794,10 +821,13 @@ export default class App extends React.Component {
 			} else {
 				const { state, navigate } = this.props.navigation;
 				this.startFinished = true;
-				navigate('Timing',{regattaKey: this.props.navigation.state.params.regattaKey, order: this.startTimes});
+				navigate('Timing', {
+					regattaKey: this.props.navigation.state.params.regattaKey,
+					order: this.startTimes,
+				});
 			}
-		};
-	}
+		}
+	};
 
 	postponeAP = () => {
 		//TODO checken warum auf einmal 30 min
@@ -814,13 +844,13 @@ export default class App extends React.Component {
 				undefined,
 				true,
 				true,
-				undefined,
+				undefined
 			)
 		);
 
 		this.step -= this.actlist[this.step].getRank();
 
-		if(this.step === 0){
+		if (this.step === 0) {
 			this.step++;
 		}
 
@@ -844,7 +874,7 @@ export default class App extends React.Component {
 				undefined,
 				true,
 				true,
-				undefined,
+				undefined
 			)
 		);
 
@@ -870,7 +900,7 @@ export default class App extends React.Component {
 				undefined,
 				false,
 				false,
-				undefined,
+				undefined
 			)
 		);
 
@@ -895,7 +925,7 @@ export default class App extends React.Component {
 				undefined,
 				true,
 				true,
-				undefined,
+				undefined
 			)
 		);
 
@@ -903,8 +933,8 @@ export default class App extends React.Component {
 		this.step = -1;
 		this.updateFlags();
 
-		if(!this.props.navigation.state.params.start){
-			this.actlist.splice(1,0,...this.createStartStates(this.startStateArgs));
+		if (!this.props.navigation.state.params.start) {
+			this.actlist.splice(1, 0, ...this.createStartStates(this.startStateArgs));
 			this.actlist.splice(-1, 1);
 		}
 	};
@@ -923,7 +953,7 @@ export default class App extends React.Component {
 				undefined,
 				true,
 				true,
-				undefined,
+				undefined
 			)
 		);
 
@@ -931,8 +961,8 @@ export default class App extends React.Component {
 		this.step = -1;
 		this.updateFlags();
 
-		if(!this.props.navigation.state.params.start){
-			this.actlist.splice(1,0,...this.createStartStates(this.startStateArgs));
+		if (!this.props.navigation.state.params.start) {
+			this.actlist.splice(1, 0, ...this.createStartStates(this.startStateArgs));
 		}
 	};
 
@@ -950,7 +980,7 @@ export default class App extends React.Component {
 				undefined,
 				false,
 				false,
-				undefined,
+				undefined
 			)
 		);
 
@@ -960,12 +990,10 @@ export default class App extends React.Component {
 	};
 
 	handleFlagY = () => {
-
-
 		let newFlag = undefined;
 
 		if (this.flagSpot4 !== res.flags.y) {
-			console.log('1')
+			console.log('1');
 			newFlag = res.flags.y;
 			this.specialBtnsDescs[6] = {
 				key: 6,
@@ -980,7 +1008,7 @@ export default class App extends React.Component {
 				description: 'Setzen der Flagge "L"',
 			};
 		} else {
-			console.log('2')
+			console.log('2');
 			newFlag = {};
 			this.specialBtnsDescs[6] = {
 				key: 6,
@@ -1045,7 +1073,13 @@ export default class App extends React.Component {
 
 	renderStartPicker = () => {
 		console.log('renderStartPicker()');
-		let startFlags = [res.flags.p, res.flags.u, res.flags.black, res.flags.i, res.flags.z];
+		let startFlags = [
+			res.flags.p,
+			res.flags.u,
+			res.flags.black,
+			res.flags.i,
+			res.flags.z,
+		];
 		return (
 			<View
 				style={[{ flex: 1, flexDirection: 'column' }, styles.menuBackground]}
@@ -1068,7 +1102,7 @@ export default class App extends React.Component {
 					</Text>
 					{startFlags.map(flag => {
 						return (
-							<TouchableHighlight
+							<TouchableOpacity
 								key={flag.name}
 								style={[
 									styles.spHighlight,
@@ -1083,7 +1117,7 @@ export default class App extends React.Component {
 								}}
 							>
 								<Image source={flag.pic} style={styles.spFlagImage} />
-							</TouchableHighlight>
+							</TouchableOpacity>
 						);
 					})}
 				</View>
@@ -1094,16 +1128,15 @@ export default class App extends React.Component {
 					</Text>
 				</View>
 				<View style={{ flex: 1, flexDirection: 'row' }}>
-					<TouchableHighlight
+					<TouchableOpacity
 						style={[styles.buttonHighlight, styles.cancelButton]}
-						underlayColor="#fc5c65"
 						onPress={() => {
 							this.toggleStartPicker();
 						}}
 					>
 						<Text style={styles.buttonLabel}>Abbrechen</Text>
-					</TouchableHighlight>
-					<TouchableHighlight
+					</TouchableOpacity>
+					<TouchableOpacity
 						style={[
 							styles.buttonHighlight,
 							{ flex: 1.5 },
@@ -1111,7 +1144,6 @@ export default class App extends React.Component {
 								? styles.toggleButton
 								: styles.buttonDisabled,
 						]}
-						//underlayColor="blue"
 						onPress={() => {
 							this.togglePostPone();
 						}}
@@ -1120,17 +1152,17 @@ export default class App extends React.Component {
 							Fehlstart verschieben:{' '}
 							{this.state.postPoneBadStart ? 'aktiviert' : 'deaktiviert'}
 						</Text>
-					</TouchableHighlight>
-					<TouchableHighlight
+					</TouchableOpacity>
+					<TouchableOpacity
 						style={[styles.buttonHighlight, styles.okButton]}
-						underlayColor="#26de81"
 						onPress={() => {
 							this.toggleStartPicker();
+							this.toggleStartButtons();
 							this.massiveBadStart(this.state.badStartCondition);
 						}}
 					>
 						<Text style={styles.buttonLabel}>Bestätigen</Text>
-					</TouchableHighlight>
+					</TouchableOpacity>
 				</View>
 			</View>
 		);
@@ -1190,14 +1222,13 @@ export default class App extends React.Component {
 				<View style={{ flex: 1 }}>
 					{this.specialBtnsDescs.map(args => {
 						return (
-							<TouchableHighlight
+							<TouchableOpacity
 								key={args.key}
 								style={[
 									styles.listEntryHighlight,
 									this.state.specialKey === args.key &&
 										styles.listEntrySelected,
 								]}
-								underlayColor="#0fb9b1"
 								onPress={() => {
 									this.setState({ specialDescription: args.description });
 									this.setState({ specialKey: args.key });
@@ -1205,7 +1236,7 @@ export default class App extends React.Component {
 								}}
 							>
 								<Text style={styles.listEntryText}>{args.button}</Text>
-							</TouchableHighlight>
+							</TouchableOpacity>
 						);
 					})}
 				</View>
@@ -1246,25 +1277,23 @@ export default class App extends React.Component {
 						</View>
 					</View>
 					<View style={{ flex: 1, flexDirection: 'row' }}>
-						<TouchableHighlight
+						<TouchableOpacity
 							style={[styles.buttonHighlight, styles.cancelButton]}
-							underlayColor="red"
 							onPress={() => {
 								this.toggleModal();
 							}}
 						>
 							<Text style={styles.buttonLabel}>Abbrechen</Text>
-						</TouchableHighlight>
-						<TouchableHighlight
+						</TouchableOpacity>
+						<TouchableOpacity
 							style={[styles.buttonHighlight, styles.okButton]}
-							underlayColor="green"
 							onPress={() => {
 								this.toggleModal();
 								this.makeSpecialDecision();
 							}}
 						>
 							<Text style={styles.buttonLabel}>Bestätigen</Text>
-						</TouchableHighlight>
+						</TouchableOpacity>
 					</View>
 				</View>
 			</View>
@@ -1308,9 +1337,14 @@ export default class App extends React.Component {
 						<View style={styles.flagRow}>
 							<View style={styles.flagContainer}>
 								<Image
-									style={styles.flagImage}
-									source={this.state.curFlags.flag1.pic}
-								/>
+									style={styles.backgroundImage}
+									source={res.div.peilstange}
+								>
+									<Image
+										style={styles.flagImage}
+										source={this.state.curFlags.flag1.pic}
+									/>
+								</Image>
 							</View>
 							<View style={styles.flagContainer}>
 								<Image
@@ -1335,21 +1369,19 @@ export default class App extends React.Component {
 						</View>
 					</View>
 					<View style={{ flex: 1, flexDirection: 'row' }}>
-						<TouchableHighlight
+						<TouchableOpacity
 							style={[styles.buttonHighlight, { backgroundColor: '#4b7bec' }]}
-							underlayColor={'#3867d6'}
 							onPress={() => this.toggleModal()}
 						>
 							<Text style={styles.buttonLabel}>Aktion initiieren</Text>
-						</TouchableHighlight>
-						<TouchableHighlight
+						</TouchableOpacity>
+						<TouchableOpacity
 							style={[
 								styles.buttonHighlight,
 								this.state.enableBadStartBtns
 									? { backgroundColor: '#45aaf2' }
 									: styles.buttonDisabled,
 							]}
-							underlayColor={'#2d98da'}
 							onPress={() => {
 								if (this.state.enableBadStartBtns) {
 									this.toggleStartButtons();
@@ -1357,25 +1389,33 @@ export default class App extends React.Component {
 								} //TODO change back
 							}}
 						>
-							<Text style={styles.buttonLabel}>Einzelrückruf</Text>
-						</TouchableHighlight>
-						<TouchableHighlight
+							<Image
+								style={[styles.flagImage, { justifyContent: 'center' }]}
+								source={res.div.x}
+							>
+								<Text style={styles.buttonLabel}>Einzelrückruf</Text>
+							</Image>
+						</TouchableOpacity>
+						<TouchableOpacity
 							style={[
 								styles.buttonHighlight,
 								this.state.enableBadStartBtns
 									? { backgroundColor: '#2bcbba' }
 									: styles.buttonDisabled,
 							]}
-							underlayColor={'#0fb9b1'}
 							onPress={() => {
 								if (this.state.enableBadStartBtns) {
-									this.toggleStartButtons();
 									this.toggleStartPicker();
 								}
 							}}
 						>
-							<Text style={styles.buttonLabel}>Allgemeiner Rückruf</Text>
-						</TouchableHighlight>
+							<Image
+								style={[styles.flagImage, { justifyContent: 'center' }]}
+								source={res.div.fhs}
+							>
+								<Text style={styles.buttonLabel}>Allgemeiner Rückruf</Text>
+							</Image>
+						</TouchableOpacity>
 						<Modal isVisible={this.state.isActionsMenuVisible}>
 							{this.renderMenu()}
 						</Modal>
