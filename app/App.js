@@ -1,5 +1,12 @@
 import React from 'react';
-import AppRegistry from 'react-native';
+import {
+	StyleSheet,
+	AppRegistry,
+	Text,
+	TextInput,
+	View,
+	Button,
+} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import BoatClassScreen from './components/BoatClassScreen';
 import HomeScreen from './components/HomeScreen';
@@ -15,7 +22,7 @@ export const SimpleApp = StackNavigator(
 		Summary: { screen: SummaryScreen },
 		Start: { screen: RegattaStartScreen },
 		Timing: { screen: TimingScreen },
-		Finish: { screen: FinishScreen },
+		Finish: {screen: FinishScreen },
 	},
 	{
 		transitionConfig: () => ({ screenInterpolator: () => null }),
