@@ -215,7 +215,10 @@ export default class SummaryScreen extends React.Component {
       >
         {this.state.boatClasses.map((elem, index) => {
           return (
-            <View style={styles_summery.boatClassElem}>
+            <View
+							key={elem}
+							style={styles_summery.boatClassElem}
+							>
               <Text style={styles_summery.boatClassName}>{elem}</Text>
               <TouchableHighlight
                 onPress={() => {

@@ -64,6 +64,7 @@ export default class HomeScreen extends React.Component {
         {this.state.data.map((elem, index) => {
           return (
             <TouchableOpacity
+              key={elem.regattaName}
               style={styles.tableElement}
               onPress={() =>
                 navigate('Summary', { key: this.state.data[index].key })
