@@ -41,6 +41,7 @@
     "react-native-modal": "^5.0.0",
     "react-native-orientation-locker": "^1.0.7",
     "react-native-prompt": "^1.0.0",
+    "react-native-super-grid": "^2.0.2",
     "react-native-wheel-datepicker": "^2.1.10",
     "react-navigation": "^1.4.0",
     "redux": "^3.7.2"

@@ -5,26 +5,53 @@ import {
 	AppRegistry,
 	Text,
 	TextInput,
+	Image,
 	View,
 	Button,
 	FlatList,
+	TouchableOpacity,
+	TouchableHighlight,
+	ScrollView,
+	Keyboard,
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { RadioGroup, RadioButton } from 'react-native-flexi-radio-button';
-//import Prompt from 'react-native-prompt';
+import Prompt from 'react-native-prompt';
+import * as res from '../res/res.js';
+import styles from '../styles.js';
+import Modal from 'react-native-modal';
 
 export default class SummaryScreen extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			didExist: false,
+			regattaKey: '',
 			promptVisible: false,
+			selectedIndex: 0,
 			regattaName: '',
 			startDate: '',
 			startTime: '',
 			boatTimeDifference: '',
-			startFlag: '',
+			startFlag: 'P',
 			boatClasses: [],
+			keyBoardup: false,
+			newClass: 'Neue Bootsklasse',
 		};
+
+		this.newClass = 'Neue Bootsklasse';
+	}
+
+	componentWillMount() {
+		this.fetchData();
+	}
+
+	_KeyboardDidShow() {
+		this.setState({ keyBoardup: true });
+	}
+
+	_KeyboardDidHide() {
+		this.setState({ keyBoardup: false });
 	}
 
 	static navigationOptions = {
@@ -42,38 +69,263 @@ export default class SummaryScreen extends React.Component {
 		);
 	};
 
+	addBoatClass = value => {
+		if (value != 0) {
+			this.setState({
+				boatClasses: this.state.boatClasses.concat([value]),
+			});
+		}
+
+		console.log('Ende addBoatClass:');
+		console.log(this.state.boatClasses);
+	};
+
+	fetchData = async () => {
+		const { state, navigate } = this.props.navigation;
+		if (state.params.key != 0) {
+			this.setState({ didExist: true, regattaKey: state.params.key });
+			var regattaData = JSON.parse(
+				await AsyncStorage.getItem(state.params.key)
+			);
+
+			this.setState({
+				regattaName: regattaData.regattaName,
+				startDate: regattaData.startDate,
+				startTime: regattaData.startTime,
+				boatTimeDifference: regattaData.boatTimeDifference,
+				startFlag: regattaData.startFlag,
+			});
+
+			regattaData.boatClasses.map(boatClass => {
+				this.setState({
+					boatClasses: this.state.boatClasses.concat([boatClass]),
+				});
+			});
+
+			if (regattaData.startFlag == 'P') {
+				this.setState({ selectedIndex: 0 });
+			} else if (regattaData.startFlag == 'I') {
+				this.setState({ selectedIndex: 1 });
+			} else if (regattaData.startFlag == 'Z') {
+				this.setState({ selectedIndex: 2 });
+			} else if (regattaData.startFlag == 'U') {
+				this.setState({ selectedIndex: 3 });
+			} else if (regattaData.startFlag == 'Schwarz') {
+				this.setState({ selectedIndex: 4 });
+			}
+		} else {
+			console.log('key was empty -> did not print any data');
+		}
+	};
+
 	saveData = async () => {
 		try {
-			await AsyncStorage.setItem(
-				this.state.regattaName + this.state.startDate,
-				JSON.stringify({
-					regattaName: this.state.regattaName,
-					startDate: this.state.startDate,
-					startTime: this.state.startTime,
-					boatTimeDifference: this.state.boatTimeDifference,
-					startFlag: this.state.startFlag,
-					boatClasses: this.state.boatClasses,
-				})
-			);
+			if (this.state.didExist == false) {
+				await AsyncStorage.setItem(
+					new Date().toTimeString(),
+					JSON.stringify({
+						regattaName: this.state.regattaName,
+						startDate: this.state.startDate,
+						startTime: this.state.startTime,
+						boatTimeDifference: this.state.boatTimeDifference,
+						startFlag: this.state.startFlag,
+						boatClasses: this.state.boatClasses,
+						regattaTimes: undefined,
+						serverCode: '1a2b',
+					})
+				);
+			} else {
+				await AsyncStorage.mergeItem(
+					this.state.regattaKey,
+					JSON.stringify({
+						regattaName: this.state.regattaName,
+						startDate: this.state.startDate,
+						startTime: this.state.startTime,
+						boatTimeDifference: this.state.boatTimeDifference,
+						startFlag: this.state.startFlag,
+						boatClasses: this.state.boatClasses,
+						regattaTimes: undefined,
+						serverCode: '1a2b',
+					})
+				);
+			}
 		} catch (error) {
 			console.warn('fehler beim schreiben');
 		}
 	};
 
-	render() {
-		const { navigate } = this.props.navigation;
+	switchElem = (oldPos, newPos) => {
+		arr = this.state.boatClasses.slice();
+		if (newPos >= 0 && newPos < arr.length) {
+			let k = arr[oldPos];
+			arr[oldPos] = arr[newPos];
+			arr[newPos] = k;
+			this.setState({ boatClasses: arr });
+		}
+	};
+
+	removeElem = toDel => {
+		this.setState({
+			boatClasses: this.state.boatClasses.filter(
+				(item, index) => index !== toDel
+			),
+		});
+	};
+
+	renderList = () => {
+		console.log('Anfang renderList:');
+		console.log(this.state.boatClasses);
 		return (
-			<View style={styles.container}>
-				{/*LEFT FLEX BOX - REGATTA DATA*/}
+			<ScrollView
+				contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+			>
+				{this.state.boatClasses.map((elem, index) => {
+					return (
+						<View key={elem}>
+							<Text>{elem}</Text>
+							<TouchableHighlight
+								onPress={() => {
+									this.switchElem(index, index - 1);
+								}}
+							>
+								<Text>up</Text>
+							</TouchableHighlight>
+							<TouchableHighlight
+								onPress={() => {
+									this.switchElem(index, index + 1);
+								}}
+							>
+								<Text>down</Text>
+							</TouchableHighlight>
+							<TouchableHighlight
+								onPress={() => {
+									this.removeElem(index);
+								}}
+							>
+								<Text>remove</Text>
+							</TouchableHighlight>
+						</View>
+					);
+				})}
+			</ScrollView>
+		);
+	};
+
+	toggleStartPicker = () => {
+		if (!this.state.promptVisible) {
+			this.setState({ newClass: 'Neue Bootsklasse' });
+		}
+
+		this.setState({ promptVisible: !this.state.promptVisible });
+	};
+
+	renderStartPicker = () => {
+		console.log('renderStartPicker()');
+		let startFlags = [
+			res.flags.p,
+			res.flags.u,
+			res.flags.black,
+			res.flags.i,
+			res.flags.z,
+		];
+		return (
+			<View
+				style={[{ flex: 1, flexDirection: 'column' }, styles.menuBackground]}
+			>
 				<View
 					style={{
-						flex: 1,
-						// alignItems: 'center',
+						flexDirection: 'row',
+						flex: 2,
+						margin: 10,
+						marginBottom: 0,
 					}}
 				>
+					<Text
+						style={[
+							styles.descriptionText,
+							{ flex: 1, fontWeight: 'bold', fontSize: 40 },
+						]}
+					>
+						Wählen sie eine Flagge:{' '}
+					</Text>
+					{startFlags.map(flag => {
+						return (
+							<TouchableHighlight
+								key={flag.name}
+								style={[
+									styles.spHighlight,
+									this.state.badStartCondition === flag.name &&
+										styles.toggleButton,
+								]}
+								onPress={() => {
+									this.setState({
+										badStartCondition: flag.name,
+										flagDescription: flag.description,
+									});
+								}}
+							>
+								<Image source={flag.pic} style={styles.spFlagImage} />
+							</TouchableHighlight>
+						);
+					})}
+				</View>
+				<View style={{ flex: 3, paddingHorizontal: 10 }}>
+					<Text style={styles.descriptionText}>
+						<Text style={{ fontWeight: 'bold' }}>{'Beschreibung: '}</Text>
+						{this.state.flagDescription}
+					</Text>
+				</View>
+				<View style={{ flex: 1, flexDirection: 'row' }}>
+					<TouchableHighlight
+						style={[styles.buttonHighlight, styles.cancelButton]}
+						underlayColor="#fc5c65"
+						onPress={() => {
+							this.toggleStartPicker();
+						}}
+					>
+						<Text style={styles.buttonLabel}>Abbrechen</Text>
+					</TouchableHighlight>
+					<TextInput
+						style={{
+							width: 500,
+							fontSize: 36,
+							height: 100,
+							borderColor: 'gray',
+							backgroundColor: 'lightblue',
+							borderWidth: 1,
+						}}
+						onChangeText={text => {
+							this.setState({ newClass: text });
+							this.forceUpdate();
+						}}
+						value={this.state.newClass}
+					/>
+
+					<TouchableHighlight
+						style={[styles.buttonHighlight, styles.okButton]}
+						underlayColor="#26de81"
+						onPress={() => {
+							this.addBoatClass(this.state.newClass);
+							this.toggleStartPicker();
+						}}
+					>
+						<Text style={styles.buttonLabel}>Bestätigen</Text>
+					</TouchableHighlight>
+				</View>
+			</View>
+		);
+	};
+
+	render() {
+		const { state, navigate } = this.props.navigation;
+		return (
+			<View style={styles_summery.container}>
+				{/*LEFT FLEX BOX - REGATTA DATA*/}
+				<View style={{ flex: 1 }}>
 					<View style={{ flexDirection: 'row' }}>
 						<Text>Name: </Text>
 						<TextInput
+							style={{ width: 100 }}
 							placeholder="Regattaname"
 							onChangeText={regattaName => this.setState({ regattaName })}
 							value={this.state.regattaName}
@@ -82,6 +334,7 @@ export default class SummaryScreen extends React.Component {
 					<View style={{ flexDirection: 'row' }}>
 						<Text>Startdatum: </Text>
 						<TextInput
+							style={{ width: 100 }}
 							placeholder="DD.MM.JJ"
 							onChangeText={startDate => this.setState({ startDate })}
 							value={this.state.startDate}
@@ -90,6 +343,7 @@ export default class SummaryScreen extends React.Component {
 					<View style={{ flexDirection: 'row' }}>
 						<Text>Startzeit: </Text>
 						<TextInput
+							style={{ width: 100 }}
 							placeholder="hh:mm"
 							onChangeText={startTime => this.setState({ startTime })}
 							value={this.state.startTime}
@@ -98,6 +352,7 @@ export default class SummaryScreen extends React.Component {
 					<View style={{ flexDirection: 'row' }}>
 						<Text>Startdifferenz der Bootsklassen: </Text>
 						<TextInput
+							style={{ width: 100 }}
 							placeholder="mm"
 							onChangeText={boatTimeDifference =>
 								this.setState({ boatTimeDifference })
@@ -105,93 +360,94 @@ export default class SummaryScreen extends React.Component {
 							value={this.state.boatTimeDifference}
 						/>
 					</View>
-					<View>
-						<RadioGroup
-							onSelect={(index, value) => this.setState({ startFlag: value })}
+				</View>
+				<View
+					style={{ flex: 1, alignItems: 'center', flexDirection: 'column' }}
+				>
+					<View style={{ flex: 3.33, alignItems: 'center' }}>
+						<View style={{ alignItems: 'center' }}>{this.renderList()}</View>
+					</View>
+					<View style={{ flex: 1, alignItems: 'center' }}>
+						<TouchableOpacity
+							style={styles_summery.touchableOpacityBtn}
+							onPress={() => this.toggleStartPicker()}
 						>
-							<RadioButton value={'P'}>
-								<Text>P</Text>
-							</RadioButton>
-							<RadioButton value={'I'}>
-								<Text>I</Text>
-							</RadioButton>
-							<RadioButton value={'Z'}>
-								<Text>Z</Text>
-							</RadioButton>
-							<RadioButton value={'U'}>
-								<Text>U</Text>
-							</RadioButton>
-							<RadioButton value={'Schwarz'}>
-								<Text>Schwarz</Text>
-							</RadioButton>
-							<RadioButton value={'X'}>
-								<Text>X</Text>
-							</RadioButton>
-						</RadioGroup>
-						<Text>{this.state.regattaName}</Text>
-						<Text>{this.state.startDate}</Text>
-						<Text>{this.state.startTime}</Text>
-						<Text>{this.state.boatTimeDifference}</Text>
-						<Text>{this.state.startFlag}</Text>
+							<Text style={styles_summery.btnText}>Neue Bootsklasse</Text>
+						</TouchableOpacity>
 					</View>
 				</View>
-				{/*MID FLEX BOX - BOATCLASS STUFF*/}
-				<View style={{ flex: 1, alignItems: 'center' }}>
-					<FlatList
-						data={this.state.boatClasses}
-						renderItem={({ item }) => <Text>{item}</Text>}
-						ItemSeparatorComponent={this.renderSeparator}
-					/>
-					<Button
-						onPress={() =>
-							this.setState({
-								promptVisible: true,
-							})
-						}
-						title="Bootsklasse hinzufügen"
-					/>
-					{/* <Prompt
-            title="Neue Bootsklasse"
-            visible={this.state.promptVisible}
-            onCancel={() =>
-              this.setState({
-                promptVisible: false,
-              })
-            }
-            onSubmit={value =>
-              this.setState({
-                promptVisible: false,
-                boatClasses: this.state.boatClasses.concat([value]),
-              })
-            }
-          /> */}
-				</View>
 				{/*RIGHT FLEX BOX - NEXT ACTIONS*/}
-				<View style={{ flex: 1, alignItems: 'center' }}>
-					<Button
-						onPress={() => navigate('Start')}
-						title="Speichern und starten"
-					/>
-					<Button
-						onPress={() => {
-							this.saveData();
-							navigate('Home');
-						}}
-						title="Speichern"
-					/>
-					<Button onPress={() => navigate('Home')} title="Abbrechen" />
+				<View
+					style={{
+						flex: 1,
+						flexDirection: 'column',
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
+				>
+					<View style={styles_summery.btnContainer}>
+						<TouchableOpacity
+							style={styles_summery.touchableOpacityBtn}
+							onPress={() =>
+								navigate('Start', {
+									start: true,
+									regattaKey: this.state.regattaKey,
+								})
+							}
+						>
+							<Text style={styles_summery.btnText}>Starten</Text>
+						</TouchableOpacity>
+					</View>
+					<View style={styles_summery.btnContainer}>
+						<TouchableOpacity
+							onPress={() => {
+								this.saveData();
+								navigate('Home');
+							}}
+							style={styles_summery.touchableOpacityBtn}
+						>
+							<Text style={styles_summery.btnText}>Speichern</Text>
+						</TouchableOpacity>
+					</View>
+					<View style={styles_summery.btnContainer}>
+						<TouchableOpacity
+							onPress={() => navigate('Home')}
+							style={styles_summery.touchableOpacityBtn}
+						>
+							<Text style={styles_summery.btnText}>Abbrechen</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
+				<Modal isVisible={this.state.promptVisible}>
+					{this.renderStartPicker()}
+				</Modal>
 			</View>
 		);
 	}
 }
 
-const styles = StyleSheet.create({
+const styles_summery = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#fff',
 		alignItems: 'center',
 		justifyContent: 'center',
 		flexDirection: 'row',
+	},
+	btnContainer: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	touchableOpacityBtn: {
+		borderWidth: 2,
+		borderColor: '#45c1bd',
+		borderRadius: 4,
+		padding: 20,
+		marginVertical: 15,
+	},
+	btnText: {
+		fontSize: 20,
+		color: '#45c1bd',
 	},
 });

@@ -1,17 +1,12 @@
 import React from 'react';
-import {
-	StyleSheet,
-	AppRegistry,
-	Text,
-	TextInput,
-	View,
-	Button,
-} from 'react-native';
+import AppRegistry from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import BoatClassScreen from './components/BoatClassScreen';
 import HomeScreen from './components/HomeScreen';
 import SummaryScreen from './components/SummaryScreen';
 import RegattaStartScreen from './components/RegattaStartScreen';
+import TimingScreen from './components/TimingScreen';
+import FinishScreen from './components/FinishScreen';
 
 export const SimpleApp = StackNavigator(
 	{
@@ -19,6 +14,8 @@ export const SimpleApp = StackNavigator(
 		BoatClass: { screen: BoatClassScreen },
 		Summary: { screen: SummaryScreen },
 		Start: { screen: RegattaStartScreen },
+		Timing: { screen: TimingScreen },
+		Finish: { screen: FinishScreen },
 	},
 	{
 		transitionConfig: () => ({ screenInterpolator: () => null }),
@@ -30,12 +27,3 @@ export default class App extends React.Component {
 		return <SimpleApp />;
 	}
 }
-/*
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});*/

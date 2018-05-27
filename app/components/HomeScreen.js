@@ -1,111 +1,133 @@
 import React from 'react';
 import {
-	AsyncStorage,
-	StyleSheet,
-	AppRegistry,
-	Text,
-	TextInput,
-	View,
-	Button,
+  AsyncStorage,
+  StyleSheet,
+  AppRegistry,
+  Text,
+  TextInput,
+  View,
+  Button,
+  TouchableHighlight,
+  TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 export default class HomeScreen extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			data: [],
-		};
-	}
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+    };
+  }
 
-	componentWillMount() {
-		this.fetchData();
-	}
+  componentWillMount() {
+    this.fetchData();
+  }
 
-	static navigationOptions = {
-		header: null,
-	};
+  static navigationOptions = {
+    header: null,
+  };
 
-	fetchData = async () => {
-		/*try {
-      const keys = await AsyncStorage.getAllKeys();
-      await AsyncStorage.multiRemove(keys);
+  fetchData = async () => {
+    AsyncStorage.getAllKeys((err, keys) => {
+      AsyncStorage.multiGet(keys, (err, stores) => {
+        stores.map((result, i, store) => {
+          // get at each store's key/value so you can work with it
+          let key = store[i][0];
+          let value = store[i][1];
 
-      if (keys.length != 0) {
-        this.setState({ keys: this.state.keys.concat([keys]) });
-      } else {
-        this.setState({
-          keys: this.state.keys.concat(['Noch keine Regatta vorhanden']),
+          var regattaData = JSON.parse(value);
+
+          let obj = {
+            key: key,
+            regattaName: regattaData['regattaName'],
+            startDate: regattaData['startDate'],
+          };
+
+          this.setState(prev => {
+            return {
+              data: [...prev.data, obj],
+            };
+          });
         });
-      }
-    } catch (error) {
-      console.warn('Error retrieving data');
-    }*/
+      });
+    });
+  };
 
-		AsyncStorage.getAllKeys((err, keys) => {
-			AsyncStorage.multiGet(keys, (err, stores) => {
-				stores.map((result, i, store) => {
-					// get at each store's key/value so you can work with it
-					let key = store[i][0];
-					let value = store[i][1];
+  renderList = navigate => {
+    return (
+      <ScrollView
+        style={styles.table}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+      >
+        {this.state.data.map((elem, index) => {
+          return (
+            <TouchableOpacity
+              key={elem.key}
+              style={styles.tableElement}
+              onPress={() =>
+                navigate('Summary', { key: elem.key })
+              }
+            >
+              <Text style={styles.tableElementText}>{elem.regattaName}</Text>
+              <Text>{elem.startDate}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+    );
+  };
 
-					console.log(value);
-
-					// console.log(JSON.parse(JSON.stringify({ hallo: 'hallo' })));
-					console.log(JSON.parse(value));
-
-					var hoi = JSON.parse(value);
-
-					let obj = {
-						regattaName: hoi['regattaName'],
-						startDate: hoi['startDate'],
-					};
-
-					this.setState(prev => {
-						return {
-							data: [...prev.data, obj],
-						};
-					});
-				});
-			});
-		});
-	};
-
-	renderList = () => {
-		return (
-			<View>
-				{this.state.data.map(elem => {
-					return (
-						<Text key={elem.regattaName}>
-							{elem.regattaName} am {elem.startDate}
-						</Text>
-					);
-				})}
-			</View>
-		);
-	};
-
-	render() {
-		const { state, navigate } = this.props.navigation;
-		return (
-			<View style={styles.container}>
-				<View style={{ flex: 1, alignItems: 'center' }}>
-					{this.renderList()}
-				</View>
-				<View style={{ flex: 1, alignItems: 'center' }}>
-					<Button onPress={() => navigate('Summary')} title="Neue Regatta" />
-				</View>
-			</View>
-		);
-	}
+  render() {
+    const { state, navigate } = this.props.navigation;
+    return (
+      <View style={styles.container}>
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          {this.renderList(navigate)}
+        </View>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <TouchableOpacity
+            style={styles.touchableOpacityBtn}
+            onPress={() => navigate('Summary', { key: '' })}
+          >
+            <Text style={styles.btnText}>Neue Regatta</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center',
-		flexDirection: 'row',
-	},
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  touchableOpacityBtn: {
+    borderWidth: 2,
+    borderColor: '#45c1bd',
+    borderRadius: 4,
+    padding: 20,
+  },
+  btnText: {
+    fontSize: 20,
+    color: '#45c1bd',
+  },
+  table: {
+    marginLeft: '40%',
+  },
+  tableElement: {
+    padding: 3,
+  },
+  tableElementText: {
+    fontSize: 20,
+  },
 });

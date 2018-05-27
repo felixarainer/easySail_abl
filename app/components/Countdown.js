@@ -6,7 +6,13 @@
 //TODO Design: Wenn countdown fertig solle die rechte komponente blinken, damit der user weis, dass sie ncht freezed is..
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import {
+	View,
+	Text,
+	StyleSheet,
+	TouchableHighlight,
+	TouchableOpacity,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import globalstyles from '../styles.js';
@@ -65,17 +71,16 @@ export default class Countdown extends Component {
 	};
 
 	componentWillUnmount = () => {
-		//console.log('Countdown.componentWillUnmount()');
 		clearInterval(this.state.intervalId);
 	};
 
 	calculateRemainingTime = () => {
-		//console.log('Countdown.calculateRemainingTime()');
-		if (moment().diff(this.props.targetDate) < 0) {
-			return -1 * moment().diff(this.props.targetDate);
-		} else {
-			return 0;
-		}
+		// if (moment().diff(this.props.targetDate) < 0) {
+		// 	return -1 * moment().diff(this.props.targetDate);
+		// } else {
+		// 	return 0;
+		// }
+		return moment().diff(this.props.targetDate);
 	};
 
 	addLeadingZero = value => {
@@ -86,17 +91,14 @@ export default class Countdown extends Component {
 	};
 
 	tick = () => {
-		//console.log('Countdown.tick()');
 		if (this.state.status == COUNTDOWN_STARTED) {
-			//console.log('Countdown.tick() lastRemTime:' + this.state.remainingTime);
 			this.setState({
 				remainingTime: this.calculateRemainingTime(),
 			});
 
-			if (this.state.remainingTime <= 0) {
-				//console.log('ending countdown');
+			if (this.state.remainingTime <= 0 && !this.props.isSkippable) {
 				this.endCountdown();
-				if (this.props.onFinished && !this.props.isSkippable) {
+				if (this.props.onFinished) {
 					this.props.onFinished();
 				}
 			}
@@ -104,8 +106,6 @@ export default class Countdown extends Component {
 	};
 
 	endCountdown = () => {
-		console.log('Countdown.endCountdown()');
-
 		this.setState({
 			status: COUNTDOWN_FINISHED,
 		});
@@ -114,7 +114,6 @@ export default class Countdown extends Component {
 	};
 
 	skipCountdown = () => {
-		console.log('Countdown.skipCountdown()');
 		if (this.props.isSkippable) {
 			this.endCountdown();
 			if (this.props.onFinished) {
@@ -128,29 +127,26 @@ export default class Countdown extends Component {
 		let { remainingTime } = this.state;
 
 		let minutes = this.addLeadingZero(
-			moment.duration(remainingTime).get('minutes')
+			Math.abs(moment.duration(remainingTime).get('minutes'))
 		);
 		let seconds = this.addLeadingZero(
-			moment.duration(remainingTime).get('seconds')
+			Math.abs(moment.duration(remainingTime).get('seconds'))
 		);
-		//console.log('Countdown.render()');
 		return (
-			<TouchableHighlight
+			<TouchableOpacity
 				style={[
 					this.props.highlightStyle,
 					this.props.isSkippable
 						? { backgroundColor: '#26de81' }
 						: { backgroundColor: 'transparent' },
 				]}
-				underlayColor={this.props.isSkippable ? '#20bf6b' : 'transparent'}
 				onPress={() => this.skipCountdown()}
 			>
 				<Text style={this.props.textStyle}>
+					{remainingTime > 0 && '+'}
 					{minutes}:{seconds}
-					{/* {this.props.isSkippable ? 's' : ''}
-					{this.props.isIndefinite ? 'i' : ''} */}
 				</Text>
-			</TouchableHighlight>
+			</TouchableOpacity>
 		);
 	}
 }
