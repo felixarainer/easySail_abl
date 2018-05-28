@@ -72,6 +72,9 @@ export default class SummaryScreen extends React.Component {
   };
 
   fetchData = async () => {
+
+    console.log('fetchdata');
+
     const { state, navigate } = this.props.navigation;
     if (state.params.key != 0) {
       this.setState({ didExist: true, regattaKey: state.params.key });
@@ -87,6 +90,14 @@ export default class SummaryScreen extends React.Component {
         startFlag: regattaData.startFlag,
         id: regattaData.id,
       });
+
+      this.tteams = regattaData.teams;
+
+      if(regattaData.id != 0 && regattaData.id != null && regattaData.id != ''){
+          this.getDataFromServer();
+          console.log('getDataFromServer output directly after call');
+          console.log(this.tteams);
+      }
 
       regattaData.boatClasses.map(boatClass => {
         this.setState({
@@ -112,7 +123,10 @@ export default class SummaryScreen extends React.Component {
 
   //TODO: viewPDF()
 
-  saveData = async () => {
+  getDataFromServer = () => {
+    console.log('getDataFromServer');
+
+    this.tteams;
     if (this.state.id != 0) {
       var request = new XMLHttpRequest();
       request.open(
@@ -135,20 +149,26 @@ export default class SummaryScreen extends React.Component {
           return;
         }
 
-        this.setState({
-          teams: JSON.parse(request.response),
-        });
+        this.tteams = JSON.parse(request.response).json;
 
         console.log('response:');
         console.log(JSON.parse(request.response));
-        console.log(this.state.teams);
+        console.log('tteams');
+        console.log(this.tteams);
       };
     } else {
       console.log('code is 0');
     }
+  }
+
+  saveData = async () => {
+
+    console.log('saveData');
+    console.log(this.tteams);
 
     try {
       if (this.state.didExist == false) {
+        console.log('setitem');
         await AsyncStorage.setItem(
           new Date().toTimeString(),
           JSON.stringify({
@@ -160,10 +180,11 @@ export default class SummaryScreen extends React.Component {
             boatClasses: this.state.boatClasses,
             regattaTimes: undefined,
             id: this.state.id,
-            teams: this.state.teams,
+            teams: this.tteams,
           })
         );
       } else {
+        console.log('mergeitem')
         await AsyncStorage.mergeItem(
           this.state.regattaKey,
           JSON.stringify({
@@ -175,7 +196,7 @@ export default class SummaryScreen extends React.Component {
             boatClasses: this.state.boatClasses,
             regattaTimes: undefined,
             id: this.state.id,
-            teams: this.state.teams,
+            teams: this.tteams,
           })
         );
       }
@@ -402,7 +423,12 @@ export default class SummaryScreen extends React.Component {
             <TextInput
               style={{ width: 100 }}
               placeholder="xxxx"
-              onChangeText={id => this.setState({ id })}
+              onChangeText={
+                id => {
+                  this.setState({ id });
+                  this.getDataFromServer();
+                }
+              }
               value={this.state.id}
             />
           </View>
