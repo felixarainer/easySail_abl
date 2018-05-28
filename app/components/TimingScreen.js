@@ -20,7 +20,7 @@ export default class App extends Component {
 
     this.klasses = [];
 
-    this.items = [[{ name: 'AUT11', checkPoint: 0, times: [], active: true }]];
+    this.items = [];
     //   [{ name: 'AUT11', checkPoint: 0, times: [], active: true },{ name: 'AUT12', checkPoint: 0, times: [], active: true },{ name: 'AUT13', checkPoint: 0, times: [], active: true },{ name: 'AUT14', checkPoint: 0, times: [], active: true },{ name: 'AUT15', checkPoint: 0, times: [], active: true },{ name: 'AUT16', checkPoint: 0, times: [], active: true },{ name: 'AUT17', checkPoint: 0, times: [], active: true }],
     //   [{ name: 'AUT21', checkPoint: 0, times: [], active: true },{ name: 'AUT22', checkPoint: 0, times: [], active: true },{ name: 'AUT23', checkPoint: 0, times: [], active: true },{ name: 'AUT24', checkPoint: 0, times: [], active: true },{ name: 'AUT25', checkPoint: 0, times: [], active: true },{ name: 'AUT26', checkPoint: 0, times: [], active: true },{ name: 'AUT27', checkPoint: 0, times: [], active: true }],
     //   [{ name: 'AUT21', checkPoint: 0, times: [], active: true },{ name: 'AUT22', checkPoint: 0, times: [], active: true },{ name: 'AUT23', checkPoint: 0, times: [], active: true },{ name: 'AUT24', checkPoint: 0, times: [], active: true },{ name: 'AUT25', checkPoint: 0, times: [], active: true },{ name: 'AUT26', checkPoint: 0, times: [], active: true },{ name: 'AUT27', checkPoint: 0, times: [], active: true }],
@@ -41,7 +41,8 @@ export default class App extends Component {
       page: 0,
       menu: false,
       isMenuVisible: false,
-      items: [[]],
+      items: [[{ name: 'AUT11', checkPoint: 0, times: [], active: true }]],
+      klasses: [{name:'Bitte Warten...'}],
     };
 
     this.finalArray = [];
@@ -56,7 +57,7 @@ export default class App extends Component {
   componentWillMount = () => {
     //this.klasses = this.props.navigation.state.params.order
     console.log(this.props.navigation.state.params.order);
-    this.klasses = [{name:'BK1'}];
+    this.klasses = [];
     console.log(this.klasses)
     console.log(this.props.navigation.state.params.regattaKey)
     this.fetchData();
@@ -82,7 +83,7 @@ export default class App extends Component {
       this.team = [];
       elem.teams.forEach((elem) => {
         console.log(elem)
-        this.team.push({name: elem, checkpoint: 0, times: [], active: true})
+        this.team.push({name: elem, checkPoint: 0, times: [], active: true})
       })
       this.items.push(this.team)
       console.log(this.team)
@@ -90,6 +91,14 @@ export default class App extends Component {
     })
 
     this.forceUpdate();
+
+    this.setState({
+      items: this.items,
+    })
+
+    this.setState({
+      klasses: this.klasses,
+    })
   };
 
 
@@ -114,6 +123,10 @@ export default class App extends Component {
           return 0;
         }
       })
+    })
+
+    this.setState({
+      items: this.items,
     })
   }
 
@@ -221,7 +234,7 @@ export default class App extends Component {
 		return (
 			<View style={stylesTime.modal}>
         <View style={stylesTime.modalName}>
-          <Text style={stylesTime.itemName}>{this.items[this.state.page][this.curElem].name}</Text>
+          <Text style={stylesTime.itemName}>{this.state.items[this.state.page][this.curElem].name}</Text>
         </View>
 
         <View style={stylesTime.modalChoices}>
@@ -231,7 +244,7 @@ export default class App extends Component {
                 <View key={item.key} style={stylesTime.choice}>
                   <TouchableOpacity
                     onPress={() => {
-                      this.setAll(this.items[this.state.page][this.curElem], item.key);
+                      this.setAll(this.state.items[this.state.page][this.curElem], item.key);
                       this.toggleMenu();
                       this.sortArray();
                     }}>
@@ -448,7 +461,7 @@ export default class App extends Component {
       <View>
         <GridView
           itemDimension={240}
-          items={this.items[this.state.page]}
+          items={this.state.items[this.state.page]}
           style={stylesTime.gridView}
           renderItem={item => (
             <View style={stylesTime.itemContainer}>
@@ -537,7 +550,7 @@ export default class App extends Component {
           {this.renderReturnBtn()}
 
           <View style={stylesTime.klassDisplay}>
-            <Text style={stylesTime.itemCode}>{this.klasses[this.state.page].name}</Text>
+            <Text style={stylesTime.itemCode}>{this.state.klasses[this.state.page].name}</Text>
           </View>
 
           {this.renderFinishBtn()}
