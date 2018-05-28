@@ -121,7 +121,15 @@ export default class SummaryScreen extends React.Component {
     }
   };
 
-  //TODO: viewPDF()
+  viewPDF = () => {
+    Linking.canOpenURL('http://www.derstandard.at').then(supported => {
+      if (supported) {
+        Linking.openURL('http://www.derstandard.at');
+      } else {
+        console.log('can\'t open url');
+      }
+    });
+  }
 
   getDataFromServer = () => {
     console.log('getDataFromServer');
