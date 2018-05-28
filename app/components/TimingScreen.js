@@ -18,10 +18,11 @@ export default class App extends Component {
   constructor(){
     super();
 
-    this.klasses = []
+    this.klasses = ['BK1','BK2','BK3'];
 
     this.items = [
     /*klass*/  [{ name: 'AUT11', checkPoint: 0, times: [], active: true },{ name: 'AUT12', checkPoint: 0, times: [], active: true },{ name: 'AUT13', checkPoint: 0, times: [], active: true },{ name: 'AUT14', checkPoint: 0, times: [], active: true },{ name: 'AUT15', checkPoint: 0, times: [], active: true },{ name: 'AUT16', checkPoint: 0, times: [], active: true },{ name: 'AUT17', checkPoint: 0, times: [], active: true }],
+    /*klass*/  [{ name: 'AUT21', checkPoint: 0, times: [], active: true },{ name: 'AUT22', checkPoint: 0, times: [], active: true },{ name: 'AUT23', checkPoint: 0, times: [], active: true },{ name: 'AUT24', checkPoint: 0, times: [], active: true },{ name: 'AUT25', checkPoint: 0, times: [], active: true },{ name: 'AUT26', checkPoint: 0, times: [], active: true },{ name: 'AUT27', checkPoint: 0, times: [], active: true }],
     /*klass*/  [{ name: 'AUT21', checkPoint: 0, times: [], active: true },{ name: 'AUT22', checkPoint: 0, times: [], active: true },{ name: 'AUT23', checkPoint: 0, times: [], active: true },{ name: 'AUT24', checkPoint: 0, times: [], active: true },{ name: 'AUT25', checkPoint: 0, times: [], active: true },{ name: 'AUT26', checkPoint: 0, times: [], active: true },{ name: 'AUT27', checkPoint: 0, times: [], active: true }],
     ];
 
@@ -52,10 +53,43 @@ export default class App extends Component {
   };
 
   componentWillMount = () => {
-    this.klasses = this.props.navigation.state.params.order
+    //this.klasses = this.props.navigation.state.params.order
     console.log(this.klasses)
     console.log(this.props.navigation.state.params.regattaKey)
+    this.fetchData();
   }
+
+  fetchData = async () => {
+
+    console.log('fetchDataInTimeScreen');
+
+    const { state, navigate } = this.props.navigation;
+    if (this.props.navigation.state.params.regattaKey != 0) {
+      var regattaData = JSON.parse(
+        await AsyncStorage.getItem(this.props.navigation.state.params.regattaKey)
+      );
+
+      console.log(regattaData);
+    }
+
+    regattaData.teams.forEach((elem) => {
+      console.log(elem);
+
+      this.klasses.push(elem.name);
+      this.team = [];
+      elem.teams.forEach((elem) => {
+        console.log(elem)
+        this.team.push({name: elem, checkpoint: 0, times: [], active: true})
+      })
+      this.items.push(this.team)
+      console.log(this.team)
+      console.log(this.items)
+    })
+
+
+  };
+
+
 
   sortArray = () => {
     this.items.map((klass) => {
