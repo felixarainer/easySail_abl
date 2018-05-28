@@ -43,6 +43,7 @@ export default class App extends Component {
       isMenuVisible: false,
       items: [[{ name: 'AUT11', checkPoint: 0, times: [], active: true }]],
       klasses: [{name:'Bitte Warten...'}],
+      loaded: false,
     };
 
     this.finalArray = [];
@@ -82,8 +83,10 @@ export default class App extends Component {
       this.klasses.push({name: elem.name});
       this.team = [];
       elem.teams.forEach((elem) => {
-        console.log(elem)
-        this.team.push({name: elem, checkPoint: 0, times: [], active: true})
+        if(elem != '' && elem != null && elem != undefined){
+          console.log(elem)
+          this.team.push({name: elem, checkPoint: 0, times: [], active: true})
+        }
       })
       this.items.push(this.team)
       console.log(this.team)
@@ -98,6 +101,10 @@ export default class App extends Component {
 
     this.setState({
       klasses: this.klasses,
+    })
+
+    this.setState({
+      loaded: true,
     })
   };
 
@@ -457,118 +464,123 @@ export default class App extends Component {
   }
 
   render() {
-    return (
-      <View>
-        <GridView
-          itemDimension={240}
-          items={this.state.items[this.state.page]}
-          style={stylesTime.gridView}
-          renderItem={item => (
-            <View style={stylesTime.itemContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  this.toggleMenu(item);
-                }}>
-                <View style={stylesTime.itemContainerL}>
-                  <Image style={stylesTime.dotButton} source={res.menu.menu_dots}/>
-                </View>
-              </TouchableOpacity>
-              <View style={stylesTime.itemContainerMid}>
-                <View style={stylesTime.nameContainer}>
-                  <View style={stylesTime.nameContainer}>
-                    <Text style={stylesTime.itemName}>{item.name}</Text>
-                  </View>
-                  <View style={stylesTime.btnContainer}>
-                    <View style={stylesTime.btn2}>
-                      <Text style={stylesTime.itemLeg}>Bahn</Text>
-                    </View>
-                    <View style={stylesTime.btn3}>
-                      {item.active ? (
-                        <Text style={stylesTime.itemCode}>{item.checkPoint+1}</Text>
-                      ):(
-                        <Text style={stylesTime.itemLeg}>{item.checkPoint}</Text>
-                      )}
-                    </View>
-                    {item.active ? (
-                      <TouchableOpacity
-                        onPress={() => {
-                          this.setNA(item);
-                          item.checkPoint++;
-                          this.sortArray();
-                          this.forceUpdate();
-                        }}>
-                        <View style={stylesTime.btn4}>
-                          <Image style={stylesTime.skipButton} source={res.menu.skip}/>
-                        </View></TouchableOpacity>
-                      ):(
-                        <View style={stylesTime.btn4_dis}>
-                          <Image style={stylesTime.skipButton} source={res.menu.skip}/>
-                        </View>)}
-                  </View>
-                </View>
-              </View>
-              {item.active ? (
+    if(this.state.loaded){
+      return (
+        <View>
+          <GridView
+            itemDimension={240}
+            items={this.state.items[this.state.page]}
+            style={stylesTime.gridView}
+            renderItem={item => (
+              <View style={stylesTime.itemContainer}>
                 <TouchableOpacity
                   onPress={() => {
-                    this.getTime(item);
-                    item.checkPoint++;
-                    this.sortArray();
-                    this.forceUpdate();
-                  }}><View style={stylesTime.itemContainerR}>
-                    <Image style={stylesTime.stopButton} source={res.div.stopwatch}/>
-                  </View></TouchableOpacity>)
-                  :
-                  (<View style={stylesTime.itemContainerR_dis}>
-                    <Image style={stylesTime.stopButton} source={res.div.stopwatch}/>
-                  </View>)}
-            </View>
-          )}
-        />
-        <View style={stylesTime.footer}>
-          <TouchableOpacity
-            onPress={() => {
-              this.handleSwitch(0);
-            }}>
-            <View style={stylesTime.nextlastBtn}>
-              <Text style={stylesTime.itemTime}>prev</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              this.extendBtn();
-            }}>
-            <View style={stylesTime.extendBtn}>
-            {this.state.menu ? (
-              <Image style={stylesTime.footerBtn} source={res.menu.arrow_left}/>
-            ):(
-              <Image style={stylesTime.footerBtn} source={res.menu.arrow_right}/>
+                    this.toggleMenu(item);
+                  }}>
+                  <View style={stylesTime.itemContainerL}>
+                    <Image style={stylesTime.dotButton} source={res.menu.menu_dots}/>
+                  </View>
+                </TouchableOpacity>
+                <View style={stylesTime.itemContainerMid}>
+                  <View style={stylesTime.nameContainer}>
+                    <View style={stylesTime.nameContainer}>
+                      <Text style={stylesTime.itemName}>{item.name}</Text>
+                    </View>
+                    <View style={stylesTime.btnContainer}>
+                      <View style={stylesTime.btn2}>
+                        <Text style={stylesTime.itemLeg}>Bahn</Text>
+                      </View>
+                      <View style={stylesTime.btn3}>
+                        {item.active ? (
+                          <Text style={stylesTime.itemCode}>{item.checkPoint+1}</Text>
+                        ):(
+                          <Text style={stylesTime.itemLeg}>{item.checkPoint}</Text>
+                        )}
+                      </View>
+                      {item.active ? (
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.setNA(item);
+                            item.checkPoint++;
+                            this.sortArray();
+                            this.forceUpdate();
+                          }}>
+                          <View style={stylesTime.btn4}>
+                            <Image style={stylesTime.skipButton} source={res.menu.skip}/>
+                          </View></TouchableOpacity>
+                        ):(
+                          <View style={stylesTime.btn4_dis}>
+                            <Image style={stylesTime.skipButton} source={res.menu.skip}/>
+                          </View>)}
+                    </View>
+                  </View>
+                </View>
+                {item.active ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.getTime(item);
+                      item.checkPoint++;
+                      this.sortArray();
+                      this.forceUpdate();
+                    }}><View style={stylesTime.itemContainerR}>
+                      <Image style={stylesTime.stopButton} source={res.div.stopwatch}/>
+                    </View></TouchableOpacity>)
+                    :
+                    (<View style={stylesTime.itemContainerR_dis}>
+                      <Image style={stylesTime.stopButton} source={res.div.stopwatch}/>
+                    </View>)}
+              </View>
             )}
+          />
+          <View style={stylesTime.footer}>
+            <TouchableOpacity
+              onPress={() => {
+                this.handleSwitch(0);
+              }}>
+              <View style={stylesTime.nextlastBtn}>
+                <Text style={stylesTime.itemTime}>prev</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                this.extendBtn();
+              }}>
+              <View style={stylesTime.extendBtn}>
+              {this.state.menu ? (
+                <Image style={stylesTime.footerBtn} source={res.menu.arrow_left}/>
+              ):(
+                <Image style={stylesTime.footerBtn} source={res.menu.arrow_right}/>
+              )}
+              </View>
+            </TouchableOpacity>
+
+            {this.renderReturnBtn()}
+
+            <View style={stylesTime.klassDisplay}>
+              <Text style={stylesTime.itemCode}>{this.state.klasses[this.state.page].name}</Text>
             </View>
-          </TouchableOpacity>
 
-          {this.renderReturnBtn()}
+            {this.renderFinishBtn()}
 
-          <View style={stylesTime.klassDisplay}>
-            <Text style={stylesTime.itemCode}>{this.state.klasses[this.state.page].name}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                this.handleSwitch(1);
+              }}>
+              <View style={stylesTime.nextlastBtn}>
+                <Text style={stylesTime.itemTime}>next</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-
-          {this.renderFinishBtn()}
-
-          <TouchableOpacity
-            onPress={() => {
-              this.handleSwitch(1);
-            }}>
-            <View style={stylesTime.nextlastBtn}>
-              <Text style={stylesTime.itemTime}>next</Text>
-            </View>
-          </TouchableOpacity>
+          <Modal isVisible={this.state.isMenuVisible}>
+  					{this.renderMenu()}
+  				</Modal>
         </View>
-        <Modal isVisible={this.state.isMenuVisible}>
-					{this.renderMenu()}
-				</Modal>
-      </View>
-    );
+      );
+    }else{
+      return null;
+    }
+
   }
 }
 
