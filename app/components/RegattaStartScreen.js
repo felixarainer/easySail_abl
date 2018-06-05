@@ -291,7 +291,7 @@ export default class App extends React.Component {
 		let ac = [];
 
 		args.forEach(start => {
-			let starttime = moment(start.time).subtract(5, 'minutes');
+			let starttime = moment(start.time);
 
 			//1ste aktion
 			if (start.badstart) {
@@ -315,6 +315,8 @@ export default class App extends React.Component {
 					)
 				);
 			} else {
+
+				starttime = moment(starttime).subtract(5,'minutes');
 				//orange flagge muss nur gesetzt werden, wenn startanfang
 				if (start.first) {
 					console.log('createFirstStart()');
@@ -555,6 +557,18 @@ export default class App extends React.Component {
 		//neue actions
 		let bsacts = [];
 
+		let mom = moment();
+
+		console.log(mom)
+
+		let mom2 = moment().add(4,'minutes')
+
+		console.log(mom2)
+
+		let mom3 = moment(mom).add(4,'minutes')
+
+		console.log(mom3)
+
 		bsacts.push(
 			new actState(
 				[res.flags.orange, res.flags.x, {}, this.flagSpot4],
@@ -569,8 +583,8 @@ export default class App extends React.Component {
 				moment().add(4, 'm'),
 				false,
 				undefined,
-				false,
-				false,
+				true,
+				true,
 				undefined
 			)
 		);
@@ -581,6 +595,8 @@ export default class App extends React.Component {
 	};
 
 	massiveBadStart = ARGcondition => {
+		console.log('massive bad start')
+
 		//updateflags freischalten (wird blockiert, wenn ende der aktionen erreicht ist)
 		this.startFinished = false;
 		//rückrufbuttons deaktivieren
@@ -596,7 +612,10 @@ export default class App extends React.Component {
 
 		console.log('massive bad start()');
 
-		let mom = moment();
+		let mom = moment().add(5,'m');
+
+		console.log(mom)
+
 		let toRank = this.step + 7;
 
 		//postponebadstart wird nur ausgeführt wenn danach noch ein start kommt
